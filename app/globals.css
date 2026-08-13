@@ -1,0 +1,5 @@
+@import 'tailwindcss';
+
+/* Tailwind v4: тема по-прежнему описывается в tailwind.config.ts (не в @theme здесь) —
+   так путь конфигурации остаётся ровно тем, что зафиксирован в docs/architecture.md, раздел 2. */
+@config '../tailwind.config.ts';

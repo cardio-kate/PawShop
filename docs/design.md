@@ -1,0 +1,482 @@
+<!-- DESIGN.md для PawShop — составлен на основе ТЗ_PawShop.md и референсов -->
+
+---
+version: alpha
+name: PawShop
+description: Дизайн-система интернет-магазина зоотоваров для кошек PawShop — англоязычная витрина для покупателей из ЕС, заказ оформляется как заявка без встроенной онлайн-оплаты, плюс лёгкая админ-панель.
+colors:
+  primary: "#4F51C7"
+  primary-hover: "#4647AF"
+  primary-active: "#3E3F9B"
+  primary-tint: "#F4F5FC"
+  secondary: "#9BC53D"
+  secondary-tint: "#F9FCF3"
+  secondary-on-tint: "#77982D"
+  on-secondary: "#33421C"
+  tertiary: "#6F6FE0"
+  tertiary-tint: "#F6F6FD"
+  tertiary-on-tint: "#6161DD"
+  neutral-900: "#0E0E12"
+  neutral-700: "#4A4A4D"
+  neutral-500: "#7A7A7D"
+  neutral-300: "#DBDBDB"
+  neutral-200: "#E7E7E7"
+  neutral-100: "#F1F1F1"
+  surface: "#FFFFFF"
+  on-surface: "{colors.neutral-900}"
+  error: "#D92D20"
+  error-tint: "#FCEEED"
+  error-on-tint: "#D02B1F"
+typography:
+  display:
+    fontFamily: "Inter"
+    fontSize: 40px
+    fontWeight: 700
+    lineHeight: 1.15
+    letterSpacing: -0.01em
+  h1:
+    fontFamily: "Inter"
+    fontSize: 32px
+    fontWeight: 700
+    lineHeight: 1.2
+  h2:
+    fontFamily: "Inter"
+    fontSize: 24px
+    fontWeight: 600
+    lineHeight: 1.25
+  h3:
+    fontFamily: "Inter"
+    fontSize: 20px
+    fontWeight: 600
+    lineHeight: 1.3
+  body-lg:
+    fontFamily: "Inter"
+    fontSize: 18px
+    fontWeight: 400
+    lineHeight: 1.6
+  body-md:
+    fontFamily: "Inter"
+    fontSize: 15px
+    fontWeight: 400
+    lineHeight: 1.6
+  body-sm:
+    fontFamily: "Inter"
+    fontSize: 13px
+    fontWeight: 400
+    lineHeight: 1.5
+  label-md:
+    fontFamily: "Inter"
+    fontSize: 14px
+    fontWeight: 600
+    lineHeight: 1.2
+  label-caps:
+    fontFamily: "Inter"
+    fontSize: 12px
+    fontWeight: 600
+    lineHeight: 1
+    letterSpacing: 0.06em
+  section-heading:
+    fontFamily: "Inter"
+    fontSize: 21px
+    fontWeight: 700
+    lineHeight: 1.3
+    letterSpacing: 0.03em
+    textTransform: uppercase
+    textAlign: center
+  price:
+    fontFamily: "Inter"
+    fontSize: 18px
+    fontWeight: 700
+    lineHeight: 1.2
+rounded:
+  sm: 8px
+  card: 10px
+  md: 12px
+  lg: 20px
+  footer-mobile: 24px
+  xl: 32px
+  2xl: 40px
+  full: 9999px
+spacing:
+  xs: 4px
+  sm: 8px
+  md: 16px
+  lg: 24px
+  xl: 40px
+  2xl: 64px
+  3xl: 100px
+  gutter: 24px
+  margin: 24px
+  container-max: 1280px
+  reading-max: 680px
+  bp-sm: 640px
+  bp-md: 768px
+  bp-lg: 1024px
+  bp-xl: 1280px
+  bp-2xl: 1536px
+# motion — расширение поверх базовой схемы (colors/typography/rounded/spacing/components);
+# не стандартный тип токена, но формат явно допускает нераспознанные секции без ошибки.
+motion:
+  duration-fast: 150ms
+  duration-base: 200ms
+  easing: ease-out
+components:
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.surface}"
+    typography: "{typography.label-md}"
+    rounded: "{rounded.full}"
+    padding: 14px 28px
+  button-primary-hover:
+    backgroundColor: "{colors.primary-hover}"
+  button-primary-active:
+    backgroundColor: "{colors.primary-active}"
+  button-primary-disabled:
+    backgroundColor: "{colors.neutral-300}"
+    textColor: "{colors.neutral-500}"
+  button-secondary:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.primary}"
+    borderColor: "{colors.primary}"
+    typography: "{typography.label-md}"
+    rounded: "{rounded.full}"
+    padding: 14px 28px
+  button-secondary-hover:
+    backgroundColor: "{colors.primary-tint}"
+  button-secondary-active:
+    backgroundColor: "{colors.primary-tint}"
+    textColor: "{colors.primary-active}"
+    borderColor: "{colors.primary-active}"
+  focus-ring:
+    outlineColor: "{colors.primary}"
+    outlineWidth: 2px
+    outlineOffset: 2px
+  logo-mark:
+    backgroundColor: "{colors.primary}"
+  badge-new:
+    backgroundColor: "{colors.secondary}"
+    textColor: "{colors.neutral-900}"
+    typography: "{typography.label-caps}"
+    rounded: "{rounded.full}"
+    padding: 4px 10px
+  badge-out-of-stock:
+    backgroundColor: "{colors.neutral-100}"
+    textColor: "{colors.neutral-500}"
+    typography: "{typography.label-caps}"
+    rounded: "{rounded.sm}"
+    padding: 4px 8px
+  badge-order-counter:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.surface}"
+    rounded: "{rounded.full}"
+  badge-status-new:
+    backgroundColor: "{colors.primary-tint}"
+    textColor: "{colors.primary}"
+  badge-status-processing:
+    backgroundColor: "{colors.tertiary-tint}"
+    textColor: "{colors.tertiary-on-tint}"
+  badge-status-done:
+    backgroundColor: "{colors.secondary-tint}"
+    textColor: "{colors.neutral-900}"
+  badge-status-cancelled:
+    backgroundColor: "{colors.error-tint}"
+    textColor: "{colors.error-on-tint}"
+  chip-filter:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.neutral-700}"
+    borderColor: "{colors.neutral-300}"
+    typography: "{typography.body-sm}"
+    rounded: "{rounded.full}"
+    padding: 8px 16px
+  chip-filter-selected:
+    backgroundColor: "{colors.primary-tint}"
+    textColor: "{colors.primary}"
+    borderColor: "{colors.primary}"
+  variant-chip:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.neutral-700}"
+    borderColor: "{colors.neutral-300}"
+    typography: "{typography.body-sm}"
+    rounded: "{rounded.full}"
+    padding: 8px 16px
+  variant-chip-selected:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.surface}"
+  variant-chip-disabled:
+    backgroundColor: "{colors.neutral-100}"
+    textColor: "{colors.neutral-500}"
+  toggle-switch-on:
+    backgroundColor: "{colors.secondary}"
+  toggle-switch-off:
+    backgroundColor: "{colors.neutral-300}"
+  select-field:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.on-surface}"
+    borderColor: "{colors.neutral-300}"
+    rounded: "{rounded.md}"
+    padding: 12px 16px
+  select-field-focus:
+    borderColor: "{colors.primary}"
+  pagination-item:
+    textColor: "{colors.neutral-700}"
+    rounded: "{rounded.full}"
+  pagination-item-active:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.surface}"
+  badge-ok:
+    backgroundColor: "{colors.secondary-tint}"
+    textColor: "{colors.secondary-on-tint}"
+    rounded: "{rounded.full}"
+  product-card:
+    backgroundColor: "{colors.surface}"
+    rounded: "{rounded.card}"
+    padding: 16px
+  panel:
+    backgroundColor: "{colors.surface}"
+    rounded: "{rounded.lg}"
+  cart-panel:
+    width: 400px
+  staff-login-card:
+    width: 380px
+  table-row-even:
+    backgroundColor: "{colors.neutral-100}"
+  table-row-odd:
+    backgroundColor: "{colors.surface}"
+  table-border:
+    borderColor: "{colors.neutral-300}"
+  empty-state-icon:
+    textColor: "{colors.neutral-300}"
+  input-field:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.on-surface}"
+    borderColor: "{colors.neutral-300}"
+    rounded: "{rounded.md}"
+    padding: 12px 16px
+  input-field-focus:
+    borderColor: "{colors.primary}"
+  input-field-error:
+    borderColor: "{colors.error}"
+    textColor: "{colors.error}"
+  button-add-circle:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.surface}"
+    rounded: "{rounded.full}"
+    size: 42px
+  nav-link:
+    textColor: "{colors.neutral-700}"
+    typography: "{typography.body-sm}"
+  nav-link-hover:
+    textColor: "{colors.primary}"
+  search-field:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.on-surface}"
+    borderColor: "{colors.neutral-300}"
+    typography: "{typography.body-sm}"
+    rounded: "{rounded.full}"
+    padding: 8px 16px
+  search-field-focus:
+    borderColor: "{colors.primary}"
+  footer-card-brand:
+    backgroundColor: "{colors.tertiary}"
+    textColor: "{colors.surface}"
+    rounded: "{rounded.xl}"
+  footer-card-support:
+    backgroundColor: "{colors.secondary}"
+    textColor: "{colors.on-secondary}"
+    rounded: "{rounded.xl}"
+  footer-card-links:
+    backgroundColor: "{colors.primary-tint}"
+    textColor: "{colors.primary}"
+    rounded: "{rounded.xl}"
+  footer-card-social:
+    backgroundColor: "{colors.primary-tint}"
+    textColor: "{colors.primary}"
+    rounded: "{rounded.xl}"
+  footer-card-brand-mobile:
+    rounded: "{rounded.footer-mobile}"
+  footer-card-support-mobile:
+    rounded: "{rounded.footer-mobile}"
+  footer-card-links-mobile:
+    rounded: "{rounded.footer-mobile}"
+  footer-card-social-mobile:
+    rounded: "{rounded.footer-mobile}"
+  primary-tint-panel:
+    backgroundColor: "{colors.primary-tint}"
+    rounded: "{rounded.2xl}"
+    padding: 40px
+  value-props-illustration:
+    width: 150px
+    height: 190px
+omitted:
+  - section: elevation
+    reason: "Значения теней заданы прозой как рекомендация на основе референсов, но точные blur/spread не зафиксированы токенами — уточняются на первых макетах"
+---
+
+# DESIGN.md — PawShop
+
+## Overview
+
+PawShop — англоязычный интернет-магазин товаров для кошек (корма, аксессуары, мелкая одежда с лого) для покупателей из стран ЕС. Модель продаж — заявка с последующим согласованием оплаты менеджером, а не мгновенный e-commerce чек-аут, поэтому интерфейс должен внушать доверие и ощущение «человека на другом конце», а не только скорость.
+
+Референсы (лендинг с логотипом-лапкой, товарные карточки кормов, мобильная корзина) задают тёплый, дружелюбный, «pet-friendly» тон — округлые формы, лапка как фирменный знак, карточки товаров с мягкой тенью. PawShop наследует этот характер, но:
+
+- **фирменные цвета референсов заменены** на палитру ниже — жёлто-зелёная гамма и чёрная плашка «Get Started» из скриншотов не используются;
+- бренд смещён от «щенячьей» универсальности к нише **для кошек** — тон чуть более спокойный и премиальный (усы, подушечки лап, минимум «собачьей» атрибутики);
+- в отличие от референсов, здесь есть полноценная админ-панель (§7.8 ТЗ) — она читается как тот же продукт, но со сдержанной, функциональной подачей (таблицы заказов и товаров с границами и зебра-полосками, минимум декоративных элементов), тогда как витрина (`/(storefront)`) может себе позволять больше воздуха, скруглений и фирменной лапки.
+
+Целевая эмоция: **заботливо и опрятно**, а не «ярко и по-детски» — покупатель на витрине принимает решение о заявке, а не тратит время на онлайн-оплату, поэтому доверие к форме и к описанию товара важнее игривости.
+
+## Colors
+
+- **Primary — Indigo Paw (`#4F51C7`):** главный цвет бренда. Используется исключительно как «сигнал действия»: фирменная лапка в логотипе, кнопки `Add to Cart`, `Place Order`, `Checkout`, выбранный вариант фасовки, активная страница пагинации. Не используется как фон крупных секций и не используется для служебных админ-элементов вроде переключателей — это цвет, зарезервированный за покупкой.
+- **Secondary — Meadow Green (`#9BC53D`):** цвет позитивных/подтверждающих состояний — бейдж «New» на карточке товара, статус заказа `done`, включённое состояние admin-тумблера (`isNew`/`isActive`). На тёмном/белом тексте держите текст **чёрным** (см. «Do's and Don'ts» — контраст белого текста на этом зелёном недостаточен).
+- **Tertiary — Periwinkle (`#6F6FE0`):** вторичный акцент рядом с primary — статус заказа `processing`, hover/selected-фоны чипов фильтров, фон крупной карточки-бренда в Footer. Не заменяет primary в кнопках покупки.
+- **Neutral — Ink Black (`#0E0E12`, из чёрного):** базовый текстовый цвет (`on-surface`), тексты Privacy Policy и юридического контента, где особенно важна читаемость. Производная серая шкала (`neutral-700/500/300/200/100`) — для второстепенного текста, границ полей форм, зебра-строк таблиц и разделителей в корзине.
+- **Surface (`#FFFFFF`):** белый — единственный предложенный по умолчанию фон витрины и карточек; в референсах фон был жёлтым/градиентным, здесь сознательно заменён на нейтральный белый, чтобы товарные фото и primary-кнопки не спорили с фоном. _Открыто для редизайна_, если понадобится тёплый оттенок фона (например, лёгкий tint на основе tertiary для промо-секций — `tertiary-tint` уже посчитан на этот случай).
+- **Error — Signal Red (`#D92D20`):** используется для ошибок валидации формы заказа (Zod, §5), сообщения о временной блокировке входа админа (§7.7, §12), статуса заказа `cancelled`, обводки/текста невалидного поля формы. Даёт контраст 4.83:1 и как текст на белом, и как белый текст на заливке — проходит WCAG AA в обоих направлениях. `error-tint` (`#FCEEED`) — светлый фон для баннеров/бейджей ошибки, аналогично `secondary-tint`/`tertiary-tint`.
+
+## Typography
+
+Финальное решение — **Inter** как единый нейтральный гротеск на все уровни (заголовки и текст), а не пара из display + body шрифтов, как в референсах. Один из самых используемых гротесков для интерфейсов и e-commerce, с хорошей поддержкой латиницы при мелких кеглях — подходит и для карточек товара, и для Privacy Policy.
+
+Шкала уровней:
+- `display` / `h1` / `h2` / `h3` — заголовки страниц, карточек, секций
+- `body-lg` / `body-md` / `body-sm` — основной текст, описания товаров, характеристики, Privacy Policy
+- `label-md` / `label-caps` — текст кнопок, бейджей, подписей полей
+- `price` — отдельный уровень для цены товара: на карточке и в корзине это самый «весомый» текст после названия, крупнее обычного `label`, с начертанием 700
+
+**Заголовки секций главной страницы** (`About Us`, `New Arrivals`, `Catalog`, `What Makes Us Stand Out`) — не базовый `h2` (24px/600, обычный регистр), а отдельный токен `{typography.section-heading}` (21px/700, по центру, заглавными буквами, letter-spacing +0.03em) — немного компактнее базового `h2` по кеглю, но вес и трек добавляют ему визуального веса вместо увеличения размера. Короткие однострочные подписи под заголовком (`New Arrivals` → «Freshly added to the shelf.», `Catalog` → пояснение) центрируются вместе с заголовком; многострочный текст (абзацы `About Us`) остаётся по левому краю — центрирование вредит читаемости длинного текста. Отступ от заголовка до контента — 0.7rem, между секциями — `spacing.3xl` (100px, а не `spacing.2xl`/64px — для лендинговой страницы с крупными блоками более крупный шаг читается заметно воздушнее). Тот же `spacing.3xl` — и перед первой секцией (`About`, отступ от шапки), и перед Footer (отступ от `Catalog`), чтобы весь вертикальный ритм страницы был одинаковым от шапки до подвала.
+
+## Layout
+
+ТЗ явно описывает сетку каталога с фильтрами (§7.2), карточную раскладку, выезжающую панель корзины поверх страницы (§7.4) и форму оформления заказа (§7.5) — раскладка ниже подстроена под эти сценарии, а не под референсы буквально (там был promo-лендинг с одной колонкой).
+
+**Промо-баннер главной страницы (§7.2 ТЗ)** — отдельного баннер-блока (крупная картинка/слайдер) нет: эту роль выполняет секция `About Us` (текст + панель `primary-tint-panel`, см. Components) первым экраном страницы. Отдельный визуальный баннер поверх неё не заводится, чтобы не дублировать посыл — оба блока решали бы одну и ту же задачу «представить бренд» первым экраном.
+
+- Контейнер: `max-width: 1280px` с центрированием, поля по `spacing.margin` (24px) на мобильных.
+- Breakpoints — полная стандартная шкала Tailwind CSS (уже часть стека по ТЗ, §1): `bp-sm: 640px`, `bp-md: 768px`, `bp-lg: 1024px`, `bp-xl: 1280px`, `bp-2xl: 1536px`. Значения совпадают один-в-один с одноимёнными префиксами Tailwind (`sm:`/`md:`/`lg:`/`xl:`/`2xl:`) — намеренно, чтобы при вёрстке `lg:grid-cols-4` срабатывал ровно там, где ожидается по DESIGN.md, а не на другом пикселе. (Названия и значения должны оставаться теми же, что в самом Tailwind — сокращённая шкала или значения, не совпадающие с соответствующим префиксом, создают риск, что название токена и точка срабатывания одноимённого класса разойдутся.)
+- Сетка каталога: 4 колонки на десктопе (≥ `bp-xl`, 1280px — совпадает с `container-max`) → 3 на маленьком ноутбуке/большом планшете (≥ `bp-lg`, 1024px) → 2 на планшете (≥ `bp-sm`, 640px) → 1 на мобильном, `gutter: 24px` — держать строго равным токену, а не «на глаз»: расхождение между версткой и токеном уже приводило к слишком плотной сетке. Промежуточный шаг на `bp-lg` нужен, потому что без него диапазон 640–1279px (весь планшет и часть ноутбучных экранов) показывал бы только 2 колонки, заметно недоиспользуя доступную ширину. Раскладка задана явными медиа-запросами на этих четырёх точках, а не резиновым `auto-fill`, — число колонок должно предсказуемо совпадать с DESIGN.md на любой ширине экрана, а не «сколько влезло».
+- **Фильтры каталога** (категория / age group / цена, §11) — панель над сеткой товаров, а не боковой сайдбар: три строки (`Category` / `Age` / `Price, €`), метка фиксированной ширины слева, сами чипы/поля — справа на одной линии с ней. Не двухколоночная раскладка: при разной высоте колонок (2 строки чипов слева против 1 строки полей справа) такой вариант выглядит перекошенным. На мобильном (`< bp-sm`, 640px) метка переезжает над своей строкой.
+- **Пагинация** — под сеткой каталога, классические номера страниц (не infinite scroll и не «Показать ещё») — так каждая страница каталога остаётся своим URL для SSR/SEO (§1 ТЗ: SSR для SEO страниц товаров). Реализация должна быть полнофункциональной, не декоративной — **8 товаров на страницу** (2 полных ряда по 4 колонки на десктопе — при 24 SKU это 3 страницы), пересчитывается с учётом активных фильтров/поиска, при смене фильтра сбрасывает на страницу 1. Значение зафиксировано и в Architecture.md (раздел 4) как дефолт `limit` для `getProducts`.
+- Корзина — не отдельная страница, а фиксированная панель (`panel` + `cart-panel`, ширина 400px) справа (десктоп) / на всю ширину (мобайл), поверх контента, с затемнением фона.
+- **Модальные окна admin** (например подтверждение удаления товара, §10) используют тот же компонент `panel`, что и корзина, — выезжают сбоку, а не всплывают по центру экрана: один паттерн «панели» на весь проект вместо двух разных.
+- **Страница товара** (§7.3): одна колонка на мобильном (галерея сверху, остальное под ней) → от `bp-sm` и выше — две колонки: галерея слева, справа название/цена/описание/характеристики/`variant chip`/`Add to Cart`. «Характеристики» (`category`/`ageGroup`) — не отдельная таблица, а строка из пары `chip-filter`-подобных меток без обводки (те же токены `body-sm`/`neutral-700`, но без интерактивности — не кликабельны, это не фильтр) прямо под названием, до описания. Блок `You may also like` — на всю ширину под этими двумя колонками, не внутри правой (см. Components).
+- Форма оформления заказа (§7.5) — одна колонка полей на мобильном, две колонки (поля адреса | сводка заказа) от `bp-sm` и выше.
+- Админ-панель (§7.8) — отдельный, более плотный layout: сайдбар + таблицы с границами и зебра-полосками; сетка каталога и «воздух» витрины сюда не переносятся.
+- **Страница входа администратора** (`/staff-entry`, §7.7) — третий, отдельный от витрины и от admin-панели layout: без Header/Footer витрины и без сайдбара админки (маршрут физически вынесен из обеих групп, см. `architecture.md` §2). Минимальная центрированная карточка на фоне `primary-tint` во весь экран — не пустой белый экран (ощущался бы как страница ошибки) и не повтор фона витрины (`surface`), а тот же приглушённый оттенок, что уже держит `About`/`Catalog`/карточки Links и Social в Footer.
+- **Навигация в Header** — дополнение сверх §7.1 ТЗ (там Header ограничен логотипом, поиском и иконкой корзины, без меню). Добавлены 3 якорные ссылки на секции главной страницы — `About`, `New Arrivals`, `Catalog` — без новых маршрутов: ни один из трёх пунктов не соответствует отдельной странице из §6 (`/about` там нет), это внутристраничный скролл к соответствующему блоку §7.2 (баннер/About-текст → «What Makes Us Stand Out» value props → New Arrivals → каталог; блок value props не выведен в навигацию — 3 пункта меню достаточно, четвёртый ради одного дополнительного блока не добавляется). Header при этом становится sticky (закреплён сверху при скролле), иначе якорная навигация не считывается пользователем как рабочая. Так как Header sticky, у секций-якорей (`#about`, `#new-arrivals`, `#catalog`) должен быть `scroll-margin-top`, равный реальной высоте Header — иначе после скролла верхняя часть секции окажется под закреплённой шапкой (тот же нюанс, что и с любым `id`-якорем под sticky-навигацией).
+  - **Переход с других страниц.** С `/product/[slug]`, `/checkout`, `/delivery`, `/privacy-policy` (там этих секций физически нет) ссылки `About`/`New Arrivals`/`Catalog` ведут на `/#about`, `/#new-arrivals`, `/#catalog` — тот же приём, что уже описан для поиска ниже (переход на `/` с последующим скроллом), а не «мёртвый» якорь без цели на текущей странице.
+- **Поиск в Header** (§7.1, §11 ТЗ) — иконка, а не постоянно видимое поле; клик разворачивает `search-field` inline рядом с иконкой (не модалка на весь экран). На мобильном разворачивание временно скрывает логотип, отдавая всю ширину Header под поле — как и с nav-меню, места на строке мало. Поскольку сетка каталога с фильтрами существует только на главной (§6 ТЗ — `/(storefront)/page.tsx`, отдельного `/catalog` нет), поиск с любой другой страницы (карточка товара, `/delivery`, `/privacy-policy`) переходит на `/` с параметром `?search=` и скроллит к секции `Catalog` — то же самое место, где уже рендерится отфильтрованный результат. Если в URL уже есть `?search=`, поле при загрузке страницы рендерится сразу развёрнутым и предзаполненным (не схлопнутым) — иначе пользователь не увидит и не сможет поправить свой запрос. Ввод — живой фильтр по мере набора (debounce ~300ms) через тот же `getProducts({ search })`, что и остальные фильтры каталога (`architecture.md` §3.1); как и при смене любого другого фильтра, результат сбрасывает пагинацию на страницу 1. Пустой результат использует общий `Empty state` (см. Components) — его кнопка-действие сбрасывает и фильтры, и поисковый запрос разом, а не только фильтры.
+- **«View All» — только в New Arrivals**: превью показывает только 2 товара из отмеченных `isNew`; «View All →» в конце этого блока **раскрывает остальные новинки на том же месте** (без перехода и без скролла куда-либо) — стандартный паттерн для блока-превью. Кнопка скрывается сама, если новинок ≤ 2 (раскрывать нечего). В блоке `Catalog` отдельной кнопки «View All» **нет** — там и так показаны все товары, прошедшие фильтр (постранично), лишняя кнопка не нужна; сброс фильтров при необходимости — через «Clear filters» в состоянии «ничего не найдено» (`clearAllFilters()`).
+
+## Elevation & Depth
+
+Референсы используют мягкую тень на белых карточках товаров поверх цветного фона — этот приём сохранён, цвет фона под карточками — нет.
+
+- Товарные карточки и панель (`panel`, общая для корзины и admin-модалок) — тонкая мягкая тень (`0 4px 16px rgba(14,14,18,0.08)`, ориентировочно) вместо обводки, плюс затемнение фона позади панели.
+- Админ-таблицы — **с границами и зебра-полосками** (`table-row-even`/`table-row-odd`/`table-border`), без теней: чередование фона строк вместо декоративности, чтобы длинные списки заказов/товаров было легче считывать построчно.
+
+_Точные значения blur/spread — предложение по аналогии с референсами, не финальные токены; можно скорректировать при первой верстке._
+
+## Motion
+
+Общий принцип: **быстро и сдержанно**, анимация не должна отвлекать от покупки.
+
+- `duration-fast` (150ms) — hover/active состояния кнопок, чипов, тумблеров.
+- `duration-base` (200ms) — выезд панели корзины/admin-модалки, появление/скрытие бейджей.
+- `easing: ease-out` везде, без пружин/отскоков (это осознанно исключает более «игривый» вариант анимации, ближе к характеру референсов, — решено в пользу более взрослой EU-витрины).
+
+## Shapes
+
+- **Кнопки, чипы фильтров, чипы вариантов фасовки — полностью скруглённые (`rounded.full`)**, как `BOOK A SESSION` / `FIND A PET` в референсе — единственная форма, прямо унаследованная из референсов (только с новым цветом).
+- **Карточки товаров, панели (корзина/admin-модалка), инпуты форм — умеренное скругление (`rounded.lg` / `rounded.md`)** — мягче, чем острые углы, но не «капсула», чтобы не спорить с уже полностью скруглёнными кнопками.
+- **Лапка (`paw`) как фирменный знак** — используется в логотипе и как маркер/иконка (например, значок в шапке, иконка в пустом состоянии) заливкой `primary`. Декоративные элементы референса — фигурные «облака», бирки-«кляксы» с текстом `Dogs`/`Cats` — не обязательны к переносу; если нужен декоративный акцент такого рода для PawShop (например, бирки категорий `Dry Food` / `Wet Food` / `Treats` / `Accessories`), это открытый вопрос для редизайна, а не решённая часть системы.
+- Радиус для админ-панели — держать в пределах `rounded.sm`/`rounded.md`, не `full` (кроме тумблеров, которые по своей природе овальные): панель функциональная, а не витринная.
+
+## Iconography
+
+Стиль иконок не был явно определён в ТЗ — по итогам уточнений: **готовая аутлайн-библиотека** (например Lucide/Feather), без кастомной отрисовки.
+
+- Толщина обводки — единая по всей библиотеке (стандартный stroke-width самой библиотеки, не переопределяется).
+- Цвет по умолчанию — `neutral-700`; иконки внутри `primary`-кнопок — белые; отключённые/неактивные иконки — `neutral-300`.
+- Лапка (`paw`) — единственная иконка, для которой сделано исключение и которая отрисовывается отдельно как часть логотипа, а не берётся из библиотеки; в остальных местах (пустая корзина, маркеры) переиспользуется эта же версия.
+
+**Геометрия лапки** (подушечка заметно крупнее пальцев и мягко сужается книзу без острого кончика, 3 овальных пальца, а не 4, с видимым зазором между собой и от подушечки; заливка — `primary`) зафиксирована — использовать готовый SVG ниже, а не перерисовывать заново на следующей сборке, чтобы не потерять эти пропорции. `viewBox="0 0 48 48"`:
+
+```html
+<svg viewBox="0 0 48 48" fill="currentColor">
+  <ellipse cx="11" cy="13.5" rx="3.6" ry="4.9"/>
+  <ellipse cx="24" cy="8.5" rx="3.9" ry="5.3"/>
+  <ellipse cx="37" cy="13.5" rx="3.6" ry="4.9"/>
+  <g transform="translate(8.4 17) scale(1.3)">
+    <path d="M12 6C9 2 4 2 3 7 2 11 5 15 12 20 19 15 22 11 21 7 20 2 15 2 12 6Z"/>
+  </g>
+</svg>
+```
+
+Цвет задаётся через `color`/`fill="currentColor"` на родителе — не хардкодить hex внутри самого SVG, чтобы лого оставалось управляемым токеном `primary`.
+
+## Imagery
+
+- **Карточка товара в каталоге** — только студийная съёмка на нейтральном/белом фоне (упаковка/товар на чистом фоне, без lifestyle-контекста), по аналогии с референсом карточек кормов. Такой подход одинаково хорошо смотрится в плотной сетке каталога (4 колонки на десктопе) и упрощает съёмку 24+ SKU единообразно — здесь исключений нет.
+- **Галерея страницы товара** (§7.3) — первым и основным кадром всегда студийное фото (совпадает с тем, что показано на карточке в каталоге); дополнительно **1–2 lifestyle-фото** товара «в жизни» (например, миска с кормом рядом с котом) в конце той же галереи — необязательные, добавляются по мере готовности съёмки, не блокируют публикацию товара без них.
+
+## Components
+
+- **Button — primary** (`Add to Cart`, `Place Order`, `Checkout`): заливка `primary`, белый текст, `rounded.full`, hover — `primary-hover`, active — `primary-active`.
+- **Button — secondary**: белая заливка, обводка/текст `primary`, тот же `rounded.full` — для второстепенных действий (`View details`, `Continue shopping`, кнопка в пустом состоянии). Hover — заливка `primary-tint`; active — та же заливка, но обводка/текст темнеют до `primary-active` (та же логика прогрессии, что у `button-primary`: hover меняет фон, active дополнительно показывает нажатие).
+- **Button — disabled**: `neutral-300` / `neutral-500` — обязателен для кнопки `Place Order` сразу после первого клика (§12 ТЗ — защита от двойной отправки) и кнопки `Sign in` на время блокировки после превышения лимита попыток входа (§12 ТЗ, `StaffLoginCard`) — один и тот же визуальный язык «кнопка сейчас недоступна» на весь проект, а не приглушённый через прозрачность вариант основного цвета. Пустая корзина использует `Empty state` (см. ниже) вместо этого — кнопки `Checkout` там просто нет, поэтому её не нужно ещё и блокировать.
+- **Variant chip** (выбор фасовки на странице товара, §7.3): чипы в ряд; по умолчанию — белая заливка с обводкой `neutral-300` (без неё чип не читается на белом фоне страницы товара); выбранный вариант — заливка `primary` + белый текст (сильнее визуально, чем просто обводка); недоступный вариант — приглушённый `neutral-100`/`neutral-500` с меткой «Out of stock», не кликабелен.
+- **You may also like** (низ страницы товара, §7.3): та же сетка и тот же `product-card`, что в каталоге, — до 4 карточек (подбор по `ageGroup`, см. `getRelatedProducts` в `architecture.md` §3.1), без пагинации. Заголовок блока — `h3`, слева (не центр/капс, как у секций главной страницы — это подраздел страницы товара, не отдельная секция лендинга). Блок не рендерится вообще, если подходящих товаров не нашлось (не показывать пустую сетку с одним заголовком).
+- **Product card**: белая карточка, скругление `rounded.card` (10px — не `rounded.lg`/20px: сдержаннее, ближе к скруглению внутренних углов карточек Footer, а не к «мягкой» капсульной геометрии витрины), мягкая тень, фото на нейтральном фоне (тот же `rounded.card`, вложенный угол фото подогнан под угол карточки) — бейдж `New` при наличии (`isNew`), если есть, лежит поверх фото в левом верхнем углу (отступ `spacing.sm` от краёв фото), а не отдельной строкой в потоке карточки — стандартное для e-commerce место, сразу считывается при скролле сетки. Дальше вниз: отступ `spacing.sm` (8px) → название → отступ `spacing.sm` (8px) → цена (`price` токен) → кнопка Add to Cart. Бейдж «Out of stock» на карточке каталога не показывается — деактивация последнего активного варианта запрещена на сервере (`architecture.md`, раздел 4), поэтому товар, видимый в каталоге, всегда имеет хотя бы один доступный вариант; статус «Out of stock» существует только на уровне отдельного варианта на странице товара (см. «Badge — Out of stock» ниже). `flavor` не выведен отдельным элементом (ни чипом, ни строкой-подписью) — вкус закладывается прямо в текст `name` при создании товара («Ocean Salmon Formula», «Kitten Chicken Pouches in Jelly»), карточка не тратит на него отдельную строку.
+  - **Add to Cart в сетке каталога** — компактная круглая icon-button (`button-add-circle`, 42px, заливка `primary`, белая иконка «плюс», `aria-label="Add [name] to cart"`) рядом с ценой, не полнотекстовая кнопка — экономит место в плотной сетке, всегда видна (не по hover — мобильный трафик из ЕС). На странице товара (§7.3), где кнопка одна и места достаточно, — полнотекстовая `button-primary` с надписью «Add to Cart». Между чипами вариантов и строкой цена/кнопка — отступ `spacing.lg` (24px): без него ряд с ценой визуально прилипает к чипам.
+- **Badge — New** (`isNew`, §11): заливка `secondary`, **тёмный** текст (не белый — см. контраст ниже).
+- **Badge — Out of stock** (неактивный `ProductVariant`, §7.3): приглушённый `neutral-100`/`neutral-500`, без цветового акцента — это статус отсутствия, а не ошибка.
+- **Order status badges** (админка, §7.8): `new` — `primary-tint`/`primary`, `processing` — `tertiary-tint`/`tertiary-on-tint`, `done` — `secondary-tint` + тёмный текст, `cancelled` — `error-tint`/`error-on-tint`. `tertiary-on-tint`/`error-on-tint` — затемнённые варианты фирменных `tertiary`/`error` специально под текст на их же светлом tint-фоне (обычный `tertiary`/`error` там не проходит WCAG AA, 3.88:1/4.28:1 вместо нужных 4.5:1); сам `tertiary`/`error` для кнопок, обводок и остального использования не меняется.
+- **Order detail** (`/admin/dashboard/orders/[id]`, §7.8 ТЗ): две колонки — слева список позиций заказа, справа контакты клиента, адрес доставки, `shippingPriceAtOrder`, `comment` и смена статуса. Список позиций — `admin table` (`table-row-even`/`odd`, `table-border`), **не** `cart-item`: `OrderItem` — снапшот без фото и без возможности менять количество, у `cart-item` не осталось бы лишних функций. Колонки: название+вариант, количество, цена, сумма по строке. Смена статуса — `select-field`, оформленный цветом соответствующего `badge-status-*`, а не нейтральный дропдаун.
+- **Chip — filter** (категория / age group, §11, в горизонтальной панели над каталогом) — токены `chip-filter`/`chip-filter-selected`.
+- **Price range filter** (§11): два числовых поля «от» / «до», стиль как `input-field` (обводка `neutral-300`, `rounded.md`), но компактнее самого `input-field` в двух измерениях — не только уже по ширине (~80px), но и ниже по высоте: padding `8px 12px`, а не стандартный `12px 16px` — рядом с чипами `Category`/`Age` (padding 8px) полноразмерный инпут выглядит непропорционально высоким; без слайдера.
+- **Toggle switch** (`isNew`, `isActive` в форме товара/варианта, §10): включено — заливка `secondary` (зелёный = позитивное/активное состояние), выключено — `neutral-300`; сознательно не использует `primary`, чтобы не размывать его значение «действие с покупкой».
+- **Select / dropdown** (страна доставки в форме заказа §7.5, категория в форме товара §10) — токены `select-field`/`select-field-focus`, стрелка-иконка из общей библиотеки.
+- **Pagination** (под сеткой каталога) — токены `pagination-item`/`pagination-item-active`.
+- **Panel** (общий компонент для корзины, §7.4, и admin-модалок подтверждения, §10): выезжает сбоку, `rounded.lg` со стороны, обращённой к контенту, мягкая тень + затемнение фона.
+- **Cart item** (внутри `panel`): миниатюра, название, вариант, степпер количества (+/−), цена, удаление; итоговый блок (`Sub Total` / `Shipping & Tax` / `Total`) и кнопка `Checkout` на всю ширину, заливка `primary` (в референсе была бирюзовой). Название — типографика `label-md` (line-height 1.2), не `body-md`/`body-lg` (1.6) — на 2 строках их интервал даёт лишний зазор для короткого жирного лейбла. Отступы внутри панели — более просторные, чем в инпутах форм: компактный, но не «сжатый» список. Клик по `Checkout` закрывает панель корзины и переводит на отдельную широкую страницу `/checkout` (§7.5, `architecture.md` §2) — форма туда не помещается: ей нужна двухколоночная раскладка (поля адреса | сводка заказа) от `bp-sm`, а панель корзины фиксированной шириной 400px для двух реальных колонок слишком узкая.
+- **Order confirmation** (экран подтверждения после `Place Order`, §7.5 ТЗ, на той же странице оформления заказа — не внутри панели корзины, см. выше): компонент `panel`, по центру страницы — круглая иконка-галочка (`badge-ok`: заливка `secondary-tint`, иконка `secondary-on-tint` — обычный `secondary` на этом бледном фоне не держит даже 3:1 для иконки), заголовок (`body-md`, «Thank you» / номер заявки), короткая подпись (`body-sm`, `neutral-500`, что дальше — свяжется менеджер), кнопка `button-secondary` («Continue shopping», ведёт на витрину). Тот же паттерн переиспользуется в `reset-success` у `StaffLoginCard` (см. ниже) — единый визуальный язык «успешного завершения флоу» через один и тот же компонент `panel`, а не два разных.
+- **Delivery — публичная страница** (§7.6 ТЗ): таблица «страна — цена — срок» **в тёплом стиле витрины, не в стиле admin-таблиц** — без `table-row-even`/`odd` и рамок `table-border` (тот паттерн осознанно зарезервирован за админкой, см. Elevation & Depth). Строки разделены тонкой линией `neutral-200`, без чередующегося фона — тот же принцип, что у строки товара в `cart-item`: страница остаётся частью покупательского пути, а не превращается в служебный документ.
+- **Privacy Policy — публичная страница** (§7.9 ТЗ): узкая колонка юридического текста по центру, **не на всю `container-max`** — max-width `spacing.reading-max` (680px, примерно 42em при `body-md`), это классическая длина строки для комфортного чтения сплошного текста; на боках страницы остаётся белое поле, как у `About`, а не растянутый на все 1280px абзац. Текст — `body-md`, цвет `neutral-900` (см. Colors — максимальный контраст там, где важна точность формулировок), заголовки разделов — `h3`.
+- **Empty state** (пустая корзина §7.4, пустой список заказов, «ничего не найдено» в каталоге): иконка из библиотеки цветом `neutral-300` + заголовок (`body-md`) + подпись (`body-sm`, `neutral-500`) + кнопка-действие (`button-secondary`, например «Continue shopping» / «Clear filters»). В каталоге «Clear filters» сбрасывает и фильтры, и поисковый запрос (`search-field`) разом — состояние «ничего не найдено» может быть вызвано любым из них по отдельности или обоими сразу.
+- **Admin table**: чередование `table-row-even`/`table-row-odd`, разделители `table-border` (`neutral-300`), без теней — приоритет читаемости построчно над декоративностью.
+- **ProductForm** (создание/редактирование товара, §10 ТЗ): одна колонка, поля сверху вниз — название (`input-field`), категория (`select-field`, из `getCategories()`, без создания новой категории прямо из формы — см. `architecture.md` §3.7), возрастная группа (`select-field`: kitten/adult/senior), описание (`input-field` как textarea, несколько строк), `ImageUploader` (см. ниже), таблица вариантов (см. ниже), тумблер `isNew`. Кнопки формы — `button-primary` «Save», `button-secondary` «Cancel» — внизу, на всю ширину карточки формы.
+  - **Редактор вариантов (`ProductVariant[]`)** — `admin table`-стиль (`table-row-even`/`odd`, `table-border`), тот же язык, что у остальных списков админки, а не повторяющиеся карточки: столбцы `Label` / `Price` / `Active` (`toggle-switch`) / удаление (иконка-корзина в последнем столбце, как в `cart-item`). Под таблицей — `button-secondary` «+ Add variant». Кнопка удаления **скрыта у последнего оставшегося варианта** — товар обязан иметь минимум один вариант (§4 ТЗ), это правило видно уже в форме, а не только как ошибка сервера после попытки сохранить пустой список.
+- **ImageUploader** (внутри `ProductForm`, §10 ТЗ; поток — signed client-upload напрямую в Vercel Blob, `architecture.md` §3.5): сетка миниатюр (`rounded.md`, как у `input-field`) + плитка «+» с пунктирной рамкой `neutral-300` для добавления. Первая миниатюра — всегда `images[0]` (каноническое фото для карточки/`og:image`, architecture.md §3.1), помечена бейджем `Cover`. На остальных при наведении — кнопка `Set as cover` (не drag-and-drop: для одного админа и редкой операции клик заметнее и надёжнее drag). Удаление — крестик при наведении, как у `cart-item`. Прогресс загрузки — полоска на самой миниатюре, не общий индикатор: видно, какое фото ещё грузится при нескольких одновременных загрузках.
+- **Input field** (форма оформления заказа, §7.5) — токены `input-field`/`input-field-focus`/`input-field-error`.
+- **Logo / paw mark** (`logo-mark`): заливка `primary` — единственный явно заданный цвет для лого; точная разметка — см. Iconography.
+- **Staff login card** (`/staff-entry`, §7.7 — компонент `StaffLoginCard`, `architecture.md` §2): карточка `panel` + `staff-login-card` (ширина 380px) по центру экрана. Вверху — лапка + «PawShop» (`h3`) как в Header витрины (страница и так не выведена в навигацию, второй слой анонимности не нужен). Поля `username`/`password` — `input-field`, кнопка `Sign in` — `button-primary` на всю ширину, ниже — ссылка `Forgot password?` (стиль `nav-link`). Блокировка после лимита попыток (§12 ТЗ) — баннер `error-tint`/`error-on-tint` над полями, не просто текст под кнопкой.
+  - **Flow восстановления пароля — та же карточка, смена состояния**, а не отдельные страницы/маршруты (в отличие от корзины, где `checkout`/`confirmed` — отдельная страница, см. «Cart item»; здесь остаётся ровно один компонент `StaffLoginCard`, потому что полей мало и двухколоночная раскладка не нужна ни на одном шаге): `login → forgot → reset → reset-success`. `forgot` — только поле `username` и кнопка «Send code»; после отправки карточка сразу переключается в `reset` с текстом-подтверждением («Code sent to your Telegram») и полями «код» + «новый пароль» (тот же `input-field`), кнопка — `button-primary` «Reset password»; `reset-success` — короткое подтверждающее состояние, тем же паттерном, что `Order confirmation` в корзине (см. выше): заголовок (`body-md`) «Password updated», подпись (`body-sm`, `neutral-500`) «You can now sign in with your new password», кнопка `button-secondary` «Back to sign in» возвращает в `login`.
+- **Nav link** (Header, поверх §7.1 ТЗ — см. Layout): текст `neutral-700`, `body-sm`, без подложки; hover/active — `primary`, без подчёркивания. Ровно 3 пункта (`About`, `New Arrivals`, `Catalog`) — при таком небольшом каталоге (24 SKU, единственная страница листинга) больше пунктов создавали бы навигацию ради навигации; на мобильном (`< bp-sm`) меню скрывается полностью — на этом масштабе бургер-меню ради 3 ссылок избыточен, пользователь долистает нужный блок скроллом.
+- **Search field** (иконка поиска в Header, §7.1/§11 ТЗ — см. Layout про разворачивание/переход на `/`): иконка по умолчанию `neutral-700` (стандартная логика Iconography, без отдельного токена под саму иконку), по клику разворачивается в `search-field` — белая заливка, обводка `neutral-300`, `rounded.full` (не `input-field`/`rounded.md`: поле короткоживущее и inline в навигации, а не часть формы, поэтому используется тот же «пилюльный» язык, что у чипов и кнопок Header-уровня), фокус — обводка `primary` (`search-field-focus`). Справа в развёрнутом поле — крестик очистки (тот же паттерн, что удаление в `cart-item`/`ImageUploader`), виден только при непустом запросе.
+- **Cart icon** (Header, §7.1 ТЗ — см. Layout): иконка из общей библиотеки, hover — `primary` (та же логика, что у остальных интерактивных иконок, см. Iconography); количество товаров в корзине — бейдж `badge-order-counter` в углу иконки, скрыт при пустой корзине.
+- **«What Makes Us Stand Out» — value props** (главная страница, между `About` и `New Arrivals`; самостоятельный блок сверх §7.2 ТЗ). Состав — 6 пунктов (иконка + заголовок + пояснение), 3 слева / 3 справа от иллюстрации-маскота по центру. Иконки — плоские, без круглой подложки. Контент — 2 пункта про качество корма + 4 универсальных для всего каталога (включая аксессуары): специфичные для еды формулировки не годятся для ошейников/мисок. Фон — широкая «арка» на `primary-tint` (скруглены только верхние углы), заголовок — `{typography.section-heading}`.
+- **Иллюстрация по центру value props**: место зарезервировано (`value-props-illustration`, 150×190px), но само изображение — не токен дизайн-системы, а конкретный арт от заказчика (фото/иллюстрация питомца), подставляется отдельно. Требование к нему одно: не вводить в него цвет вне палитры системы (primary/secondary/tertiary/neutral/error) без крайней необходимости — как и для любого другого визуального элемента.
+
+- **Footer** (§7.1 ТЗ: ссылка на Delivery, ссылка на Privacy Policy, контакты, соцсети): **4 отдельные карточки** разного цвета — крупная карточка-бренд (`footer-card-brand`) на всю высоту слева, справа сверху вниз узкие карточки (`footer-card-support`, затем `footer-card-links`), отдельная карточка Social (`footer-card-social`) на всю высоту справа. Радиус — `rounded.xl` (32px). **Исключение**: у крайней левой (бренд) и крайней правой (Social) карточек скругление асимметричное — внешние углы `rounded.2xl` (40px), внутренние (к средней колонке) `rounded.card` (10px) — читаются как «обнимающие» среднюю колонку, а не парящие отдельно. На мобильном карточки складываются в одну колонку, исключение не действует — все углы каждой карточки равны `rounded.footer-mobile` (24px, см. варианты `footer-card-*-mobile`). Отступ сверху (от `Catalog`) — `spacing.3xl` (100px), тот же шаг, что и между остальными секциями. Без собственной `primary-tint`-подложки под всем блоком (см. ниже) — карточки и так достаточно насыщены цветом.
+  - **Цвета**: `footer-card-brand` — фон `tertiary`, текст `surface` (тег-лайн крупным белым текстом, copyright — `neutral-900`, у мелкого белого текста на `tertiary` контраст не проходит); `footer-card-support` — фон `secondary`, текст `on-secondary` (тёплый тёмный тон вместо чистого `neutral-900` — на зелёном фоне читается мягче), email — `neutral-900` жирным с подчёркиванием; `footer-card-links`/`footer-card-social` — фон `primary-tint`, текст `primary` (не `neutral-100` — остаётся в фирменной indigo-гамме).
+  - **Контент** — только то, что реально есть в проекте: `Delivery`, `Privacy Policy`, соцсети Facebook/Instagram/TikTok (без About Us/FAQ/Blog/Terms — этих страниц нет в §6 ТЗ). Facebook — единственная иконка с сплошной заливкой вместо аутлайна (узнаваемость держится на силуэте флажка-«f»); Instagram/TikTok — в общей аутлайн-логике. Раскладка карточки Social — вертикальный список из трёх строк (не ряд одних иконок): в каждой строке иконка слева и название сети (`Facebook`/`Instagram`/`TikTok`) справа от неё — это и есть те «пункты соцсетей», для которых ниже отдельно зафиксирована типографика `body-sm`.
+  - **Типографика** — держать строго на уровнях шкалы, не на произвольных промежуточных кеглях: заголовки карточек + `Delivery`/`Privacy Policy`/email — единый `label-md` (14px/600); текст под Support и пункты соцсетей — `body-sm` (13px/400); тег-лайн — акцентный `h3` (20px/700); copyright — 12px (размер `label-caps`, без капса) — единственный уровень мельче `body-sm`, оправдан ролью мелкого юридического текста.
+
+- **Панель `primary-tint-panel`** — применяется к `About` и `Catalog` (не к Footer — см. выше). Скруглённая панель (`rounded.2xl`/40px, паддинг тоже 40px — паддинг блока должен быть не меньше его радиуса, иначе скругление визуально «съедает» контент по углам) заливает весь блок целиком, не тонкой полосой по краю. Контент (текст About; фильтры + сетка товаров + пагинация Catalog) лежит прямо на заливке — товарные карточки внутри при этом остаются белыми, тот же принцип, что у карточек Footer на цветных фонах. Панель — не во всю ширину фрейма, с отступом от края (белая страница видна вокруг).
+  - `New Arrivals` и `What Makes Us Stand Out` в этот паттерн не включены: у Stand Out уже своя декоративная форма (арка), у New Arrivals — контент-превью без рамки не требуется.
+
+## Do's and Don'ts
+
+- Do использовать `primary` (Indigo Paw) только для лапки-лого и для действий, связанных с покупкой/заявкой (`Add to Cart`, `Checkout`, `Place Order`, выбранный вариант фасовки, активная страница пагинации) — так цвет сохраняет однозначный сигнал «действие с заказом».
+- Don't заливать этим же `primary` крупные фоновые секции, навигацию или служебные admin-элементы (например, включённое состояние тумблера — там используется `secondary`, а не `primary`).
+- Don't ставить белый текст на `secondary` (Meadow Green) — контраст всего **2.0:1**, ниже требований WCAG AA (4.5:1 для обычного текста). На зелёном фоне текст должен быть тёмным (`neutral-900`).
+- Don't ставить обычный (не крупный) текст белым по `tertiary` (Periwinkle) — контраст **4.18:1**, проходит только порог для крупного текста (3:1), но не для обычного (4.5:1). Белый текст на `tertiary` — только в заголовках/крупных кнопках, не в теле текста.
+- Do использовать `error` (`#D92D20`) и как текст на белом, и как белый текст на заливке — обе пары проходят WCAG AA (4.83:1), в отличие от `secondary`/`tertiary` выше.
+- Do держать текст Privacy Policy и юридического контента (§7.9) на белом фоне чёрным/`neutral-900` — самый высокий контраст (19.3:1) там, где точность формулировок критична.
+- Don't смешивать `rounded.full` и функциональные `rounded.sm`/`rounded.md` в одном экране (см. Shapes) — админ-панель не переходит на пилюли, кроме тумблеров.
+- Do фиксировать состояние `disabled` кнопки `Place Order` визуально нейтральным (`neutral-300`) сразу после первого клика — единственный способ на уровне интерфейса напомнить, что заявка уже отправляется (§12); для пустой корзины вместо disabled-кнопки — `Empty state` (см. Components).
+- Don't показывать кнопку `Add to Cart` только по hover — на мобильном трафике из ЕС это не сработает; кнопка всегда видна на карточке товара.
+- Don't анимировать интерфейс с пружинными/bounce-эффектами — выбранный характер анимации (`ease-out`, 150–200ms) сдержанный, «игривая» пружина в него не вписывается.
+- Do показывать единый `focus-ring` (обводка `primary`, 2px, offset 2px) через `:focus-visible` на всех интерактивных элементах при навигации с клавиатуры — кнопках, ссылках, чипах, иконках в Header, — а не только на полях форм (`input-field-focus`/`select-field-focus`/`search-field-focus` уже покрывают это для инпутов).

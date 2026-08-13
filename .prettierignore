@@ -1,0 +1,7 @@
+.next
+node_modules
+coverage
+lib/db/migrations
+
+# исходные документы ТЗ/архитектуры/дизайна — не переформатировать содержимое
+docs/*.md
