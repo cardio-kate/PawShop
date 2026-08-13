@@ -68,6 +68,11 @@ const config: Config = {
         xl: '32px',
         '2xl': '40px',
       },
+      // ВАЖНО: эти именованные ключи (xs/sm/md/lg/xl/2xl/3xl) коллизируют в Tailwind v4 с
+      // одноимённым встроенным набором maxWidth — max-w-xs резолвится в 4px (это значение),
+      // а не в дефолтные 20rem Tailwind. Проверено эмпирически на Header (2026-08-12). Не
+      // использовать голые max-w-xs/sm/md/lg/xl/2xl/3xl нигде в проекте — только
+      // max-w-container/max-w-reading (см. ниже) или произвольное max-w-[Npx].
       spacing: {
         xs: '4px',
         sm: '8px',

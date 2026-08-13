@@ -3,3 +3,9 @@
 /* Tailwind v4: тема по-прежнему описывается в tailwind.config.ts (не в @theme здесь) —
    так путь конфигурации остаётся ровно тем, что зафиксирован в docs/architecture.md, раздел 2. */
 @config '../tailwind.config.ts';
+
+/* input[type="search"] везде в проекте использует собственный крестик очистки (design.md →
+   Search field) — нативная кнопка очистки браузера (webkit) дублирует её и должна быть скрыта. */
+input[type='search']::-webkit-search-cancel-button {
+  display: none;
+}

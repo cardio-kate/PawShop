@@ -95,11 +95,13 @@ sequenceDiagram
 │   │   ├── layout.tsx             # <html lang={locale}>/<body>, NextIntlClientProvider, глобальные провайдеры
 │   │   └── /(storefront)
 │   │       ├── layout.tsx             # Header + Footer
-│   │       ├── page.tsx               # главная: баннер, New Arrivals, каталог+фильтры
+│   │       ├── page.tsx               # главная: баннер, New Arrivals (превью, без сетки каталога)
+│   │       ├── /catalog/page.tsx      # весь каталог: фильтры, сетка, пагинация (ТЗ §7.2а)
 │   │       ├── /product/[slug]/page.tsx   # slug общий на обе локали, см. §3.10
 │   │       ├── /checkout/page.tsx     # отдельная широкая страница оформления заказа (ТЗ §7.5) — двухколоночная раскладка, не помещается в панель корзины (400px), см. DESIGN.md → Layout → Cart item
 │   │       ├── /delivery/page.tsx
-│   │       └── /privacy-policy/page.tsx   # статический контент, см. ТЗ §7.9
+│   │       ├── /privacy-policy/page.tsx   # статический контент, см. ТЗ §7.9
+│   │       └── /contact/page.tsx      # статический контент, см. ТЗ §7.10 — добавлено сверх исходного ТЗ
 │   │
 │   └── /(admin)                   # второй, нелокализованный корневой layout — см. §3.10
 │       ├── layout.tsx             # <html lang="en">/<body>
