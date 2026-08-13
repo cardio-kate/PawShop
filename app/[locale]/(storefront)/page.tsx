@@ -1,9 +1,14 @@
+import { setRequestLocale } from 'next-intl/server';
+
 const PLACEHOLDER_SECTIONS = [
   { id: 'about', label: 'About' },
   { id: 'new-arrivals', label: 'New Arrivals' },
 ];
 
-export default function HomePage() {
+export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <div className="mx-auto max-w-container px-lg py-3xl">
       {PLACEHOLDER_SECTIONS.map((section) => (

@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next';
+import createNextIntlPlugin from 'next-intl/plugin';
 
 // output: 'standalone' — задел на перенос с Vercel на VPS/Docker (docs/architecture.md, раздел 6)
 // images.remotePatterns — без этого next/image откажется оптимизировать фото товаров,
@@ -15,4 +16,6 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
+
+export default withNextIntl(nextConfig);

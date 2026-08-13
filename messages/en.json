@@ -1,0 +1,17 @@
+{
+  "Header": {
+    "about": "About",
+    "newArrivals": "New Arrivals",
+    "catalog": "Catalog",
+    "contact": "Contact",
+    "searchPlaceholder": "Search products…",
+    "searchAriaLabel": "Search products",
+    "openSearch": "Open search",
+    "closeSearch": "Close search",
+    "clearSearch": "Clear search",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "openCart": "Open cart",
+    "openCartWithCount": "Open cart, {count, plural, one {# item} other {# items}}"
+  }
+}
