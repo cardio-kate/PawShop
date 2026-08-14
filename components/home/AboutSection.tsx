@@ -1,3 +1,4 @@
+import { ImageIcon } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 
 // design.md → Layout: секция About выполняет роль промо-баннера главной страницы (§7.2 ТЗ) —
@@ -15,9 +16,21 @@ export async function AboutSection() {
       </div>
 
       <div className="mt-lg rounded-2xl bg-paw-tint p-xl text-left">
-        <div className="mx-auto flex max-w-reading flex-col gap-md text-body-md text-neutral-900">
-          <p>{t('paragraph1')}</p>
-          <p>{t('paragraph2')}</p>
+        <div className="flex flex-col items-stretch gap-lg sm:flex-row">
+          {/* Плейсхолдер до реального ассета — размер ещё не определён, поэтому sm:w-1/2 + stretch,
+              не фиксированный px. aspect-square только до sm, где sm:flex-row/stretch ещё не задаёт
+              высоту сама. */}
+          <div
+            className="flex aspect-square w-full items-center justify-center rounded-2xl border border-dashed border-neutral-300 bg-surface sm:aspect-auto sm:w-1/2"
+            aria-hidden="true"
+          >
+            <ImageIcon className="h-10 w-10 text-neutral-300" strokeWidth={1.5} />
+          </div>
+
+          <div className="flex w-full flex-col justify-center gap-md text-body-md text-neutral-900 sm:w-1/2">
+            <p>{t('paragraph1')}</p>
+            <p>{t('paragraph2')}</p>
+          </div>
         </div>
       </div>
     </section>
