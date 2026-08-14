@@ -61,6 +61,71 @@
       "viewAll": "Alle ansehen →"
     }
   },
+  "Catalog": {
+    "title": "Katalog",
+    "metaDescription": "Das gesamte PawShop-Sortiment — Katzenfutter, Leckerlis und Zubehör, Lieferung in die ganze EU.",
+    "filters": {
+      "category": "Kategorie",
+      "age": "Alter",
+      "price": "Preis, €",
+      "priceFrom": "Von",
+      "priceTo": "Bis",
+      "clear": "Filter zurücksetzen"
+    },
+    "ageGroups": {
+      "kitten": "Kätzchen",
+      "adult": "Erwachsen",
+      "senior": "Senior"
+    },
+    "resultsCount": "{count, plural, =0 {Keine Produkte} one {# Produkt} other {# Produkte}}",
+    "emptyTitle": "Keine Produkte gefunden",
+    "emptyDescription": "Passen Sie Ihre Filter oder die Suche an.",
+    "pagination": {
+      "ariaLabel": "Katalogseiten",
+      "previous": "Vorherige Seite",
+      "next": "Nächste Seite",
+      "goToPage": "Zu Seite {page}"
+    }
+  },
+  "ProductPage": {
+    "outOfStock": "Ausverkauft",
+    "addToCart": "In den Warenkorb",
+    "relatedTitle": "Das könnte Ihnen auch gefallen"
+  },
+  "Delivery": {
+    "title": "Lieferung",
+    "intro": "Wir versenden derzeit in die folgenden Länder der Europäischen Union. Versandkosten und die geschätzte Lieferzeit werden anhand des im Bestellvorgang ausgewählten Lieferlands automatisch berechnet.",
+    "table": {
+      "country": "Land",
+      "price": "Preis",
+      "estimatedDays": "Voraussichtliche Lieferzeit"
+    },
+    "daysValue": "{days} Werktage"
+  },
+  "PrivacyPolicy": {
+    "title": "Datenschutzerklärung",
+    "intro": "Diese Seite erläutert, welche personenbezogenen Daten wir bei einer Bestellung bei PawShop erheben, warum wir sie erheben und wie Sie Ihre Rechte gemäß DSGVO wahrnehmen können.",
+    "whatWeCollect": {
+      "title": "Welche Daten wir erheben",
+      "body": "Wenn Sie eine Bestellanfrage absenden, erheben wir Ihren Namen, Ihre Telefonnummer, Ihre Lieferadresse sowie einen optionalen Kommentar. Zahlungsdaten erheben wir nicht — die Zahlung wird direkt mit unserem Mitarbeiter vereinbart, nachdem wir Sie kontaktiert haben."
+    },
+    "whyWeCollect": {
+      "title": "Warum wir diese Daten erheben",
+      "body": "Wir verwenden diese Angaben ausschließlich zur Bearbeitung Ihrer Bestellanfrage, zur Organisation der Lieferung und zur Kontaktaufnahme, um Zahlung und Versand zu bestätigen. Rechtsgrundlage ist die Erfüllung eines Vertrags, den Sie mit uns eingehen (Art. 6 Abs. 1 lit. b DSGVO)."
+    },
+    "retention": {
+      "title": "Wie lange wir sie speichern",
+      "body": "Wir speichern Bestelldaten so lange, wie es zur Abwicklung Ihrer Bestellung sowie zur Erfüllung gesetzlicher und steuerlicher Aufbewahrungspflichten erforderlich ist; danach werden sie gelöscht oder anonymisiert."
+    },
+    "telegram": {
+      "title": "Telegram-Benachrichtigungen",
+      "body": "Bei Eingang Ihrer Bestellung werden Ihr Name, Ihre Telefonnummer, Ihre Lieferadresse und Ihr Kommentar als Telegram-Nachricht an unseren Mitarbeiter gesendet. Telegram Messenger Inc. hat ihren Sitz außerhalb des Europäischen Wirtschaftsraums, wodurch eine Übermittlung Ihrer personenbezogenen Daten außerhalb des EWR stattfindet (Kapitel V DSGVO)."
+    },
+    "requests": {
+      "title": "Ihre Rechte und Kontakt",
+      "body": "Sie können jederzeit Auskunft über, Berichtigung oder Löschung Ihrer personenbezogenen Daten verlangen, indem Sie uns unter support@pawshop.example kontaktieren. Bei einem Löschantrag ist die Entfernung der entsprechenden Telegram-Nachricht ein manueller Schritt, den unser Mitarbeiter im Rahmen der Bearbeitung Ihrer Anfrage durchführt."
+    }
+  },
   "Footer": {
     "tagline": "JEDER\nNAPF\nZÄHLT",
     "copyright": "© {year} PawShop. Alle Rechte vorbehalten.",

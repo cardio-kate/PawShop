@@ -4,10 +4,14 @@
 // чтобы при подключении реального `getProducts()` пропсы компонентов не пришлось переписывать.
 export type AgeGroup = 'kitten' | 'adult' | 'senior';
 
+// Category — в отличие от MockProduct, оба языка обязательны сразу (CLAUDE.md, «Мультиязычность»):
+// 4 категории заводятся сид-скриптом разработчиком, fallback не нужен, поэтому мок хранит nameEn/
+// nameDe как есть, без предварительного резолва.
 export interface MockCategory {
   id: string;
   slug: string;
-  name: string;
+  nameEn: string;
+  nameDe: string;
 }
 
 export interface MockVariant {

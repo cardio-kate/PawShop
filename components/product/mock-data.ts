@@ -5,10 +5,10 @@ import type { MockCategory, MockDeliveryCountry, MockProduct } from '@/types';
 // (isNew-подмножество и полный список), дублировать 10 объектов в двух файлах было бы избыточно.
 // Источник данных — docs/tz-pawshop.md §3.1/§3.2 (реальные названия/цены из ТЗ, не выдуманные).
 export const MOCK_CATEGORIES: MockCategory[] = [
-  { id: 'dry-food', slug: 'dry-food', name: 'Dry Food' },
-  { id: 'wet-food', slug: 'wet-food', name: 'Wet Food' },
-  { id: 'treats', slug: 'treats', name: 'Treats' },
-  { id: 'accessories', slug: 'accessories', name: 'Accessories' },
+  { id: 'dry-food', slug: 'dry-food', nameEn: 'Dry Food', nameDe: 'Trockenfutter' },
+  { id: 'wet-food', slug: 'wet-food', nameEn: 'Wet Food', nameDe: 'Nassfutter' },
+  { id: 'treats', slug: 'treats', nameEn: 'Treats', nameDe: 'Leckerlis' },
+  { id: 'accessories', slug: 'accessories', nameEn: 'Accessories', nameDe: 'Zubehör' },
 ];
 
 export const MOCK_PRODUCTS: MockProduct[] = [

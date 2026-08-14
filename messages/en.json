@@ -61,6 +61,71 @@
       "viewAll": "View All →"
     }
   },
+  "Catalog": {
+    "title": "Catalog",
+    "metaDescription": "Browse the full PawShop range — cat food, treats and accessories, delivered across the EU.",
+    "filters": {
+      "category": "Category",
+      "age": "Age",
+      "price": "Price, €",
+      "priceFrom": "From",
+      "priceTo": "To",
+      "clear": "Clear filters"
+    },
+    "ageGroups": {
+      "kitten": "Kitten",
+      "adult": "Adult",
+      "senior": "Senior"
+    },
+    "resultsCount": "{count, plural, =0 {No products} one {# product} other {# products}}",
+    "emptyTitle": "No products found",
+    "emptyDescription": "Try adjusting your filters or search.",
+    "pagination": {
+      "ariaLabel": "Catalog pages",
+      "previous": "Previous page",
+      "next": "Next page",
+      "goToPage": "Go to page {page}"
+    }
+  },
+  "ProductPage": {
+    "outOfStock": "Out of stock",
+    "addToCart": "Add to Cart",
+    "relatedTitle": "You may also like"
+  },
+  "Delivery": {
+    "title": "Delivery",
+    "intro": "We currently ship to the following countries within the European Union. Shipping cost and estimated delivery time are calculated automatically based on the delivery country you choose at checkout.",
+    "table": {
+      "country": "Country",
+      "price": "Price",
+      "estimatedDays": "Estimated delivery"
+    },
+    "daysValue": "{days} business days"
+  },
+  "PrivacyPolicy": {
+    "title": "Privacy Policy",
+    "intro": "This page explains what personal data we collect when you place an order with PawShop, why we collect it, and how you can exercise your rights under the GDPR.",
+    "whatWeCollect": {
+      "title": "What information we collect",
+      "body": "When you submit an order request, we collect your name, phone number, delivery address, and any comment you choose to add. We do not collect payment card details — payment is arranged directly with our manager after we contact you."
+    },
+    "whyWeCollect": {
+      "title": "Why we collect it",
+      "body": "We use this information solely to process your order request, arrange delivery, and get in touch with you to confirm payment and shipping details. The legal basis for this processing is the performance of a contract you are entering into with us (Art. 6(1)(b) GDPR)."
+    },
+    "retention": {
+      "title": "How long we keep it",
+      "body": "We retain order data for as long as necessary to fulfil your order and to meet our legal and accounting obligations, after which it is deleted or anonymised."
+    },
+    "telegram": {
+      "title": "Telegram notifications",
+      "body": "When you submit an order, your name, phone number, delivery address, and comment are sent to our manager as a Telegram notification. Telegram Messenger Inc. is based outside the European Economic Area, so this involves a transfer of your personal data outside the EEA (GDPR Chapter V)."
+    },
+    "requests": {
+      "title": "Your rights and how to reach us",
+      "body": "You may request access to, correction of, or deletion of your personal data at any time by contacting us at support@pawshop.example. If you request deletion, please note that removing the corresponding Telegram message is a manual step our manager completes as part of processing your request."
+    }
+  },
   "Footer": {
     "tagline": "EVERY\nBITE\nMATTERS",
     "copyright": "© {year} PawShop. All rights reserved.",
