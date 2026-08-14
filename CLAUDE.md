@@ -195,7 +195,21 @@ upload-токен → грузит файл напрямую в Vercel Blob → 
 
 SSR/SSG выбран ради SEO — это не опция, а обязательство: страницы каталога и товара обязаны экспортировать
 `generateMetadata` (title, description, canonical, `og:image` из `images[0]`); `app/sitemap.ts`/`robots.ts`
-используют те же queries, что и страницы каталога. `getProducts`/`getProductBySlug` кэшируются тегом
+используют те же queries, что и страницы каталога.
+
+**Временное отклонение (известный, осознанный gap).** Сейчас страницы витрины рендерятся как SSR (`ƒ`,
+`npm run build`), не SSG (`○`) — `Header` читает `useSearchParams()` для поиска (обёрнуто в `Suspense`,
+но без `cacheComponents` этого недостаточно для частичной статики, только полный `Suspense`-фоллбэк на
+всю страницу целиком, что хуже). Включение `cacheComponents: true` проверено (2026-08-14) и упирается в
+несовместимость `next-intl` (`NextIntlClientProvider`/`getRequestConfig`) с валидацией Cache Components —
+падает пререндер уже в корневом `app/[locale]/layout.tsx`, до всех страниц. SEO при этом не страдает: HTML
+полностью серверный, `generateMetadata` отрабатывает как обычно, поисковики видят весь контент — теряется
+только CDN-кэш HTML (каждый визит — компьют на сервере, не мгновенная отдача). Возвращаться к SSG нужно,
+когда `next-intl` получит поддержку Cache Components — не переписывать `Header` в ущерб UX поиска
+(`?search=` в URL должен разворачивать поле сразу в SSR-HTML, а не доигрывать на клиенте) ради галочки
+`○` в билде.
+
+`getProducts`/`getProductBySlug` кэшируются тегом
 `products`, `getDeliveryCountries` — тегом `delivery` (`unstable_cache`). Любой admin-action, меняющий эти
 данные (`updateProduct`, `updateDeliveryCountry` и т.д.), обязан звать соответствующий
 `revalidateTag` — иначе правки в админке не дойдут до публичной страницы до истечения TTL.
