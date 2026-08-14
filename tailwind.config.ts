@@ -14,7 +14,15 @@ const config: Config = {
           active: '#3E3F9B',
           tint: '#F4F5FC',
         },
-        paw: '#685393',
+        // hover/active — та же пропорция затемнения (~89.5% яркости на шаг), что у primary
+        // (DEFAULT → hover → active), чтобы паттерн взаимодействия был одинаковым для обоих
+        // фирменных цветов, не только у primary.
+        paw: {
+          DEFAULT: '#685393',
+          hover: '#5D4A84',
+          active: '#534276',
+          tint: '#F6F5F9',
+        },
         secondary: {
           DEFAULT: '#9BC53D',
           tint: '#F9FCF3',

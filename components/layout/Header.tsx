@@ -21,17 +21,17 @@ const ROUTE_NAV_ITEMS = [
 ] as const;
 
 const NAV_LINK_CLASSNAME =
-  'text-label-md text-neutral-900 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
+  'text-label-md text-neutral-900 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw';
 
 // -translate-y-px: чисто оптическая поправка — геометрически кнопка уже центрирована по высоте
 // шапки так же, как текст нав/EN-DE (проверено getBoundingClientRect, centerY совпадает), но
 // иконка внутри квадрата 20×20 визуально «тяжелее» в центре, чем текст, у которого масса букв
 // смещена к верху строки — без сдвига иконка читается ниже текста, хотя оба центрированы.
 const HEADER_TRIGGER_ICON_BUTTON_CLASSNAME =
-  'cursor-pointer rounded-full p-1 -translate-y-px text-neutral-900 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
+  'cursor-pointer rounded-full p-1 -translate-y-px text-neutral-900 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw';
 
 const MOBILE_NAV_LINK_CLASSNAME =
-  'px-[15px] py-[12.5px] text-body-md text-neutral-900 transition-colors duration-fast hover:bg-primary-tint hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary';
+  'px-[15px] py-[12.5px] text-body-md text-neutral-900 transition-colors duration-fast hover:bg-paw-tint hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-paw';
 
 export function Header() {
   const t = useTranslations('Header');
@@ -200,7 +200,7 @@ export function Header() {
 
           <Link
             href="/"
-            className="hidden items-center gap-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:flex"
+            className="hidden items-center gap-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw sm:flex"
           >
             <Logo />
           </Link>
@@ -209,7 +209,7 @@ export function Header() {
         <div className={`shrink-0 items-center justify-center ${hiddenNavWhenSearchOpen} sm:justify-start`}>
           <Link
             href="/"
-            className="flex flex-col items-center gap-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:hidden"
+            className="flex flex-col items-center gap-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw sm:hidden"
           >
             <Image src="/logo.png" alt="" width={32} height={32} className="h-8 w-8 shrink-0" priority />
             <span className="text-h3 text-neutral-900">PawShop</span>
@@ -239,7 +239,7 @@ export function Header() {
             <form
               onSubmit={handleSearchSubmit}
               role="search"
-              className="flex min-w-0 w-full items-center gap-sm rounded-full border border-neutral-300 px-md py-sm focus-within:border-primary lg:w-56"
+              className="flex min-w-0 w-full items-center gap-sm rounded-full border border-neutral-300 px-md py-sm focus-within:border-paw lg:w-56"
             >
               <label htmlFor="header-search-input" className="sr-only">
                 {t('searchAriaLabel')}
@@ -260,7 +260,7 @@ export function Header() {
                   type="button"
                   onClick={clearSearchQuery}
                   aria-label={t('clearSearch')}
-                  className="shrink-0 cursor-pointer rounded-full p-1 text-neutral-500 hover:text-paw focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  className="shrink-0 cursor-pointer rounded-full p-1 text-neutral-500 hover:text-paw focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
                 >
                   <X className="h-4 w-4" aria-hidden="true" />
                 </button>
@@ -269,7 +269,7 @@ export function Header() {
                 type="button"
                 onClick={closeSearch}
                 aria-label={t('closeSearch')}
-                className="shrink-0 cursor-pointer rounded-full p-1 text-neutral-500 hover:text-paw focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                className="shrink-0 cursor-pointer rounded-full p-1 text-neutral-500 hover:text-paw focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
               >
                 <X className="h-4 w-4" aria-hidden="true" />
               </button>
@@ -298,10 +298,8 @@ export function Header() {
           >
             <ShoppingCart className="h-5 w-5" aria-hidden="true" />
             {itemCount > 0 && (
-              // Не bg-primary: реальный цвет пикселей public/logo.png (усреднено по всем
-              // непрозрачным пикселям) — #685393, заметно приглушённее токена primary (#4F51C7).
-              // Бейдж намеренно повторяет цвет лапки-лого для брендовой связки — токен colors.paw
-              // в tailwind.config.ts. Контраст с белым текстом — 6.47:1, WCAG AA ок.
+              // bg-paw — цвет лапки-лого (реальный цвет пикселей public/logo.png), брендовая
+              // связка бейджа с логотипом. Контраст с белым текстом — 6.47:1, WCAG AA ок.
               <span
                 aria-hidden="true"
                 className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-paw px-1 text-[10px] font-semibold leading-none text-surface"

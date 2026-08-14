@@ -12,7 +12,7 @@ interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 const VARIANT_CLASSNAME: Record<BadgeVariant, string> = {
   new: 'rounded-full bg-secondary px-[10px] py-xs text-neutral-900',
   'out-of-stock': 'rounded-sm bg-neutral-100 px-sm py-xs text-neutral-500',
-  'order-new': 'rounded-full bg-primary-tint px-[10px] py-xs text-primary',
+  'order-new': 'rounded-full bg-paw-tint px-[10px] py-xs text-paw',
   'order-processing': 'rounded-full bg-tertiary-tint px-[10px] py-xs text-tertiary-on-tint',
   'order-done': 'rounded-full bg-secondary-tint px-[10px] py-xs text-neutral-900',
   'order-cancelled': 'rounded-full bg-error-tint px-[10px] py-xs text-error-on-tint',

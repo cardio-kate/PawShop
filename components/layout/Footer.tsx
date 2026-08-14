@@ -60,7 +60,7 @@ const FOOTER_SOCIALS = [
 // уменьшенным gap у родительского списка (см. использование ниже), чтобы визуальный интервал между
 // пунктами не увеличился.
 const LINK_CLASSNAME =
-  'text-label-md py-xs transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
+  'text-label-md py-xs transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw';
 
 export async function Footer() {
   const t = await getTranslations('Footer');
@@ -90,13 +90,13 @@ export async function Footer() {
           <p className="text-body-sm">{t('supportText')}</p>
           <a
             href={`mailto:${t('supportEmail')}`}
-            className="text-label-md font-semibold text-neutral-900 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            className="text-label-md font-semibold text-neutral-900 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
           >
             {t('supportEmail')}
           </a>
         </div>
 
-        <div className="flex flex-col gap-xs rounded-footer-mobile bg-primary-tint p-[30px] max-[801px]:p-[20px] text-neutral-900 min-[801px]:col-start-2 min-[801px]:row-start-2 min-[801px]:rounded-xl">
+        <div className="flex flex-col gap-xs rounded-footer-mobile bg-paw-tint p-[30px] max-[801px]:p-[20px] text-neutral-900 min-[801px]:col-start-2 min-[801px]:row-start-2 min-[801px]:rounded-xl">
           {/* В отличие от заголовков соседних карточек (Support/Follow us — обычный текст),
               этот h2 кликабельный: дублирует маршрут /contact из nav-list Header. Асимметрия
               с соседними карточками осознанная, не забытая правка. */}
@@ -118,7 +118,7 @@ export async function Footer() {
           </nav>
         </div>
 
-        <div className="flex flex-col gap-md rounded-footer-mobile bg-primary-tint p-[30px] max-[801px]:p-[20px] text-neutral-900 min-[801px]:col-start-3 min-[801px]:row-start-1 min-[801px]:row-span-2 min-[801px]:rounded-tr-2xl min-[801px]:rounded-br-2xl min-[801px]:rounded-tl-card min-[801px]:rounded-bl-card">
+        <div className="flex flex-col gap-md rounded-footer-mobile bg-paw-tint p-[30px] max-[801px]:p-[20px] text-neutral-900 min-[801px]:col-start-3 min-[801px]:row-start-1 min-[801px]:row-span-2 min-[801px]:rounded-tr-2xl min-[801px]:rounded-br-2xl min-[801px]:rounded-tl-card min-[801px]:rounded-bl-card">
           <h2 className="text-label-md">{t('socialTitle')}</h2>
           {/* gap-xs у списка + py-xs у ссылки = те же 12px между строками, что и раньше
               (4 + 4 + 4), но кликабельная область каждой ссылки выросла с 20px до 28px — иначе
@@ -128,7 +128,7 @@ export async function Footer() {
               <li key={key}>
                 <a
                   href={href}
-                  className="flex items-center gap-sm py-xs text-body-sm transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  className="flex items-center gap-sm py-xs text-body-sm transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
                 >
                   <Icon className="h-5 w-5 shrink-0" />
                   {t(key)}

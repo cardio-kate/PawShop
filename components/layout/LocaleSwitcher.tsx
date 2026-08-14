@@ -15,7 +15,7 @@ import { routing } from '@/i18n/routing';
 // box-model — общий для активной и неактивной локали (LOCALE_BOX_CLASSNAME), иначе кликабельная
 // DE отличается по размеру от статичной EN и выглядит асимметрично, хотя визуально не двигается.
 const LOCALE_BOX_CLASSNAME = 'rounded-sm -mx-sm px-sm -my-xs py-xs';
-const INACTIVE_LINK_CLASSNAME = `${LOCALE_BOX_CLASSNAME} text-neutral-900 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary`;
+const INACTIVE_LINK_CLASSNAME = `${LOCALE_BOX_CLASSNAME} text-neutral-900 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw`;
 
 export function LocaleSwitcher({ onNavigate }: { onNavigate?: () => void }) {
   const t = useTranslations('Header');
@@ -37,7 +37,7 @@ export function LocaleSwitcher({ onNavigate }: { onNavigate?: () => void }) {
             </span>
           )}
           {locale === currentLocale ? (
-            <span aria-current="true" className={`${LOCALE_BOX_CLASSNAME} text-primary`}>
+            <span aria-current="true" className={`${LOCALE_BOX_CLASSNAME} text-paw`}>
               {locale.toUpperCase()}
             </span>
           ) : (

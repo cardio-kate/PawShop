@@ -7,12 +7,11 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const BASE_CLASSNAME =
-  'inline-flex items-center justify-center whitespace-nowrap rounded-full border px-[28px] py-[14px] text-label-md transition-colors duration-fast motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
+  'inline-flex items-center justify-center whitespace-nowrap rounded-full border px-[28px] py-[14px] text-label-md transition-colors duration-fast motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw';
 
 const VARIANT_CLASSNAME: Record<ButtonVariant, string> = {
-  primary: 'border-transparent bg-primary text-surface hover:bg-primary-hover active:bg-primary-active',
-  secondary:
-    'border-primary bg-surface text-primary hover:bg-primary-tint active:border-primary-active active:bg-primary-tint active:text-primary-active',
+  primary: 'border-transparent bg-paw text-surface hover:bg-paw-hover active:bg-paw-active',
+  secondary: 'border-paw bg-surface text-paw hover:bg-paw-tint active:border-paw-active active:bg-paw-tint active:text-paw-active',
 };
 
 // design.md → Button — disabled: единый визуальный язык (neutral-300/500) на весь проект,
