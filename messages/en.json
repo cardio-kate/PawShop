@@ -1,5 +1,7 @@
 {
   "Header": {
+    "mainNav": "Main",
+    "language": "Language",
     "about": "About",
     "newArrivals": "New Arrivals",
     "catalog": "Catalog",

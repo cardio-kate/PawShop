@@ -1,5 +1,7 @@
 {
   "Header": {
+    "mainNav": "Hauptnavigation",
+    "language": "Sprache",
     "about": "Über uns",
     "newArrivals": "Neuheiten",
     "catalog": "Katalog",

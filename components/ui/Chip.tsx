@@ -13,7 +13,7 @@ const BASE_CLASSNAME =
 const DEFAULT_CLASSNAME = 'border-neutral-300 bg-surface text-neutral-700';
 
 // design.md → chip-filter-selected (tint-фон) и variant-chip-selected (сплошная заливка) — два
-// разных визуальных языка "выбрано" в зависимости от контекста использования чипа.
+// разных визуальных языка «выбрано» в зависимости от контекста использования чипа.
 const SELECTED_CLASSNAME: Record<ChipKind, string> = {
   filter: 'border-primary bg-primary-tint text-primary',
   variant: 'border-primary bg-primary text-surface',

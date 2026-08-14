@@ -106,7 +106,7 @@ export function Panel({ open, onClose, side = 'right', ariaLabel, children, clas
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="absolute right-md top-md z-10 rounded-full p-1 text-neutral-700 transition-colors duration-fast hover:text-primary motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          className="absolute right-md top-md z-10 rounded-full p-1 text-neutral-700 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
           <X className="h-5 w-5" aria-hidden="true" />
         </button>
