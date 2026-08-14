@@ -23,7 +23,7 @@ export function ProductCard({ product, locale, newLabel, addToCartLabel }: Produ
     // длинным названием (2 строки) без этого проседали ниже соседних — цена/кнопка съезжали
     // на разную высоту от карточки к карточке. Требует stretch по высоте от родительского ряда
     // (родитель должен НЕ выставлять свой items-center, иначе h-full не от чего считать).
-    <div className="flex h-full w-full flex-col rounded-card bg-surface p-md">
+    <div className="flex h-full w-full flex-col rounded-card bg-surface p-[10px]">
       <Link
         href={`/product/${product.slug}`}
         className="relative block aspect-square overflow-hidden rounded-card bg-neutral-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"

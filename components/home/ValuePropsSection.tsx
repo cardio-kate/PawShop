@@ -32,9 +32,9 @@ export async function ValuePropsSection() {
 
   return (
     <section id="value-props" className="rounded-t-2xl bg-paw-tint px-lg py-xl sm:px-[40px]">
-      <div className="flex flex-col items-center gap-[0.7rem] text-center">
+      <div className="flex flex-col items-center gap-sm text-center">
         <p className="text-label-caps text-neutral-500">{t('eyebrow')}</p>
-        <h2 className="text-section-heading text-neutral-900">{t('title')}</h2>
+        <h2 className="text-section-heading uppercase text-neutral-900">{t('title')}</h2>
       </div>
 
       <div className="mt-xl flex flex-col items-center gap-xl md:flex-row md:items-start md:justify-center md:gap-2xl">

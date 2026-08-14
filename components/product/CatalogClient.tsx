@@ -15,8 +15,10 @@ const AGE_GROUPS: AgeGroup[] = ['kitten', 'adult', 'senior'];
 // то же значение зафиксировано и в architecture.md как дефолт limit для будущего getProducts().
 const PAGE_SIZE = 8;
 
+// design.md → Components «Price range filter»: py-xs (29.5px) заметно ниже соседних чипов
+// (37.5px) на одной строке фильтров — py-sm выравнивает высоту.
 const PRICE_FIELD_CLASSNAME =
-  'w-20 rounded-md border border-neutral-300 bg-surface px-sm py-xs text-body-sm text-neutral-900 outline-none transition-colors duration-fast placeholder:text-neutral-500 motion-reduce:transition-none focus:border-paw';
+  'w-20 rounded-md border border-neutral-300 bg-surface px-[12px] py-sm text-body-sm text-neutral-900 outline-none transition-colors duration-fast placeholder:text-neutral-500 motion-reduce:transition-none focus:border-paw';
 
 function FilterRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -167,15 +169,18 @@ export function CatalogClient() {
       </p>
 
       {pageItems.length > 0 ? (
-        <div className="grid grid-cols-1 gap-gutter sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        // Карточка не растягивается вместе с ячейкой грида — design.md → Layout, «Ширина самой
+        // карточки при этом зафиксирована».
+        <div className="grid grid-cols-1 justify-items-center justify-center gap-gutter sm:grid-cols-[repeat(2,minmax(0,290px))] lg:grid-cols-3 xl:grid-cols-4">
           {pageItems.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              locale={locale}
-              newLabel={tProduct('newBadge')}
-              addToCartLabel={tProduct('addToCart', { name: product.name })}
-            />
+            <div key={product.id} className="w-full max-w-[290px]">
+              <ProductCard
+                product={product}
+                locale={locale}
+                newLabel={tProduct('newBadge')}
+                addToCartLabel={tProduct('addToCart', { name: product.name })}
+              />
+            </div>
           ))}
         </div>
       ) : (

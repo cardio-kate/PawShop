@@ -16,20 +16,22 @@ export async function NewArrivalsSection() {
 
   return (
     <section id="new-arrivals" className="scroll-mt-20">
-      <div className="flex flex-col items-center gap-[0.7rem] text-center">
+      <div className="flex flex-col items-center gap-sm text-center">
         <p className="text-label-caps text-neutral-500">{t('eyebrow')}</p>
-        <h2 className="text-section-heading text-neutral-900">{t('title')}</h2>
+        <h2 className="text-section-heading uppercase text-neutral-900">{t('title')}</h2>
       </div>
 
-      <div className="mt-lg grid grid-cols-1 gap-gutter sm:grid-cols-2">
+      {/* Брейкпоинт 800/801 и ширина ряда 604px — design.md → Components «Сетка New Arrivals». */}
+      <div className="mx-auto mt-lg flex flex-col items-center gap-md min-[801px]:grid min-[801px]:w-[604px] min-[801px]:grid-cols-2 min-[801px]:gap-gutter">
         {preview.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            locale={locale}
-            newLabel={tProduct('newBadge')}
-            addToCartLabel={tProduct('addToCart', { name: product.name })}
-          />
+          <div key={product.id} className="w-full max-w-[320px] min-[801px]:max-w-none">
+            <ProductCard
+              product={product}
+              locale={locale}
+              newLabel={tProduct('newBadge')}
+              addToCartLabel={tProduct('addToCart', { name: product.name })}
+            />
+          </div>
         ))}
       </div>
 

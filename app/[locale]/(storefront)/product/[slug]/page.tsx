@@ -42,7 +42,7 @@ export default async function ProductPage({
   const related = getMockRelatedProducts(product);
 
   return (
-    <div className="mx-auto max-w-container px-lg py-3xl">
+    <div className="mx-auto max-w-container px-lg pt-[60px]">
       <div className="grid grid-cols-1 gap-xl sm:grid-cols-2">
         <ProductGallery images={product.images} alt={product.name} />
         <ProductDetailClient product={product} categoryLabel={categoryLabel} ageGroupLabel={ageGroupLabel} />
@@ -51,17 +51,19 @@ export default async function ProductPage({
       {/* design.md → Components «You may also like»: не рендерится вовсе, если подходящих
           товаров не нашлось — не показывать пустую сетку с одним заголовком. */}
       {related.length > 0 && (
-        <div className="mt-3xl flex flex-col gap-lg">
+        <div className="mt-[60px] flex flex-col gap-lg">
           <h2 className="text-h3 text-neutral-900">{tProductPage('relatedTitle')}</h2>
-          <div className="grid grid-cols-1 gap-gutter sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {/* Та же зафиксированная ширина карточки, что в CatalogClient.tsx — design.md → Layout. */}
+          <div className="grid grid-cols-1 justify-items-center justify-center gap-gutter sm:grid-cols-[repeat(2,minmax(0,290px))] lg:grid-cols-3 xl:grid-cols-4">
             {related.map((relatedProduct) => (
-              <ProductCard
-                key={relatedProduct.id}
-                product={relatedProduct}
-                locale={locale}
-                newLabel={tProduct('newBadge')}
-                addToCartLabel={tProduct('addToCart', { name: relatedProduct.name })}
-              />
+              <div key={relatedProduct.id} className="w-full max-w-[290px]">
+                <ProductCard
+                  product={relatedProduct}
+                  locale={locale}
+                  newLabel={tProduct('newBadge')}
+                  addToCartLabel={tProduct('addToCart', { name: relatedProduct.name })}
+                />
+              </div>
             ))}
           </div>
         </div>

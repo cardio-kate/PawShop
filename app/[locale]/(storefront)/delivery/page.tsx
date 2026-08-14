@@ -16,8 +16,8 @@ export default async function DeliveryPage({ params }: { params: Promise<{ local
   const priceFormatter = new Intl.NumberFormat(locale, { style: 'currency', currency: 'EUR' });
 
   return (
-    <div className="mx-auto max-w-container px-lg py-3xl">
-      <h1 className="text-h1 text-neutral-900">{t('title')}</h1>
+    <div className="mx-auto max-w-container px-lg pt-[60px]">
+      <h1 className="text-center text-h1 uppercase text-neutral-900">{t('title')}</h1>
       <p className="mt-md max-w-reading text-body-md text-neutral-700">{t('intro')}</p>
 
       <div className="mt-xl overflow-x-auto">

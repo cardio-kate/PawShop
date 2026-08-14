@@ -9,9 +9,9 @@ export async function AboutSection() {
 
   return (
     <section id="about" className="scroll-mt-20">
-      <div className="flex flex-col items-center gap-[0.7rem] text-center">
+      <div className="flex flex-col items-center gap-sm text-center">
         <p className="text-label-caps text-neutral-500">{t('eyebrow')}</p>
-        <h2 className="text-section-heading text-neutral-900">{t('title')}</h2>
+        <h2 className="text-section-heading uppercase text-neutral-900">{t('title')}</h2>
       </div>
 
       <div className="mt-lg rounded-2xl bg-paw-tint p-xl text-left">

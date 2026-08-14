@@ -67,8 +67,10 @@ export async function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    // pb-[5px] намеренно не симметричен pt-3xl — низ страницы, а не отступ между секциями.
-    <footer className="mx-auto max-w-container px-lg pt-3xl pb-[5px]">
+    // pb-[5px] намеренно не симметричен pt — низ страницы, а не отступ между секциями. pt —
+    // единственный источник правды для отступа перед Footer (design.md → Typography, «Отступ
+    // перед Footer»); страницы-обёртки свой pb-* снизу не добавляют.
+    <footer className="mx-auto max-w-container px-lg pt-[60px] pb-[5px]">
       {/* Точечный брейкпоинт 800/801px вместо стандартного sm — причина и разбор в design.md
           → Footer → «Адаптив ниже bp-sm». Важно не забыть при правке: max-[Npx] в Tailwind v4
           компилируется как "< Npx", не "<= Npx" — пара обязана быть max-[801px]/min-[801px],

@@ -16,10 +16,10 @@ export default async function PrivacyPolicyPage({ params }: { params: Promise<{ 
   const sections = ['whatWeCollect', 'whyWeCollect', 'retention', 'telegram', 'requests'] as const;
 
   return (
-    <div className="mx-auto max-w-container px-lg py-3xl">
+    <div className="mx-auto max-w-container px-lg pt-[60px]">
       <div className="mx-auto flex max-w-reading flex-col gap-lg">
         <div>
-          <h1 className="text-h1 text-neutral-900">{t('title')}</h1>
+          <h1 className="text-center text-h1 uppercase text-neutral-900">{t('title')}</h1>
           <p className="mt-md text-body-md text-neutral-900">{t('intro')}</p>
         </div>
 
