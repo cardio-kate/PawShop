@@ -13,5 +13,20 @@
     "closeMenu": "Menü schließen",
     "openCart": "Warenkorb öffnen",
     "openCartWithCount": "Warenkorb öffnen, {count, plural, one {# Artikel} other {# Artikel}}"
+  },
+  "Footer": {
+    "tagline": "JEDER\nNAPF\nZÄHLT",
+    "copyright": "© {year} PawShop. Alle Rechte vorbehalten.",
+    "supportTitle": "Support",
+    "supportText": "Fragen zu Ihrer Bestellung? Wir helfen gerne weiter.",
+    "supportEmail": "support@pawshop.example",
+    "contactTitle": "Kontakt",
+    "linksNav": "Footer-Links",
+    "delivery": "Lieferung",
+    "privacyPolicy": "Datenschutz",
+    "socialTitle": "Folgen Sie uns",
+    "facebook": "Facebook",
+    "instagram": "Instagram",
+    "tiktok": "TikTok"
   }
 }

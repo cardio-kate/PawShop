@@ -13,5 +13,20 @@
     "closeMenu": "Close menu",
     "openCart": "Open cart",
     "openCartWithCount": "Open cart, {count, plural, one {# item} other {# items}}"
+  },
+  "Footer": {
+    "tagline": "EVERY\nBITE\nMATTERS",
+    "copyright": "© {year} PawShop. All rights reserved.",
+    "supportTitle": "Support",
+    "supportText": "Questions about your order? We're happy to help.",
+    "supportEmail": "support@pawshop.example",
+    "contactTitle": "Contact",
+    "linksNav": "Footer links",
+    "delivery": "Delivery",
+    "privacyPolicy": "Privacy Policy",
+    "socialTitle": "Follow us",
+    "facebook": "Facebook",
+    "instagram": "Instagram",
+    "tiktok": "TikTok"
   }
 }

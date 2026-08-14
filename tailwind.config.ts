@@ -14,6 +14,7 @@ const config: Config = {
           active: '#3E3F9B',
           tint: '#F4F5FC',
         },
+        paw: '#685393',
         secondary: {
           DEFAULT: '#9BC53D',
           tint: '#F9FCF3',
