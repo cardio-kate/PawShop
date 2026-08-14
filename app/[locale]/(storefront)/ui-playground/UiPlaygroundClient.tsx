@@ -8,14 +8,27 @@ import { Input } from '@/components/ui/Input';
 import { Panel } from '@/components/ui/Panel';
 import { Select } from '@/components/ui/Select';
 import { Toggle } from '@/components/ui/Toggle';
+import { ProductCard } from '@/components/product/ProductCard';
+import { MOCK_PRODUCTS } from '@/components/product/mock-data';
 
 // Внутренний playground для визуальной проверки Фазы 1 (components/ui) — не бизнес-страница,
 // удаляется или остаётся служебным маршрутом по решению из .claude/plans/velvety-kindling-planet.md.
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+// rowClassName — оверрайд дефолтного items-center gap-md: у Product card карточки должны тянуться
+// на общую высоту ряда (items-stretch), иначе ProductCard.h-full не от чего считать, и добавочный
+// gap-gutter (24px) вместо стандартного gap-md (16px) — плотнее смотрелось узко именно для карточек.
+function Section({
+  title,
+  rowClassName,
+  children,
+}: {
+  title: string;
+  rowClassName?: string;
+  children: React.ReactNode;
+}) {
   return (
     <section className="flex flex-col gap-md border-b border-neutral-200 py-lg">
       <h2 className="text-h3 text-neutral-900">{title}</h2>
-      <div className="flex flex-wrap items-center gap-md">{children}</div>
+      <div className={rowClassName ?? 'flex flex-wrap items-center gap-md'}>{children}</div>
     </section>
   );
 }
@@ -110,11 +123,24 @@ export function UiPlaygroundClient() {
         </Button>
       </Section>
 
+      <Section title="Product card" rowClassName="flex flex-wrap items-stretch gap-gutter">
+        {MOCK_PRODUCTS.slice(0, 3).map((product) => (
+          <div key={product.id} className="w-64">
+            <ProductCard
+              product={product}
+              locale="en"
+              newLabel="New"
+              addToCartLabel={`Add ${product.name} to cart`}
+            />
+          </div>
+        ))}
+      </Section>
+
       <Panel open={isCartOpen} onClose={() => setIsCartOpen(false)} ariaLabel="Cart" side="right">
-        <div className="flex flex-col gap-md p-lg pt-3xl">
+        <div className="flex flex-col gap-md p-lg pt-2xl">
           <h2 className="text-h3 text-neutral-900">Your cart</h2>
           <p className="text-body-sm text-neutral-500">Panel primitive demo — tab through, Escape closes.</p>
-          <a href="#" className="text-label-md text-primary">
+          <a href="#" className="text-label-md text-paw">
             A focusable link
           </a>
           <Button variant="primary">Checkout</Button>
@@ -127,7 +153,7 @@ export function UiPlaygroundClient() {
         ariaLabel="Confirm deletion"
         side="left"
       >
-        <div className="flex flex-col gap-md p-lg pt-3xl">
+        <div className="flex flex-col gap-md p-lg pt-2xl">
           <h2 className="text-h3 text-neutral-900">Delete product?</h2>
           <p className="text-body-sm text-neutral-500">This action cannot be undone.</p>
           <Button variant="primary" onClick={() => setIsAdminModalOpen(false)}>

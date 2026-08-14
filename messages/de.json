@@ -16,6 +16,51 @@
     "openCart": "Warenkorb öffnen",
     "openCartWithCount": "Warenkorb öffnen, {count, plural, one {# Artikel} other {# Artikel}}"
   },
+  "Product": {
+    "newBadge": "Neu",
+    "addToCart": "{name} in den Warenkorb legen"
+  },
+  "Home": {
+    "about": {
+      "eyebrow": "Die Geschichte hinter PawShop.",
+      "title": "Über uns",
+      "paragraph1": "PawShop entstand aus einer kleinen Idee zweier Katzenliebhaber, die kein Futter fanden, das ihren eigenen wählerischen Katzen wirklich schmeckte. Heute bringen wir sorgfältig ausgewähltes Futter, Leckerlis und Zubehör zu Katzenbesitzern in der gesamten Europäischen Union — keine Tricks, nur gute Produkte und ehrlicher Service.",
+      "paragraph2": "Jede Bestellung wird persönlich geprüft, und wir melden uns, um Zahlung und Lieferung zu bestätigen, bevor etwas verschickt wird — Sie sprechen also immer mit einem echten Menschen, nicht mit einem Kassenautomaten."
+    },
+    "valueProps": {
+      "eyebrow": "Warum sich Katzenbesitzer für uns entscheiden.",
+      "title": "Das zeichnet uns aus",
+      "naturalIngredients": {
+        "title": "Natürliche Zutaten",
+        "description": "Hochwertige, natürliche Zutaten, abgestimmt auf die Gesundheit Ihrer Katze."
+      },
+      "vetApproved": {
+        "title": "Tierärztlich geprüfte Rezepturen",
+        "description": "Rezepturen, die mit tierärztlicher Beratung für eine ausgewogene, vollwertige Ernährung entwickelt wurden."
+      },
+      "euShipping": {
+        "title": "Lieferung in der ganzen EU",
+        "description": "Zuverlässiger Versand zu Katzenbesitzern in der gesamten Europäischen Union."
+      },
+      "personalService": {
+        "title": "Persönlicher Service",
+        "description": "Keine Online-Zahlung — wir melden uns persönlich, um Ihre Bestellung zu bestätigen."
+      },
+      "qualityChecked": {
+        "title": "Qualität geprüft",
+        "description": "Jedes Produkt wird vor dem Versand geprüft und vor der Auflistung sorgfältig ausgewählt."
+      },
+      "madeWithCare": {
+        "title": "Mit Sorgfalt gemacht",
+        "description": "Ein kleines Team, dem das Wohl Ihrer Katze wirklich am Herzen liegt."
+      }
+    },
+    "newArrivals": {
+      "eyebrow": "Frisch im Regal.",
+      "title": "Neuheiten",
+      "viewAll": "Alle ansehen →"
+    }
+  },
   "Footer": {
     "tagline": "JEDER\nNAPF\nZÄHLT",
     "copyright": "© {year} PawShop. Alle Rechte vorbehalten.",

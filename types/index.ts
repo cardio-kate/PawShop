@@ -1,0 +1,42 @@
+// Моковые типы для Фазы 3 (.claude/plans/velvety-kindling-planet.md) — поля названы как будущие
+// колонки Drizzle-схемы (docs/tz-pawshop.md §4), кроме `name`/`description`: здесь это уже
+// зарезолвленный текст (fallback nameDe ?? nameEn применён на этапе мока), а не пара nameEn/nameDe —
+// чтобы при подключении реального `getProducts()` пропсы компонентов не пришлось переписывать.
+export type AgeGroup = 'kitten' | 'adult' | 'senior';
+
+export interface MockCategory {
+  id: string;
+  slug: string;
+  name: string;
+}
+
+export interface MockVariant {
+  id: string;
+  label: string;
+  price: number;
+  isActive: boolean;
+}
+
+export interface MockProduct {
+  id: string;
+  slug: string;
+  categoryId: string;
+  name: string;
+  description: string;
+  ageGroup: AgeGroup;
+  images: string[];
+  isNew: boolean;
+  // Уже агрегированная цена (MIN активных ProductVariant.price) — как её вернёт будущий
+  // getProducts()/getProductBySlug() (architecture.md: агрегат считается в SQL, не в компоненте).
+  // Инвариант мока: всегда равна цене первого active-варианта в `variants` (см. mock-data.ts) —
+  // держим синхронно вручную, реальный getProducts() будет считать это агрегатом в SQL.
+  price: number;
+  variants: MockVariant[];
+}
+
+export interface MockDeliveryCountry {
+  id: string;
+  countryName: string;
+  price: number;
+  estimatedDays: string;
+}

@@ -16,6 +16,51 @@
     "openCart": "Open cart",
     "openCartWithCount": "Open cart, {count, plural, one {# item} other {# items}}"
   },
+  "Product": {
+    "newBadge": "New",
+    "addToCart": "Add {name} to cart"
+  },
+  "Home": {
+    "about": {
+      "eyebrow": "The story behind PawShop.",
+      "title": "About Us",
+      "paragraph1": "PawShop started as a small idea between two cat lovers who couldn't find food their own fussy cats actually enjoyed. Today we bring carefully chosen food, treats and accessories to cat owners across the European Union — no gimmicks, just good products and honest service.",
+      "paragraph2": "Every order is reviewed personally, and we reach out to confirm payment and delivery before anything ships — so you're always talking to a real person, not a checkout robot."
+    },
+    "valueProps": {
+      "eyebrow": "Why cat owners choose us.",
+      "title": "What Makes Us Stand Out",
+      "naturalIngredients": {
+        "title": "Natural ingredients",
+        "description": "High-quality, natural ingredients formulated to support your cat's health."
+      },
+      "vetApproved": {
+        "title": "Vet-approved recipes",
+        "description": "Recipes developed with veterinary guidance for balanced, complete nutrition."
+      },
+      "euShipping": {
+        "title": "EU-wide delivery",
+        "description": "Reliable shipping to cat owners across the European Union."
+      },
+      "personalService": {
+        "title": "Personal service",
+        "description": "No online payment — we contact you personally to confirm your order."
+      },
+      "qualityChecked": {
+        "title": "Quality checked",
+        "description": "Every product is checked before it ships, and vetted before it's listed."
+      },
+      "madeWithCare": {
+        "title": "Made with care",
+        "description": "A small team that genuinely cares about your cat's wellbeing."
+      }
+    },
+    "newArrivals": {
+      "eyebrow": "Freshly added to the shelf.",
+      "title": "New Arrivals",
+      "viewAll": "View All →"
+    }
+  },
   "Footer": {
     "tagline": "EVERY\nBITE\nMATTERS",
     "copyright": "© {year} PawShop. All rights reserved.",
