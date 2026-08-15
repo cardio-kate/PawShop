@@ -131,12 +131,13 @@ export function UiPlaygroundClient() {
               locale="en"
               newLabel="New"
               addToCartLabel={`Add ${product.name} to cart`}
+              unavailableLabel={`${product.name} is unavailable`}
             />
           </div>
         ))}
       </Section>
 
-      <Panel open={isCartOpen} onClose={() => setIsCartOpen(false)} ariaLabel="Cart" side="right">
+      <Panel open={isCartOpen} onClose={() => setIsCartOpen(false)} ariaLabel="Cart" closeLabel="Close" side="right">
         <div className="flex flex-col gap-md p-lg pt-2xl">
           <h2 className="text-h3 text-neutral-900">Your cart</h2>
           <p className="text-body-sm text-neutral-500">Panel primitive demo — tab through, Escape closes.</p>
@@ -151,6 +152,7 @@ export function UiPlaygroundClient() {
         open={isAdminModalOpen}
         onClose={() => setIsAdminModalOpen(false)}
         ariaLabel="Confirm deletion"
+        closeLabel="Close"
         side="left"
       >
         <div className="flex flex-col gap-md p-lg pt-2xl">

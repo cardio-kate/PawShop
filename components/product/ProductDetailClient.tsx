@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Chip } from '@/components/ui/Chip';
 import { Button } from '@/components/ui/Button';
+import { useCartStore } from '@/lib/store/cart.store';
+import { formatPrice } from '@/lib/utils';
 import type { MockProduct } from '@/types';
 
 // design.md → Layout «Страница товара» (§7.3 ТЗ): порядок блоков сверху вниз — название / цена /
@@ -20,14 +22,15 @@ export function ProductDetailClient({
 }) {
   const t = useTranslations('ProductPage');
   const locale = useLocale();
+  const addItem = useCartStore((state) => state.addItem);
 
   const firstActiveVariant = product.variants.find((variant) => variant.isActive) ?? product.variants[0]!;
   const [selectedVariantId, setSelectedVariantId] = useState(firstActiveVariant.id);
   const selectedVariant = product.variants.find((variant) => variant.id === selectedVariantId) ?? firstActiveVariant;
-  const price = new Intl.NumberFormat(locale, { style: 'currency', currency: 'EUR' }).format(selectedVariant.price);
+  const price = formatPrice(selectedVariant.price, locale);
 
   return (
-    <div className="flex flex-col gap-md">
+    <div className="flex flex-col gap-[12px] min-[640px]:max-[670px]:gap-sm">
       <h1 className="text-h1 text-neutral-900">{product.name}</h1>
       <p className="text-price text-neutral-900">{price}</p>
       <p className="text-body-md text-neutral-700">{product.description}</p>
@@ -45,7 +48,7 @@ export function ProductDetailClient({
 
       {/* Чипы не оборачиваются в fieldset/radiogroup: design.md использует тот же паттерн
           selected-состояния, что у filter-чипов каталога, — простые toggle-кнопки. */}
-      <div className="mt-sm flex flex-wrap gap-sm">
+      <div className="flex flex-wrap gap-sm">
         {product.variants.map((variant) => (
           <Chip
             key={variant.id}
@@ -59,17 +62,24 @@ export function ProductDetailClient({
         ))}
       </div>
 
-      {/* design.md → Product card «Между чипами вариантов и строкой цена/кнопка — отступ
-          spacing.lg»: тот же зазор применён здесь, перед единственной кнопкой действия страницы. */}
+      {/* mt-lg — spacing.lg перед кнопкой (design.md); на 640–670px гасится (min-[640px]:max-[670px]:mt-0),
+          там хватает общего flex-gap. sm:w-[clamp(...)] держит кнопку в той же пропорции, что
+          и clamp(50vw) у галереи (page.tsx) — иначе колонка с текстом не сжималась бы вместе
+          с фото на bp-sm..bp-lg; 294px — потолок (sm:w-auto на широких экранах, замерено
+          в браузере). */}
+      {/* disabled={!selectedVariant.isActive} — чипы блокируют клик по конкретному неактивному
+          варианту (disabled={!variant.isActive} выше), но не перепроверяют дефолтное/fallback-
+          состояние: если у товара вообще нет активных вариантов, firstActiveVariant откатывается
+          на variants[0] (неактивный) — без этой проверки кнопка добавляла бы в корзину недоступный
+          вариант. */}
       <Button
         variant="primary"
-        className="mt-lg w-full sm:w-auto"
-        onClick={() => {
-          // Add to Cart — no-op до подключения Zustand-стора в Фазе 5 (см. план).
-          console.log('Add to cart (Phase 5 wiring pending):', product.id, selectedVariant.id);
-        }}
+        size="sm"
+        disabled={!selectedVariant.isActive}
+        className="mt-lg w-full sm:w-[clamp(200px,calc(40vw_-_60px),294px)] min-[640px]:max-[670px]:mt-0"
+        onClick={() => addItem(product.id, selectedVariant.id)}
       >
-        {t('addToCart')}
+        {selectedVariant.isActive ? t('addToCart') : t('outOfStock')}
       </Button>
     </div>
   );

@@ -12,14 +12,14 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
   const selected = images[selectedIndex] ?? images[0]!;
 
   return (
-    <div className="flex flex-col gap-sm">
+    <div className="mx-auto flex w-full max-w-[450px] flex-col gap-sm sm:mx-0">
       <div className="relative aspect-square overflow-hidden rounded-card bg-neutral-100">
         <Image
           src={selected}
           alt={alt}
           fill
           priority
-          sizes="(min-width: 640px) 50vw, 100vw"
+          sizes="(min-width: 1024px) 450px, (min-width: 640px) calc(50vw - 60px), 450px"
           className="object-cover"
         />
       </div>

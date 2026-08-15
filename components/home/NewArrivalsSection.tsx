@@ -30,6 +30,7 @@ export async function NewArrivalsSection() {
               locale={locale}
               newLabel={tProduct('newBadge')}
               addToCartLabel={tProduct('addToCart', { name: product.name })}
+              unavailableLabel={tProduct('unavailable', { name: product.name })}
             />
           </div>
         ))}
