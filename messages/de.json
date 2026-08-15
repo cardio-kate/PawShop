@@ -16,9 +16,24 @@
     "openCart": "Warenkorb öffnen",
     "openCartWithCount": "Warenkorb öffnen, {count, plural, one {# Artikel} other {# Artikel}}"
   },
+  "Cart": {
+    "title": "Warenkorb",
+    "close": "Schließen",
+    "empty": "Ihr Warenkorb ist leer.",
+    "subtotal": "Zwischensumme",
+    "shipping": "Versand & Steuern",
+    "shippingNote": "Wird an der Kasse berechnet",
+    "total": "Gesamt",
+    "checkout": "Zur Kasse",
+    "decreaseQuantity": "Menge verringern",
+    "increaseQuantity": "Menge erhöhen",
+    "remove": "{name} aus dem Warenkorb entfernen",
+    "unavailableWarning": "{count, plural, one {# Artikel in Ihrem Warenkorb ist nicht mehr verfügbar und wurde entfernt} other {# Artikel in Ihrem Warenkorb sind nicht mehr verfügbar und wurden entfernt}}"
+  },
   "Product": {
     "newBadge": "Neu",
-    "addToCart": "{name} in den Warenkorb legen"
+    "addToCart": "{name} in den Warenkorb legen",
+    "unavailable": "{name} ist nicht verfügbar"
   },
   "Home": {
     "about": {
@@ -91,6 +106,26 @@
     "outOfStock": "Ausverkauft",
     "addToCart": "In den Warenkorb",
     "relatedTitle": "Das könnte Ihnen auch gefallen"
+  },
+  "Checkout": {
+    "title": "Kasse",
+    "emptyCart": "Ihr Warenkorb ist leer.",
+    "backToCatalog": "Zurück zum Katalog",
+    "detailsTitle": "Kontakt & Lieferung",
+    "fields": {
+      "fullName": "Vollständiger Name",
+      "phone": "Telefon",
+      "street": "Straße und Hausnummer",
+      "city": "Stadt",
+      "postalCode": "Postleitzahl",
+      "country": "Lieferland",
+      "comment": "Kommentar (optional)"
+    },
+    "summaryTitle": "Bestellübersicht",
+    "subtotal": "Zwischensumme",
+    "shipping": "Versand",
+    "total": "Gesamt",
+    "placeOrder": "Bestellung aufgeben"
   },
   "Delivery": {
     "title": "Lieferung",

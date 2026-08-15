@@ -16,9 +16,24 @@
     "openCart": "Open cart",
     "openCartWithCount": "Open cart, {count, plural, one {# item} other {# items}}"
   },
+  "Cart": {
+    "title": "Your Cart",
+    "close": "Close",
+    "empty": "Your cart is empty.",
+    "subtotal": "Sub Total",
+    "shipping": "Shipping & Tax",
+    "shippingNote": "Calculated at checkout",
+    "total": "Total",
+    "checkout": "Checkout",
+    "decreaseQuantity": "Decrease quantity",
+    "increaseQuantity": "Increase quantity",
+    "remove": "Remove {name} from cart",
+    "unavailableWarning": "{count, plural, one {# item in your cart is no longer available and was removed} other {# items in your cart are no longer available and were removed}}"
+  },
   "Product": {
     "newBadge": "New",
-    "addToCart": "Add {name} to cart"
+    "addToCart": "Add {name} to cart",
+    "unavailable": "{name} is unavailable"
   },
   "Home": {
     "about": {
@@ -91,6 +106,26 @@
     "outOfStock": "Out of stock",
     "addToCart": "Add to Cart",
     "relatedTitle": "You may also like"
+  },
+  "Checkout": {
+    "title": "Checkout",
+    "emptyCart": "Your cart is empty.",
+    "backToCatalog": "Back to catalog",
+    "detailsTitle": "Contact & Delivery",
+    "fields": {
+      "fullName": "Full name",
+      "phone": "Phone",
+      "street": "Street address",
+      "city": "City",
+      "postalCode": "Postal code",
+      "country": "Delivery country",
+      "comment": "Comment (optional)"
+    },
+    "summaryTitle": "Order Summary",
+    "subtotal": "Sub Total",
+    "shipping": "Shipping",
+    "total": "Total",
+    "placeOrder": "Place Order"
   },
   "Delivery": {
     "title": "Delivery",

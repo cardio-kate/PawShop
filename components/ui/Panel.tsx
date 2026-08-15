@@ -10,6 +10,7 @@ interface PanelProps {
   onClose: () => void;
   side?: PanelSide;
   ariaLabel: string;
+  closeLabel: string;
   children: ReactNode;
   className?: string;
 }
@@ -24,10 +25,13 @@ const SIDE_HIDDEN_TRANSFORM: Record<PanelSide, string> = {
   left: '-translate-x-full',
 };
 
-const FOCUSABLE_SELECTOR =
+// Экспортируется — тот же список используется для focus-trap в Header.tsx (мобильное меню):
+// та же семантика «что считается фокусируемым», два независимых определения расходились бы
+// молча при правке одного из них.
+export const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-export function Panel({ open, onClose, side = 'right', ariaLabel, children, className }: PanelProps) {
+export function Panel({ open, onClose, side = 'right', ariaLabel, closeLabel, children, className }: PanelProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const previouslyFocusedRef = useRef<HTMLElement | null>(null);
   const onCloseRef = useRef(onClose);
@@ -105,8 +109,8 @@ export function Panel({ open, onClose, side = 'right', ariaLabel, children, clas
         <button
           type="button"
           onClick={onClose}
-          aria-label="Close"
-          className="absolute right-md top-md z-10 rounded-full p-1 text-neutral-700 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
+          aria-label={closeLabel}
+          className="absolute right-md top-md z-10 cursor-pointer rounded-full p-1 text-neutral-700 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
         >
           <X className="h-5 w-5" aria-hidden="true" />
         </button>
