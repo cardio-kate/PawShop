@@ -4,11 +4,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Menu, Search, ShoppingCart, X } from 'lucide-react';
+import { Menu, Search, X } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
 import { Logo } from './Logo';
 import { LocaleSwitcher } from './LocaleSwitcher';
-import { useCartItemCount, useCartStore } from '@/lib/store/cart.store';
+import { useCartStore } from '@/lib/store/cart.store';
+import { CartButton } from '@/components/cart/CartButton';
+import { CartDrawer } from '@/components/cart/CartDrawer';
+import { useResolvedCartItemCount } from '@/components/cart/useResolvedCartItems';
+import { FOCUSABLE_SELECTOR } from '@/components/ui/Panel';
 
 const ANCHOR_NAV_ITEMS = [
   { key: 'about', id: 'about' },
@@ -38,18 +42,20 @@ export function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const itemCount = useCartItemCount();
+  const itemCount = useResolvedCartItemCount();
 
   const searchParam = searchParams.get('search') ?? '';
   const [syncedSearchParam, setSyncedSearchParam] = useState(searchParam);
   const [isSearchOpen, setIsSearchOpen] = useState(searchParam.length > 0);
   const [query, setQuery] = useState(searchParam);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const searchTriggerRef = useRef<HTMLButtonElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const pendingSearchFocusReturn = useRef(false);
   const mobileNavTriggerRef = useRef<HTMLButtonElement>(null);
+  const mobileNavRef = useRef<HTMLElement>(null);
 
   if (searchParam !== syncedSearchParam) {
     setSyncedSearchParam(searchParam);
@@ -70,6 +76,20 @@ export function Header() {
   useEffect(() => {
     useCartStore.persist.rehydrate();
   }, []);
+
+  // Мобильное меню рисует свой backdrop на весь viewport (fixed inset-0, см. ниже), но без этого
+  // страница под ним оставалась скроллящейся — тот же провал, что Panel.tsx закрывает через
+  // document.body.style.overflow при открытии панели корзины.
+  useEffect(() => {
+    if (!isMobileNavOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isMobileNavOpen]);
 
   // «Close search»-кнопка размонтируется вместе с формой в момент клика — браузер иначе
   // роняет фокус на body. Триггер-кнопка появляется только после ре-рендера, поэтому фокус
@@ -97,6 +117,12 @@ export function Header() {
     setIsSearchOpen(true);
   }
 
+  function openCart() {
+    setIsSearchOpen(false);
+    setIsMobileNavOpen(false);
+    setIsCartOpen(true);
+  }
+
   function toggleMobileNav() {
     setIsSearchOpen(false);
     setIsMobileNavOpen((open) => !open);
@@ -107,9 +133,34 @@ export function Header() {
     mobileNavTriggerRef.current?.focus();
   }
 
+  // Escape закрывает независимо от фокуса внутри блока (как и раньше). Tab — тот же focus-trap,
+  // что у Panel.tsx (handleTabKey), но границы считаются вручную (триггер + querySelectorAll
+  // внутри самого <nav>), а не по всему обёрточному div — тот же div несёт ещё и десктопный
+  // Logo-линк (`hidden sm:flex`): querySelectorAll не знает про display:none и включил бы его
+  // в список фокусируемых, хотя реальный Tab браузера его пропускает (не в фокус-дереве) — «конец»
+  // списка никогда бы не совпал с document.activeElement, и trap молча не срабатывал бы.
   function handleMobileNavKeyDown(e: KeyboardEvent<HTMLDivElement>) {
     if (e.key === 'Escape') {
       closeMobileNav();
+      return;
+    }
+
+    if (e.key !== 'Tab' || !isMobileNavOpen || !mobileNavRef.current || !mobileNavTriggerRef.current) return;
+
+    const focusable = [
+      mobileNavTriggerRef.current,
+      ...mobileNavRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+    ];
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (!first || !last) return;
+
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
     }
   }
 
@@ -162,7 +213,18 @@ export function Header() {
               — ближайший position:sticky-предок, поэтому inset-x-0 растягивает список на всю его
               ширину независимо от того, что по DOM он вложен в узкую первую колонку грида. */}
           {isMobileNavOpen && (
+            // Затемнение остальной страницы под выпадающим списком — без него на мобильном было
+            // видно часть контента ниже меню, и граница «где список, а где уже страница» терялась.
+            // fixed (не absolute) — перекрывает весь viewport независимо от контейнера header;
+            // идёт в DOM раньше <nav>, поэтому на одном уровне стека (оба position, оба z-auto)
+            // список рисуется поверх, а не наоборот. Клик по подложке закрывает меню — тот же UX,
+            // что у Panel (корзина/admin-модалки).
+            <div className="fixed inset-0 bg-neutral-900/40 sm:hidden" onClick={closeMobileNav} aria-hidden="true" />
+          )}
+
+          {isMobileNavOpen && (
             <nav
+              ref={mobileNavRef}
               id="mobile-nav-menu"
               aria-label={t('mainNav')}
               className="absolute inset-x-0 top-full flex flex-col border-t border-neutral-200 bg-surface py-sm sm:hidden"
@@ -290,26 +352,16 @@ export function Header() {
             </button>
           )}
 
-          <button
-            type="button"
-            // TODO: открывать панель корзины (design.md → Cart item / panel) — компонент ещё не реализован.
-            aria-label={itemCount > 0 ? t('openCartWithCount', { count: itemCount }) : t('openCart')}
-            className={`relative shrink-0 ${HEADER_TRIGGER_ICON_BUTTON_CLASSNAME} ${isSearchOpen ? 'hidden sm:block' : ''}`}
-          >
-            <ShoppingCart className="h-5 w-5" aria-hidden="true" />
-            {itemCount > 0 && (
-              // bg-paw — цвет лапки-лого (реальный цвет пикселей public/logo.png), брендовая
-              // связка бейджа с логотипом. Контраст с белым текстом — 6.47:1, WCAG AA ок.
-              <span
-                aria-hidden="true"
-                className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-paw px-1 text-[10px] font-semibold leading-none text-surface"
-              >
-                {itemCount}
-              </span>
-            )}
-          </button>
+          <CartButton
+            itemCount={itemCount}
+            onClick={openCart}
+            label={itemCount > 0 ? t('openCartWithCount', { count: itemCount }) : t('openCart')}
+            className={`${HEADER_TRIGGER_ICON_BUTTON_CLASSNAME} ${isSearchOpen ? 'hidden sm:block' : ''}`}
+          />
         </div>
       </div>
+
+      <CartDrawer open={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </header>
   );
 }
