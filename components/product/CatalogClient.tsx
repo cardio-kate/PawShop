@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { ChevronLeft, ChevronRight, SearchX } from 'lucide-react';
@@ -8,6 +8,7 @@ import { Chip } from '@/components/ui/Chip';
 import { Button } from '@/components/ui/Button';
 import { ProductCard } from '@/components/product/ProductCard';
 import { MOCK_CATEGORIES, MOCK_PRODUCTS } from '@/components/product/mock-data';
+import { getProductGridColumnsClassName } from '@/components/product/getProductGridColumnsClassName';
 import type { AgeGroup } from '@/types';
 
 const AGE_GROUPS: AgeGroup[] = ['kitten', 'adult', 'senior'];
@@ -45,6 +46,30 @@ export function CatalogClient() {
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [page, setPage] = useState(1);
+  // Инкрементируется только явным переходом по пагинации (goToPage), не сбросом страницы из
+  // фильтров/поиска (те тоже дергают setPage(1), но пользователь и так уже наверху, скроллить
+  // незачем) — счётчик, а не boolean, чтобы клик на уже активную соседнюю страницу (edge-кейс
+  // currentPage=1 после clamp) тоже долетал до эффекта ниже.
+  const [scrollToTopSignal, setScrollToTopSignal] = useState(0);
+
+  // Смена страницы саму по себе не подводит вьюпорт к новым карточкам — без этого пользователь
+  // остаётся проскроленным туда, где была пагинация внизу списка, и должен сам крутить вверх, чтобы
+  // увидеть новую страницу. Скролл — в useEffect, а не сразу в обработчике клика: вызванный
+  // синхронно с setPage, window.scrollTo({behavior:'smooth'}) стартовал анимацию до того, как
+  // React перерисовывал сетку под новую (обычно более короткую) страницу — высота документа
+  // менялась прямо под уже идущей анимацией, и браузер обрывал её на случайной промежуточной
+  // позиции вместо 0 (проверено — сам вызов уходил с правильными аргументами, но не долистывал).
+  // useEffect гарантированно выполняется после того, как DOM уже отражает новую страницу.
+  function goToPage(p: number) {
+    setPage(p);
+    setScrollToTopSignal((s) => s + 1);
+  }
+
+  useEffect(() => {
+    if (scrollToTopSignal === 0) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+  }, [scrollToTopSignal]);
 
   // Смена поискового запроса приходит снаружи (Header → router.push('/catalog?search=...')) —
   // тот же контракт, что и у остальных фильтров ниже: любое изменение условия сбрасывает на
@@ -170,8 +195,11 @@ export function CatalogClient() {
 
       {pageItems.length > 0 ? (
         // Карточка не растягивается вместе с ячейкой грида — design.md → Layout, «Ширина самой
-        // карточки при этом зафиксирована».
-        <div className="grid grid-cols-1 justify-items-center justify-center gap-gutter sm:grid-cols-[repeat(2,minmax(0,290px))] lg:grid-cols-3 xl:grid-cols-4">
+        // карточки при этом зафиксирована». Число колонок ограничено числом реальных карточек на
+        // странице (getProductGridColumnsClassName) — при узких фильтрах/последней неполной странице
+        // пустые track'и без карточки внутри всё равно растягивались бы до 290px (Maximize Tracks
+        // не смотрит на контент), и результат висел бы у левого края вместо центрирования.
+        <div className={`grid justify-items-center justify-center gap-gutter ${getProductGridColumnsClassName(pageItems.length)}`}>
           {pageItems.map((product) => (
             <div key={product.id} className="w-full max-w-[290px]">
               <ProductCard
@@ -179,6 +207,7 @@ export function CatalogClient() {
                 locale={locale}
                 newLabel={tProduct('newBadge')}
                 addToCartLabel={tProduct('addToCart', { name: product.name })}
+                unavailableLabel={tProduct('unavailable', { name: product.name })}
               />
             </div>
           ))}
@@ -201,7 +230,7 @@ export function CatalogClient() {
           <button
             type="button"
             disabled={currentPage === 1}
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            onClick={() => goToPage(Math.max(1, currentPage - 1))}
             aria-label={t('pagination.previous')}
             className="flex h-9 w-9 items-center justify-center rounded-full text-neutral-700 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw disabled:cursor-not-allowed disabled:text-neutral-300 disabled:hover:text-neutral-300"
           >
@@ -212,7 +241,7 @@ export function CatalogClient() {
             <button
               key={p}
               type="button"
-              onClick={() => setPage(p)}
+              onClick={() => goToPage(p)}
               aria-current={p === currentPage ? 'page' : undefined}
               aria-label={t('pagination.goToPage', { page: p })}
               className={`flex h-9 w-9 items-center justify-center rounded-full text-label-md transition-colors duration-fast motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw ${
@@ -226,7 +255,7 @@ export function CatalogClient() {
           <button
             type="button"
             disabled={currentPage === pageCount}
-            onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
+            onClick={() => goToPage(Math.min(pageCount, currentPage + 1))}
             aria-label={t('pagination.next')}
             className="flex h-9 w-9 items-center justify-center rounded-full text-neutral-700 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw disabled:cursor-not-allowed disabled:hover:text-neutral-300 disabled:text-neutral-300"
           >
