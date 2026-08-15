@@ -29,6 +29,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# playwright-mcp debug output (screenshots/logs from browser testing during a session)
+/.playwright-mcp/
+
 # personal Claude Code planning notes — not part of the project artifact
 /.claude/plans/
 
