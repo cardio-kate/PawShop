@@ -1,7 +1,16 @@
-export default function AdminOrderDetailPage() {
+import { notFound } from 'next/navigation';
+import { OrderDetail } from '@/components/admin/OrderDetail';
+import { MOCK_ORDERS } from '@/components/admin/mock-data';
+
+export default async function AdminOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const order = MOCK_ORDERS.find((o) => o.id === id);
+  if (!order) notFound();
+
   return (
-    <div className="mx-auto flex min-h-[60vh] max-w-container items-center justify-center px-lg py-3xl">
-      <p className="text-h2 text-neutral-300">Order detail — coming soon</p>
+    <div className="flex flex-col gap-lg p-lg">
+      <h1 className="text-h2 text-neutral-900">Order #{order.id}</h1>
+      <OrderDetail order={order} />
     </div>
   );
 }
