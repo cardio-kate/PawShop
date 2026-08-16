@@ -48,3 +48,33 @@ export interface MockDeliveryCountry {
   price: number;
   estimatedDays: string;
 }
+
+export type OrderStatus = 'new' | 'processing' | 'done' | 'cancelled';
+
+// OrderItem — снапшот на момент заказа (tz-pawshop.md §4): собственные name/label/price полей,
+// не ссылка на текущий MockProduct/MockVariant — правка товара в ProductTable не должна задним
+// числом менять то, что видел клиент в уже оформленном заказе.
+export interface MockOrderItem {
+  id: string;
+  productNameAtOrder: string;
+  variantLabelAtOrder: string;
+  quantity: number;
+  priceAtOrder: number;
+}
+
+export interface MockOrder {
+  id: string;
+  customerName: string;
+  phone: string;
+  street: string;
+  city: string;
+  postalCode: string;
+  // Снапшот DeliveryCountry.countryName, не FK на MockDeliveryCountry — тот же принцип, что у
+  // OrderItem выше (architecture.md: Order.deliveryCountryId nullable + snapshot полей).
+  countryName: string;
+  shippingPriceAtOrder: number;
+  comment: string | null;
+  status: OrderStatus;
+  createdAt: string;
+  items: MockOrderItem[];
+}
