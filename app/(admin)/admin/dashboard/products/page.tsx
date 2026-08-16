@@ -1,7 +1,10 @@
+import { ProductTable } from '@/components/admin/ProductTable';
+
 export default function AdminProductsPage() {
   return (
-    <div className="mx-auto flex min-h-[60vh] max-w-container items-center justify-center px-lg py-3xl">
-      <p className="text-h2 text-neutral-300">Products — coming soon</p>
+    <div className="flex flex-col gap-lg p-lg">
+      <h1 className="text-h2 text-neutral-900">Products</h1>
+      <ProductTable />
     </div>
   );
 }

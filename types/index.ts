@@ -30,6 +30,10 @@ export interface MockProduct {
   ageGroup: AgeGroup;
   images: string[];
   isNew: boolean;
+  // Soft delete на уровне товара (CLAUDE.md → «База данных»): деактивация последнего активного
+  // варианта запрещена в services, полное снятие с продажи идёт только через это поле. Все 10
+  // моков в mock-data.ts — true; toggle в ProductTable меняет его только в локальном useState.
+  isActive: boolean;
   // Уже агрегированная цена (MIN активных ProductVariant.price) — как её вернёт будущий
   // getProducts()/getProductBySlug() (architecture.md: агрегат считается в SQL, не в компоненте).
   // Инвариант мока: всегда равна цене первого active-варианта в `variants` (см. mock-data.ts) —

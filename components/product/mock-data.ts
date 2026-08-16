@@ -21,6 +21,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
     ageGroup: 'kitten',
     images: ['/mock/products/kitten-chicken-pouches-in-jelly.jpg'],
     isNew: true,
+    isActive: true,
     price: 1.4,
     variants: [
       { id: '1-85g', label: '85 g', price: 1.4, isActive: true },
@@ -36,6 +37,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
     ageGroup: 'kitten',
     images: ['/mock/products/kitten-chicken-milk-kibble.jpg'],
     isNew: false,
+    isActive: true,
     price: 3.9,
     variants: [
       { id: '2-300g', label: '300 g', price: 3.9, isActive: true },
@@ -52,6 +54,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
     ageGroup: 'adult',
     images: ['/mock/products/salmon-rice-kibble.jpg'],
     isNew: true,
+    isActive: true,
     price: 3.9,
     variants: [
       { id: '3-300g', label: '300 g', price: 3.9, isActive: true },
@@ -68,6 +71,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
     ageGroup: 'adult',
     images: ['/mock/products/beef-pouches-in-gravy.jpg'],
     isNew: false,
+    isActive: true,
     price: 1.3,
     variants: [
       { id: '4-85g', label: '85 g', price: 1.3, isActive: true },
@@ -83,6 +87,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
     ageGroup: 'adult',
     images: ['/mock/products/turkey-indoor-kibble.jpg'],
     isNew: false,
+    isActive: true,
     price: 4.3,
     variants: [
       { id: '5-300g', label: '300 g', price: 4.3, isActive: true },
@@ -101,6 +106,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
     ageGroup: 'senior',
     images: ['/mock/products/chicken-pouches-in-jelly-senior.jpg'],
     isNew: false,
+    isActive: true,
     price: 1.4,
     variants: [
       { id: '6-85g', label: '85 g', price: 1.4, isActive: true },
@@ -116,6 +122,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
     ageGroup: 'senior',
     images: ['/mock/products/salmon-kibble-senior.jpg'],
     isNew: false,
+    isActive: true,
     price: 4.5,
     variants: [
       { id: '7-300g', label: '300 g', price: 4.5, isActive: true },
@@ -132,6 +139,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
     ageGroup: 'adult',
     images: ['/mock/products/salmon-treats.jpg'],
     isNew: true,
+    isActive: true,
     price: 3.9,
     variants: [
       { id: '8-40g', label: '40 g', price: 3.9, isActive: true },
@@ -147,6 +155,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
     ageGroup: 'adult',
     images: ['/mock/products/cheese-cream-treats.jpg'],
     isNew: false,
+    isActive: true,
     price: 3.2,
     variants: [
       { id: '9-40g', label: '40 g', price: 3.2, isActive: true },
@@ -162,6 +171,7 @@ export const MOCK_PRODUCTS: MockProduct[] = [
     ageGroup: 'adult',
     images: ['/mock/products/whisker-friendly-bowl-set.jpg'],
     isNew: false,
+    isActive: true,
     price: 12.9,
     variants: [
       { id: '10-standard', label: 'Standard', price: 12.9, isActive: true },
