@@ -1,7 +1,16 @@
-export default function AdminProductEditPage() {
+import { notFound } from 'next/navigation';
+import { ProductForm } from '@/components/admin/ProductForm';
+import { MOCK_PRODUCTS } from '@/components/product/mock-data';
+
+export default async function AdminProductEditPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const product = MOCK_PRODUCTS.find((p) => p.id === id);
+  if (!product) notFound();
+
   return (
-    <div className="mx-auto flex min-h-[60vh] max-w-container items-center justify-center px-lg py-3xl">
-      <p className="text-h2 text-neutral-300">Edit product — coming soon</p>
+    <div className="flex flex-col gap-lg p-lg">
+      <h1 className="text-h2 text-neutral-900">Edit product</h1>
+      <ProductForm product={product} />
     </div>
   );
 }
