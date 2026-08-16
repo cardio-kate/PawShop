@@ -2,20 +2,11 @@
 
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { getMockOrderTotal } from '@/components/admin/mock-data';
+import { ADMIN_LOCALE, ADMIN_TABLE_CELL_CLASSNAME, ORDER_DATETIME_FORMATTER, ORDER_STATUS_LABEL } from '@/components/admin/constants';
 import { formatPrice } from '@/lib/utils';
 import type { MockOrder, OrderStatus } from '@/types';
 
-const ADMIN_LOCALE = 'en';
-
 const STATUSES: OrderStatus[] = ['new', 'processing', 'done', 'cancelled'];
-
-const STATUS_LABEL: Record<OrderStatus, string> = {
-  new: 'New',
-  processing: 'Processing',
-  done: 'Done',
-  cancelled: 'Cancelled',
-};
 
 // design.md → Order detail: смена статуса — select-field, оформленный цветом соответствующего
 // badge-status-*, а не нейтральный дропдаун. Те же пары фон/текст, что у Badge (order-* варианты),
@@ -27,9 +18,7 @@ const STATUS_SELECT_CLASSNAME: Record<OrderStatus, string> = {
   cancelled: 'bg-error-tint text-error-on-tint',
 };
 
-const DATE_FORMATTER = new Intl.DateTimeFormat('en', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-
-const CELL_CLASSNAME = 'px-md py-sm text-body-sm text-neutral-900';
+const CELL_CLASSNAME = ADMIN_TABLE_CELL_CLASSNAME;
 
 interface OrderDetailProps {
   order: MockOrder;
@@ -42,7 +31,7 @@ interface OrderDetailProps {
 export function OrderDetail({ order }: OrderDetailProps) {
   const [status, setStatus] = useState<OrderStatus>(order.status);
   const subtotal = order.items.reduce((sum, item) => sum + item.priceAtOrder * item.quantity, 0);
-  const total = getMockOrderTotal(order);
+  const total = subtotal + order.shippingPriceAtOrder;
 
   return (
     <div className="grid grid-cols-1 gap-lg lg:grid-cols-[1fr_340px]">
@@ -114,7 +103,7 @@ export function OrderDetail({ order }: OrderDetailProps) {
               >
                 {STATUSES.map((s) => (
                   <option key={s} value={s}>
-                    {STATUS_LABEL[s]}
+                    {ORDER_STATUS_LABEL[s]}
                   </option>
                 ))}
               </select>
@@ -124,7 +113,7 @@ export function OrderDetail({ order }: OrderDetailProps) {
               />
             </div>
           </div>
-          <p className="text-body-sm text-neutral-500">Order #{order.id} · {DATE_FORMATTER.format(new Date(order.createdAt))}</p>
+          <p className="text-body-sm text-neutral-500">Order #{order.id} · {ORDER_DATETIME_FORMATTER.format(new Date(order.createdAt))}</p>
           <p className="text-body-sm text-neutral-900">{order.customerName}</p>
           <p className="text-body-sm text-neutral-900">{order.phone}</p>
         </div>

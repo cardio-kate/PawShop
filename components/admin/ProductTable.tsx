@@ -9,21 +9,15 @@ import { Toggle } from '@/components/ui/Toggle';
 import { Button } from '@/components/ui/Button';
 import { Panel } from '@/components/ui/Panel';
 import { MOCK_CATEGORIES, MOCK_PRODUCTS } from '@/components/product/mock-data';
+import { ADMIN_LOCALE, ADMIN_TABLE_CELL_CLASSNAME } from '@/components/admin/constants';
 import { formatPrice } from '@/lib/utils';
 import type { MockProduct } from '@/types';
-
-// Админка на английском без резолва nameDe/fallback (CLAUDE.md → «Что не локализуется»), поэтому
-// цена форматируется под фиксированный 'en', а не через useLocale — на этом экране locale нет.
-const ADMIN_LOCALE = 'en';
 
 function getCategoryName(categoryId: string): string {
   return MOCK_CATEGORIES.find((category) => category.id === categoryId)?.nameEn ?? '—';
 }
 
-// design.md → Admin table: чередование table-row-even/table-row-odd + разделители table-border,
-// без теней — тот же паттерн, что предписан для редактора вариантов в ProductForm (следующий шаг
-// плана), здесь применяется к списку товаров целиком.
-const CELL_CLASSNAME = 'px-md py-sm text-body-sm text-neutral-900';
+const CELL_CLASSNAME = ADMIN_TABLE_CELL_CLASSNAME;
 
 export function ProductTable() {
   const [products, setProducts] = useState<MockProduct[]>(MOCK_PRODUCTS);
@@ -33,9 +27,12 @@ export function ProductTable() {
     setProducts((current) => current.map((product) => (product.id === id ? { ...product, isActive } : product)));
   }
 
+  // CLAUDE.md → «База данных»: soft delete через isActive, не DELETE — тот же переход, что делает
+  // Toggle в колонке Active, но с подтверждением. Строка остаётся в таблице (не исчезает), поэтому
+  // кнопка-триггер Panel не размонтируется вместе с закрытием — Panel корректно возвращает фокус.
   function handleConfirmDelete() {
     if (!productToDelete) return;
-    setProducts((current) => current.filter((product) => product.id !== productToDelete.id));
+    handleToggleActive(productToDelete.id, false);
     setProductToDelete(null);
   }
 
@@ -130,7 +127,7 @@ export function ProductTable() {
           <div className="flex flex-col gap-sm">
             <h2 className="text-h3 text-neutral-900">Delete product?</h2>
             <p className="text-body-sm text-neutral-500">
-              {productToDelete && `"${productToDelete.name}" will be removed from this mock list.`}
+              {productToDelete && `"${productToDelete.name}" will be marked inactive and hidden from the storefront.`}
             </p>
           </div>
           <div className="flex flex-col gap-sm">

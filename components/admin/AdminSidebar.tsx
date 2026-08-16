@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Package, ClipboardList, Truck } from 'lucide-react';
 import { Logo } from '@/components/layout/Logo';
+import { CounterBadge } from '@/components/ui/CounterBadge';
 import { MOCK_ORDERS } from '@/components/admin/mock-data';
 
 // design.md → §7.8 ТЗ: три раздела админ-панели (Products/Orders/Delivery). Порядок — как в ТЗ,
@@ -21,8 +22,8 @@ const NAV_LINK_CLASSNAME =
 
 export function AdminSidebar() {
   const pathname = usePathname();
-  // ТЗ §9.3: новые заявки отмечаются визуально в панели. bg-paw/text-surface — тот же
-  // badge-order-counter, что у счётчика корзины в Header (design.md → Iconography).
+  // ТЗ §9.3: новые заявки отмечаются визуально в панели — тот же CounterBadge, что у счётчика
+  // корзины в Header.
   const newOrdersCount = MOCK_ORDERS.filter((order) => order.status === 'new').length;
 
   return (
@@ -49,12 +50,7 @@ export function AdminSidebar() {
               {label}
               {badgeCount > 0 && (
                 <>
-                  <span
-                    aria-hidden="true"
-                    className="flex h-4 min-w-4 items-center justify-center rounded-full bg-paw px-1 text-[10px] font-semibold leading-none text-surface"
-                  >
-                    {badgeCount}
-                  </span>
+                  <CounterBadge count={badgeCount} />
                   <span className="sr-only">, {badgeCount} new</span>
                 </>
               )}

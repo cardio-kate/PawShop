@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Check } from 'lucide-react';
 import { Logo } from '@/components/layout/Logo';
 import { Input } from '@/components/ui/Input';
@@ -29,6 +29,11 @@ export function StaffLoginCard() {
 
   return (
     <div className="flex w-[380px] max-w-full flex-col gap-lg rounded-lg bg-surface p-xl shadow-[0_4px_16px_rgba(14,14,18,0.08)]">
+      {/* Визуально страница держится на Logo (design.md — «лапка + PawShop как в Header», без
+          отдельного заголовка), но документу всё равно нужен один h1 — иначе у /staff-entry нет
+          ни одного heading-элемента и скринридер не может ни перейти к контенту, ни озвучить
+          назначение страницы. */}
+      <h1 className="sr-only">Staff sign in</h1>
       <Logo className="justify-center" />
 
       {step === 'login' && (
@@ -68,7 +73,7 @@ function LoginStep({
       )}
       <label className="flex flex-col gap-xs">
         <span className="text-label-md text-neutral-900">Username</span>
-        <Input name="username" autoComplete="username" disabled={locked} required />
+        <Input name="username" autoComplete="username" disabled={locked} required autoFocus />
       </label>
       <label className="flex flex-col gap-xs">
         <span className="text-label-md text-neutral-900">Password</span>
@@ -94,7 +99,7 @@ function ForgotStep({ onCodeSent }: { onCodeSent: () => void }) {
     <form className="flex flex-col gap-md" onSubmit={handleSubmit}>
       <label className="flex flex-col gap-xs">
         <span className="text-label-md text-neutral-900">Username</span>
-        <Input name="username" autoComplete="username" required />
+        <Input name="username" autoComplete="username" required autoFocus />
       </label>
       <Button type="submit" variant="primary" className="w-full">
         Send code
@@ -114,7 +119,7 @@ function ResetStep({ onReset }: { onReset: () => void }) {
       <p className="text-body-sm text-neutral-500">Code sent to your Telegram</p>
       <label className="flex flex-col gap-xs">
         <span className="text-label-md text-neutral-900">Code</span>
-        <Input name="code" inputMode="numeric" autoComplete="one-time-code" required />
+        <Input name="code" inputMode="numeric" autoComplete="one-time-code" required autoFocus />
       </label>
       <label className="flex flex-col gap-xs">
         <span className="text-label-md text-neutral-900">New password</span>
@@ -128,13 +133,27 @@ function ResetStep({ onReset }: { onReset: () => void }) {
 }
 
 function ResetSuccessStep({ onBackToSignIn }: { onBackToSignIn: () => void }) {
+  const headingRef = useRef<HTMLParagraphElement>(null);
+
+  // Автофокус через ref+эффект, не autoFocus-атрибут: браузерный autofocus формально применяется
+  // только к «form-associated»/изначально фокусируемым элементам, на голом <p> (даже с tabIndex={-1})
+  // он ненадёжен — проверено вручную в браузере, autoFocus молча не срабатывал.
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, []);
+
   return (
     <div className="flex flex-col items-center gap-md text-center">
       <span className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary-tint text-secondary-on-tint">
         <Check className="h-6 w-6" aria-hidden="true" />
       </span>
       <div className="flex flex-col gap-xs">
-        <p className="text-body-md text-neutral-900">Password updated</p>
+        {/* tabIndex={-1} — фокусируемый, но не попадающий в обычный Tab-порядок элемент, на который
+            переходит фокус при смене шага (иначе после каждого шага фокус улетает на body — ни
+            один шаг ниже не двигает фокус сам, кроме автофокуса на первом поле формы). */}
+        <p ref={headingRef} tabIndex={-1} className="text-body-md text-neutral-900 outline-none">
+          Password updated
+        </p>
         <p className="text-body-sm text-neutral-500">You can now sign in with your new password</p>
       </div>
       <Button type="button" variant="secondary" onClick={onBackToSignIn} className="w-full">

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { Plus, X } from 'lucide-react';
 
@@ -9,14 +9,34 @@ interface ImageUploaderProps {
   onChange: (images: string[]) => void;
 }
 
+function isBlobUrl(src: string): boolean {
+  return src.startsWith('blob:');
+}
+
 // design.md → ImageUploader: реальный поток — signed client-upload напрямую в Vercel Blob
 // (architecture.md §3.5), но .claude/plans/velvety-kindling-planet.md (Фаза 7) явно ограничивает
-// этот шаг UI без реальной загрузки. Здесь превью через object URL в памяти вкладки (revoked нигде
-// не вызывается — форма живёт до навигации, страница целиком выгружает объект вместе с URL).
-// unoptimized — next/image иначе пытается резолвить blob:-URL через remotePatterns, как обычный
-// внешний хост, и падает: у blob: URL нет hostname, который можно было бы туда вписать.
+// этот шаг UI без реальной загрузки. Здесь превью через object URL в памяти вкладки — в отличие от
+// исходной версии, revoked не «никогда»: явно освобождается при удалении фото (handleRemove) и при
+// размонтировании формы (эффект ниже, через imagesRef — иначе замыкание держало бы только images
+// на момент монтирования, пустой массив).
 export function ImageUploader({ images, onChange }: ImageUploaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const imagesRef = useRef(images);
+
+  // Ref обновляется эффектом (не присваиванием в теле рендера — react-hooks/refs это запрещает),
+  // но синхронно относительно commit'а, так что к моменту unmount-эффекта ниже ref уже указывает
+  // на актуальный images, а не на тот, что был при монтировании.
+  useEffect(() => {
+    imagesRef.current = images;
+  }, [images]);
+
+  useEffect(() => {
+    return () => {
+      imagesRef.current.forEach((src) => {
+        if (isBlobUrl(src)) URL.revokeObjectURL(src);
+      });
+    };
+  }, []);
 
   function handleFilesSelected(files: FileList | null) {
     if (!files || files.length === 0) return;
@@ -32,6 +52,8 @@ export function ImageUploader({ images, onChange }: ImageUploaderProps) {
   }
 
   function handleRemove(index: number) {
+    const removed = images[index];
+    if (removed && isBlobUrl(removed)) URL.revokeObjectURL(removed);
     onChange(images.filter((_, i) => i !== index));
   }
 

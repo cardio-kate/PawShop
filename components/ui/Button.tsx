@@ -1,4 +1,5 @@
-import type { ButtonHTMLAttributes } from 'react';
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import Link from 'next/link';
 
 type ButtonVariant = 'primary' | 'secondary';
 type ButtonSize = 'md' | 'sm';
@@ -6,6 +7,12 @@ type ButtonSize = 'md' | 'sm';
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
+  // Навигационная ссылка, оформленная как кнопка (например «+ Add product» на списке товаров) —
+  // без этого приходилось вручную копировать BASE_CLASSNAME/SIZE_CLASSNAME/VARIANT_CLASSNAME на
+  // отдельный <Link>, и правка стилей Button не долетала бы до таких мест. button-специфичные
+  // props (type, onClick с MouseEvent<HTMLButtonElement> и т.д.) в этой ветке не пробрасываются —
+  // единственный сегодняшний случай использования не в них нуждается.
+  href?: string;
 }
 
 const BASE_CLASSNAME =
@@ -32,13 +39,20 @@ const VARIANT_CLASSNAME: Record<ButtonVariant, string> = {
 // не приглушённый вариант основного цвета — общий и для primary, и для secondary.
 const DISABLED_CLASSNAME = 'cursor-not-allowed border-neutral-300 bg-neutral-300 text-neutral-500';
 
-export function Button({ variant = 'primary', size = 'md', disabled, className, ...props }: ButtonProps) {
+export function Button({ variant = 'primary', size = 'md', disabled, className, href, children, ...props }: ButtonProps) {
+  const classes = `${BASE_CLASSNAME} ${SIZE_CLASSNAME[size]} ${disabled ? DISABLED_CLASSNAME : VARIANT_CLASSNAME[variant]} ${className ?? ''}`;
+
+  if (href) {
+    return (
+      <Link href={href} className={classes}>
+        {children as ReactNode}
+      </Link>
+    );
+  }
+
   return (
-    <button
-      type="button"
-      disabled={disabled}
-      className={`${BASE_CLASSNAME} ${SIZE_CLASSNAME[size]} ${disabled ? DISABLED_CLASSNAME : VARIANT_CLASSNAME[variant]} ${className ?? ''}`}
-      {...props}
-    />
+    <button type="button" disabled={disabled} className={classes} {...props}>
+      {children}
+    </button>
   );
 }

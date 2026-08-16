@@ -11,12 +11,6 @@ interface VariantEditorProps {
   onChange: (variants: MockVariant[]) => void;
 }
 
-let idCounter = 0;
-function nextVariantId(): string {
-  idCounter += 1;
-  return `new-variant-${idCounter}`;
-}
-
 const CELL_CLASSNAME = 'px-sm py-xs';
 
 // design.md → ProductForm «Редактор вариантов»: admin table-стиль (table-row-even/odd,
@@ -32,7 +26,7 @@ export function VariantEditor({ variants, onChange }: VariantEditorProps) {
   }
 
   function addVariant() {
-    onChange([...variants, { id: nextVariantId(), label: '', price: 0, isActive: true }]);
+    onChange([...variants, { id: crypto.randomUUID(), label: '', price: 0, isActive: true }]);
   }
 
   return (
@@ -67,7 +61,7 @@ export function VariantEditor({ variants, onChange }: VariantEditorProps) {
                     value={variant.label}
                     onChange={(e) => updateVariant(variant.id, { label: e.target.value })}
                     placeholder="e.g. 300 g"
-                    aria-label="Variant label"
+                    aria-label={`Variant ${index + 1} label`}
                     className="min-w-[140px]"
                   />
                 </td>
@@ -78,7 +72,7 @@ export function VariantEditor({ variants, onChange }: VariantEditorProps) {
                     min="0"
                     value={variant.price}
                     onChange={(e) => updateVariant(variant.id, { price: Number(e.target.value) })}
-                    aria-label="Variant price"
+                    aria-label={`Variant ${index + 1} price`}
                     className="w-24"
                   />
                 </td>

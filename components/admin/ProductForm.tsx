@@ -14,12 +14,6 @@ import type { AgeGroup, MockProduct, MockVariant } from '@/types';
 const AGE_GROUPS: AgeGroup[] = ['kitten', 'adult', 'senior'];
 const AGE_GROUP_LABEL: Record<AgeGroup, string> = { kitten: 'Kitten', adult: 'Adult', senior: 'Senior' };
 
-let newVariantIdCounter = 0;
-function firstVariantId(): string {
-  newVariantIdCounter += 1;
-  return `new-variant-${newVariantIdCounter}`;
-}
-
 interface ProductFormProps {
   product?: MockProduct;
 }
@@ -35,10 +29,14 @@ export function ProductForm({ product }: ProductFormProps) {
   const [ageGroup, setAgeGroup] = useState<AgeGroup>(product?.ageGroup ?? 'kitten');
   const [description, setDescription] = useState(product?.description ?? '');
   const [images, setImages] = useState<string[]>(product?.images ?? []);
+  // Ленивый инициализатор — иначе crypto.randomUUID() (и любой другой побочный эффект внутри)
+  // пересчитывался бы на каждый ре-рендер формы (каждую печатную клавишу в Name/Description),
+  // а не только при монтировании.
   const [variants, setVariants] = useState<MockVariant[]>(
-    product?.variants ?? [{ id: firstVariantId(), label: '', price: 0, isActive: true }],
+    () => product?.variants ?? [{ id: crypto.randomUUID(), label: '', price: 0, isActive: true }],
   );
   const [isNew, setIsNew] = useState(product?.isNew ?? false);
+  const [isActive, setIsActive] = useState(product?.isActive ?? true);
 
   // §10/architecture.md §3.1: товар без фото и без варианта сохранить нельзя — то же правило,
   // что и на сервере (products.service.ts, будущая фаза), видно уже здесь, а не только как ошибка
@@ -93,6 +91,11 @@ export function ProductForm({ product }: ProductFormProps) {
       <ImageUploader images={images} onChange={setImages} />
 
       <VariantEditor variants={variants} onChange={setVariants} />
+
+      <label className="flex items-center justify-between gap-md">
+        <span className="text-label-md text-neutral-900">Active</span>
+        <Toggle checked={isActive} onChange={setIsActive} aria-label="Active" />
+      </label>
 
       <label className="flex items-center justify-between gap-md">
         <span className="text-label-md text-neutral-900">New arrival</span>
