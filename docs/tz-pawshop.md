@@ -52,24 +52,24 @@
 
 | № | Name | Age Group | Format | Flavor | Size | Price | Feature |
 |---|---|---|---|---|---|---|---|
-| 1 | Kitten Chicken Pouches in Jelly | Kitten (2–12 months) | Wet | Chicken | 85 g / pack 10×85 g (850 g) | €1.40 | Supports growth and energy |
-| 2 | Kitten Salmon Pouches in Gravy | Kitten (2–12 months) | Wet | Salmon | 85 g / pack 10×85 g (850 g) | €1.50 | Omega-3 for development |
-| 3 | Kitten Chicken & Milk Kibble | Kitten (2–12 months) | Dry | Chicken | 300 g / 1.2 kg / 3 kg | €3.90 | Calcium for strong bones |
-| 4 | Beef Pouches in Gravy | Adult (1+ years) | Wet | Beef | 85 g / pack 10×85 g (850 g) | €1.30 | Everyday diet |
-| 5 | Chicken Pouches in Jelly | Adult (1+ years) | Wet | Chicken | 85 g / pack 10×85 g (850 g) | €1.30 | Everyday diet |
-| 6 | Rabbit Pouches in Jelly | Adult (1+ years) | Wet | Rabbit | 85 g / pack 10×85 g (850 g) | €1.40 | Hypoallergenic recipe |
-| 7 | Tuna Pouches in Gravy | Adult (1+ years) | Wet | Tuna | 85 g / pack 10×85 g (850 g) | €1.40 | High-protein |
-| 8 | Salmon & Rice Kibble | Adult (1+ years) | Dry | Salmon | 300 g / 1.2 kg / 3 kg | €3.90 | Everyday diet |
-| 9 | Chicken Pouches Light | Adult — Sterilised | Wet | Chicken | 85 g / pack 10×85 g (850 g) | €1.30 | Low-calorie |
-| 10 | Turkey Kibble | Adult — Sensitive Digestion | Dry | Turkey | 300 g / 1.2 kg / 3 kg | €4.30 | Easy to digest |
-| 11 | Turkey Indoor Kibble | Adult — Indoor Cats | Dry | Turkey | 300 g / 1.2 kg / 3 kg | €4.30 | Hairball control |
-| 12 | Chicken Light Kibble | Adult — Weight Control | Dry | Chicken | 300 g / 1.2 kg / 3 kg | €4.10 | Reduced fat |
-| 13 | Beef Kibble | Adult — High Protein | Dry | Beef | 300 g / 1.2 kg / 3 kg | €4.50 | Extra protein |
-| 14 | Chicken Pouches in Jelly Senior | Senior (7+ years) | Wet | Chicken | 85 g / pack 10×85 g (850 g) | €1.40 | Soft, easy-to-chew texture |
-| 15 | Salmon Kibble Senior | Senior (7+ years) | Dry | Salmon | 300 g / 1.2 kg / 3 kg | €4.50 | Joint support |
-| 16 | Chicken & Fish Crispy Pillows | Adult | Crunchy | Chicken + Fish | 40 g / pack 10×40 g (400 g) | €3.50 | Crunchy shell, soft filling |
-| 17 | Salmon Treats | Adult | Soft | Salmon | 40 g / pack 10×40 g (400 g) | €3.90 | Ideal for training and rewards |
-| 18 | Cheese & Cream Treats | Adult | Creamy | Cheese | 40 g / pack 10×40 g (400 g) | €3.20 | Lickable, creamy texture |
+| 1 | Kitten chicken pouches in jelly | Kitten (2–12 months) | Wet | Chicken | 85 g / pack 10×85 g (850 g) | €1.40 | Supports growth and energy |
+| 2 | Kitten salmon pouches in gravy | Kitten (2–12 months) | Wet | Salmon | 85 g / pack 10×85 g (850 g) | €1.50 | Omega-3 for development |
+| 3 | Kitten chicken & milk kibble | Kitten (2–12 months) | Dry | Chicken | 300 g / 1.2 kg / 3 kg | €3.90 | Calcium for strong bones |
+| 4 | Beef pouches in gravy | Adult (1+ years) | Wet | Beef | 85 g / pack 10×85 g (850 g) | €1.30 | Everyday diet |
+| 5 | Chicken pouches in jelly | Adult (1+ years) | Wet | Chicken | 85 g / pack 10×85 g (850 g) | €1.30 | Everyday diet |
+| 6 | Rabbit pouches in jelly | Adult (1+ years) | Wet | Rabbit | 85 g / pack 10×85 g (850 g) | €1.40 | Hypoallergenic recipe |
+| 7 | Tuna pouches in gravy | Adult (1+ years) | Wet | Tuna | 85 g / pack 10×85 g (850 g) | €1.40 | High-protein |
+| 8 | Salmon & rice kibble | Adult (1+ years) | Dry | Salmon | 300 g / 1.2 kg / 3 kg | €3.90 | Everyday diet |
+| 9 | Chicken pouches light | Adult — Sterilised | Wet | Chicken | 85 g / pack 10×85 g (850 g) | €1.30 | Low-calorie |
+| 10 | Turkey kibble | Adult — Sensitive Digestion | Dry | Turkey | 300 g / 1.2 kg / 3 kg | €4.30 | Easy to digest |
+| 11 | Turkey indoor kibble | Adult — Indoor Cats | Dry | Turkey | 300 g / 1.2 kg / 3 kg | €4.30 | Hairball control |
+| 12 | Chicken light kibble | Adult — Weight Control | Dry | Chicken | 300 g / 1.2 kg / 3 kg | €4.10 | Reduced fat |
+| 13 | Beef kibble | Adult — High Protein | Dry | Beef | 300 g / 1.2 kg / 3 kg | €4.50 | Extra protein |
+| 14 | Chicken pouches in jelly senior | Senior (7+ years) | Wet | Chicken | 85 g / pack 10×85 g (850 g) | €1.40 | Soft, easy-to-chew texture |
+| 15 | Salmon kibble senior | Senior (7+ years) | Dry | Salmon | 300 g / 1.2 kg / 3 kg | €4.50 | Joint support |
+| 16 | Chicken & fish crispy pillows | Adult | Crunchy | Chicken + Fish | 40 g / pack 10×40 g (400 g) | €3.50 | Crunchy shell, soft filling |
+| 17 | Salmon treats | Adult | Soft | Salmon | 40 g / pack 10×40 g (400 g) | €3.90 | Ideal for training and rewards |
+| 18 | Cheese & cream treats | Adult | Creamy | Cheese | 40 g / pack 10×40 g (400 g) | €3.20 | Lickable, creamy texture |
 
 **Крупная фасовка (10-упаковка паучей/лакомств, 1.2 кг и 3 кг сухого корма):** как и в предыдущей версии каталога, это не отдельные товары, а дополнительные `ProductVariant` того же `Product` (см. раздел 4); в таблице выше в колонке Price указана цена минимального варианта (то, что реально показывается на карточке товара, см. §4). Цена крупной фасовки ниже суммы поштучной покупки того же объёма: 10-упаковка — примерно на €1.00–1.50 дешевле десяти отдельных упаковок; 1.2 кг и 3 кг сухого корма — цена за 100 г ниже, чем у фасовки 300 г, примерно на 8% и 15% соответственно. Точные цены каждого `ProductVariant` задаются вручную в админ-панели при создании товара (§10), а не вычисляются автоматически по формуле.
 
@@ -83,12 +83,12 @@
 
 | № | Name | Description | Price |
 |---|---|---|---|
-| 1 | Cat Safety Collar | Regulate collar with breakaway clasp (releases under pressure), adjustable XS/S/M | €7.90 |
-| 2 | PawShop Bandana Collar | Decorative collar with logo, breakaway safety buckle, one size | €6.50 |
-| 3 | Whisker-Friendly Bowl Set | Ceramic set with shallow, wide bowls — reduces whisker fatigue | €12.90 |
-| 4 | Cat Treat Pouch | Worn by the owner during leash-training or vet visits to carry treats | €8.90 |
-| 5 | Cat Walking Leash | Lightweight retractable leash, for use with harness, up to 8 kg | €13.90 |
-| 6 | PawShop Sticker Pack | 10 stickers with the shop logo | €3.50 |
+| 1 | Cat safety collar | Regulate collar with breakaway clasp (releases under pressure), adjustable XS/S/M | €7.90 |
+| 2 | PawShop bandana collar | Decorative collar with logo, breakaway safety buckle, one size | €6.50 |
+| 3 | Whisker-friendly bowl set | Ceramic set with shallow, wide bowls — reduces whisker fatigue | €12.90 |
+| 4 | Cat treat pouch | Worn by the owner during leash-training or vet visits to carry treats | €8.90 |
+| 5 | Cat walking leash | Lightweight retractable leash, for use with harness, up to 8 kg | €13.90 |
+| 6 | PawShop sticker pack | 10 stickers with the shop logo | €3.50 |
 
 ---
 
@@ -101,7 +101,7 @@ Product
 id, categoryId, slug
 nameEn, descriptionEn                    // обязательные
 nameDe: string | null, descriptionDe: string | null   // nullable — fallback на nameEn/descriptionEn, пока не переведено (см. architecture.md §3.10)
-flavor: string | null  // вкус (например, "Salmon", "Chicken") для кормов и лакомств — не выводится отдельным элементом UI, входит в текст `nameEn`/`nameDe` товара (например, «Ocean Salmon Formula»), см. DESIGN.md → Components → Product card
+flavor: string | null  // вкус (например, "Salmon", "Chicken") для кормов и лакомств — не выводится отдельным элементом UI, входит в текст `nameEn`/`nameDe` товара (например, «Ocean salmon formula»), см. DESIGN.md → Components → Product card
 // Колонки Format (Wet/Dry/Crunchy/Soft/Creamy) и Feature (например «Supports growth and energy») из таблицы §3.1 — по той же логике не выделены в отдельные поля: обе вручную включаются в текст `descriptionEn`/`descriptionDe` при создании товара (§10), отдельного поля/фильтра под них не заводится
 ageGroup: 'kitten' | 'adult' | 'senior'
 images: string[]
@@ -148,7 +148,7 @@ sessionVersion   // инкрементируется при смене паро�
 
 `priceAtOrder` и `shippingPriceAtOrder` фиксируются отдельно от текущих цен в каталоге, чтобы изменение цены товара или доставки не искажало историю уже оформленных заказов. Отображаемая цена товара в каталоге вычисляется как минимальная цена среди его активных `ProductVariant`, отдельного поля цены у `Product` не предусмотрено. По той же причине `OrderItem` хранит собственный снимок `productNameAtOrder`/`variantLabelAtOrder`: последующее редактирование названия товара или лейбла варианта администратором (см. §10) не должно задним числом менять то, что реально видел клиент в оформленном заказе.
 
-**Источник данных для `Category`.** В отличие от `DeliveryCountry` (где цену/срок/активность существующей страны можно поправить из админки, см. ниже), категории **не редактируются из админ-панели вообще** — в разделах админки (§7.8) и в списке server actions (§5) намеренно нет CRUD для категорий, чтобы не плодить лишний UI ради 4 редко меняющихся строк. Категории — фиксированный, заранее известный набор (`Dry Food`, `Wet Food`, `Treats`, `Accessories`), который заводится один раз через сид-скрипт по аналогии с `scripts/create-admin.ts` (см. `architecture.md`, §3.4). Отдельной колонки «Type», из которой этот набор можно было бы вывести автоматически, в таблицах раздела 3 нет — соответствие ручное: `Dry Food`/`Wet Food` соответствуют значению `Dry`/`Wet` колонки Format в §3.1, `Treats` — одноимённому подразделу §3.1 (товары №16–18), `Accessories` — отдельной таблице §3.2. В форме создания/редактирования товара (§10) поле «категория» — это `<select>` из уже существующих записей таблицы `Category`, без возможности создать новую категорию прямо из формы. Если в будущем понадобится управлять категориями из UI — это отдельная, осознанно отложенная на потом задача, а не забытый кейс.
+**Источник данных для `Category`.** В отличие от `DeliveryCountry` (где цену/срок/активность существующей страны можно поправить из админки, см. ниже), категории **не редактируются из админ-панели вообще** — в разделах админки (§7.8) и в списке server actions (§5) намеренно нет CRUD для категорий, чтобы не плодить лишний UI ради 4 редко меняющихся строк. Категории — фиксированный, заранее известный набор (`Dry food`, `Wet food`, `Treats`, `Accessories`), который заводится один раз через сид-скрипт по аналогии с `scripts/create-admin.ts` (см. `architecture.md`, §3.4). Отдельной колонки «Type», из которой этот набор можно было бы вывести автоматически, в таблицах раздела 3 нет — соответствие ручное: `Dry food`/`Wet food` соответствуют значению `Dry`/`Wet` колонки Format в §3.1, `Treats` — одноимённому подразделу §3.1 (товары №16–18), `Accessories` — отдельной таблице §3.2. В форме создания/редактирования товара (§10) поле «категория» — это `<select>` из уже существующих записей таблицы `Category`, без возможности создать новую категорию прямо из формы. Если в будущем понадобится управлять категориями из UI — это отдельная, осознанно отложенная на потом задача, а не забытый кейс.
 
 **Источник данных для `DeliveryCountry`.** Список стран ЕС и стартовые значения `price`/`estimatedDays` заводятся один раз через `scripts/seed-delivery-countries.ts` (по аналогии с `seed-categories.ts`) — публичного и административного действия на **создание** новой страны нет (в списке server actions §5 есть только `updateDeliveryCountry`, без `createDeliveryCountry`). В отличие от `Category`, это не значит «совсем без CRUD»: цену, срок доставки и `isActive` уже существующей страны администратор редактирует из раздела «Delivery» (§7.8) через `updateDeliveryCountry`. Добавление/удаление стран из набора — как и управление категориями из UI — осознанно отложенная задача, а не забытый кейс: 27 стран ЕС меняются даже реже, чем 4 категории.
 

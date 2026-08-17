@@ -5,8 +5,8 @@ import type { MockCategory, MockDeliveryCountry, MockProduct } from '@/types';
 // (isNew-подмножество и полный список), дублировать 10 объектов в двух файлах было бы избыточно.
 // Источник данных — docs/tz-pawshop.md §3.1/§3.2 (реальные названия/цены из ТЗ, не выдуманные).
 export const MOCK_CATEGORIES: MockCategory[] = [
-  { id: 'dry-food', slug: 'dry-food', nameEn: 'Dry Food', nameDe: 'Trockenfutter' },
-  { id: 'wet-food', slug: 'wet-food', nameEn: 'Wet Food', nameDe: 'Nassfutter' },
+  { id: 'dry-food', slug: 'dry-food', nameEn: 'Dry food', nameDe: 'Trockenfutter' },
+  { id: 'wet-food', slug: 'wet-food', nameEn: 'Wet food', nameDe: 'Nassfutter' },
   { id: 'treats', slug: 'treats', nameEn: 'Treats', nameDe: 'Leckerlis' },
   { id: 'accessories', slug: 'accessories', nameEn: 'Accessories', nameDe: 'Zubehör' },
 ];
@@ -18,7 +18,10 @@ type MockProductInput = Omit<MockProduct, 'price'>;
 // держать синхронным с variants (types/index.ts хранил инвариант как комментарий — реального
 // гаранта не было: список вариантов не обязан быть отсортирован по цене, и "первый active" мог
 // разойтись с фактическим минимумом). Теперь считается один раз при построении MOCK_PRODUCTS —
-// разойтись физически не может.
+// разойтись физически не может. Math.min(...[]) даёт Infinity, если у товара нет ни одного
+// activePrice — здесь это не проверяется намеренно: CLAUDE.md → «База данных» запрещает
+// деактивацию последнего активного варианта на уровне services, так что каждый MOCK_PRODUCT_INPUTS
+// обязан всегда содержать хотя бы один isActive-вариант как входной инвариант, а не runtime-случай.
 function withComputedPrice(product: MockProductInput): MockProduct {
   const activePrices = product.variants
     .filter((variant) => variant.isActive)
@@ -31,7 +34,7 @@ const MOCK_PRODUCT_INPUTS: MockProductInput[] = [
     id: '1',
     slug: 'kitten-chicken-pouches-in-jelly',
     categoryId: 'wet-food',
-    name: 'Kitten Chicken Pouches in Jelly',
+    name: 'Kitten chicken pouches in jelly',
     description: 'Supports growth and energy',
     ageGroup: 'kitten',
     images: ['/mock/products/kitten-chicken-pouches-in-jelly.jpg'],
@@ -46,7 +49,7 @@ const MOCK_PRODUCT_INPUTS: MockProductInput[] = [
     id: '2',
     slug: 'kitten-chicken-milk-kibble',
     categoryId: 'dry-food',
-    name: 'Kitten Chicken & Milk Kibble',
+    name: 'Kitten chicken & milk kibble',
     description: 'Calcium for strong bones',
     ageGroup: 'kitten',
     images: ['/mock/products/kitten-chicken-milk-kibble.jpg'],
@@ -62,7 +65,7 @@ const MOCK_PRODUCT_INPUTS: MockProductInput[] = [
     id: '3',
     slug: 'salmon-rice-kibble',
     categoryId: 'dry-food',
-    name: 'Salmon & Rice Kibble',
+    name: 'Salmon & rice kibble',
     description: 'Everyday diet',
     ageGroup: 'adult',
     images: ['/mock/products/salmon-rice-kibble.jpg'],
@@ -78,7 +81,7 @@ const MOCK_PRODUCT_INPUTS: MockProductInput[] = [
     id: '4',
     slug: 'beef-pouches-in-gravy',
     categoryId: 'wet-food',
-    name: 'Beef Pouches in Gravy',
+    name: 'Beef pouches in gravy',
     description: 'Everyday diet',
     ageGroup: 'adult',
     images: ['/mock/products/beef-pouches-in-gravy.jpg'],
@@ -93,7 +96,7 @@ const MOCK_PRODUCT_INPUTS: MockProductInput[] = [
     id: '5',
     slug: 'turkey-indoor-kibble',
     categoryId: 'dry-food',
-    name: 'Turkey Indoor Kibble',
+    name: 'Turkey indoor kibble',
     description: 'Hairball control',
     ageGroup: 'adult',
     images: ['/mock/products/turkey-indoor-kibble.jpg'],
@@ -111,7 +114,7 @@ const MOCK_PRODUCT_INPUTS: MockProductInput[] = [
     id: '6',
     slug: 'chicken-pouches-in-jelly-senior',
     categoryId: 'wet-food',
-    name: 'Chicken Pouches in Jelly Senior',
+    name: 'Chicken pouches in jelly senior',
     description: 'Soft, easy-to-chew texture',
     ageGroup: 'senior',
     images: ['/mock/products/chicken-pouches-in-jelly-senior.jpg'],
@@ -126,7 +129,7 @@ const MOCK_PRODUCT_INPUTS: MockProductInput[] = [
     id: '7',
     slug: 'salmon-kibble-senior',
     categoryId: 'dry-food',
-    name: 'Salmon Kibble Senior',
+    name: 'Salmon kibble senior',
     description: 'Joint support',
     ageGroup: 'senior',
     images: ['/mock/products/salmon-kibble-senior.jpg'],
@@ -142,7 +145,7 @@ const MOCK_PRODUCT_INPUTS: MockProductInput[] = [
     id: '8',
     slug: 'salmon-treats',
     categoryId: 'treats',
-    name: 'Salmon Treats',
+    name: 'Salmon treats',
     description: 'Ideal for training and rewards',
     ageGroup: 'adult',
     images: ['/mock/products/salmon-treats.jpg'],
@@ -157,7 +160,7 @@ const MOCK_PRODUCT_INPUTS: MockProductInput[] = [
     id: '9',
     slug: 'cheese-cream-treats',
     categoryId: 'treats',
-    name: 'Cheese & Cream Treats',
+    name: 'Cheese & cream treats',
     description: 'Lickable, creamy texture',
     ageGroup: 'adult',
     images: ['/mock/products/cheese-cream-treats.jpg'],
@@ -172,7 +175,7 @@ const MOCK_PRODUCT_INPUTS: MockProductInput[] = [
     id: '10',
     slug: 'whisker-friendly-bowl-set',
     categoryId: 'accessories',
-    name: 'Whisker-Friendly Bowl Set',
+    name: 'Whisker-friendly bowl set',
     description: 'Ceramic set with shallow, wide bowls — reduces whisker fatigue',
     ageGroup: 'adult',
     images: ['/mock/products/whisker-friendly-bowl-set.jpg'],

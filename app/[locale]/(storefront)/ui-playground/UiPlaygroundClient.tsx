@@ -67,10 +67,10 @@ export function UiPlaygroundClient() {
 
       <Section title="Chip — filter">
         <Chip kind="filter" selected={filterSelected} onClick={() => setFilterSelected((v) => !v)}>
-          Dry Food
+          Dry food
         </Chip>
         <Chip kind="filter" disabled>
-          Wet Food
+          Wet food
         </Chip>
       </Section>
 
