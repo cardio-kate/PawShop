@@ -4,6 +4,8 @@ import { Trash2 } from 'lucide-react';
 import { Input } from '@/components/ui/Input';
 import { Toggle } from '@/components/ui/Toggle';
 import { Button } from '@/components/ui/Button';
+import { PRODUCT_MIN_ITEMS, adminTableRowClassName } from '@/components/admin/constants';
+import { iconActionButtonClassName } from '@/components/ui/interaction-styles';
 import type { MockVariant } from '@/types';
 
 interface VariantEditorProps {
@@ -52,10 +54,7 @@ export function VariantEditor({ variants, onChange }: VariantEditorProps) {
           </thead>
           <tbody>
             {variants.map((variant, index) => (
-              <tr
-                key={variant.id}
-                className={`border-b border-neutral-300 last:border-b-0 ${index % 2 === 0 ? 'bg-neutral-100' : 'bg-surface'}`}
-              >
+              <tr key={variant.id} className={adminTableRowClassName(index)}>
                 <td className={CELL_CLASSNAME}>
                   <Input
                     value={variant.label}
@@ -84,12 +83,12 @@ export function VariantEditor({ variants, onChange }: VariantEditorProps) {
                   />
                 </td>
                 <td className="px-sm py-xs">
-                  {variants.length > 1 && (
+                  {variants.length > PRODUCT_MIN_ITEMS && (
                     <button
                       type="button"
                       onClick={() => removeVariant(variant.id)}
                       aria-label={`Remove variant ${variant.label || index + 1}`}
-                      className="cursor-pointer rounded-full p-1 text-neutral-700 transition-colors duration-fast hover:text-error motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
+                      className={iconActionButtonClassName('danger')}
                     >
                       <Trash2 className="h-4 w-4" aria-hidden="true" />
                     </button>

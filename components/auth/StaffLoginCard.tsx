@@ -5,6 +5,7 @@ import { Check } from 'lucide-react';
 import { Logo } from '@/components/layout/Logo';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 
 type Step = 'login' | 'forgot' | 'reset' | 'reset-success';
 
@@ -14,8 +15,7 @@ type Step = 'login' | 'forgot' | 'reset' | 'reset-success';
 // чем визуально проверить, а не только описать.
 const MAX_LOGIN_ATTEMPTS = 5;
 
-const LINK_CLASSNAME =
-  'cursor-pointer self-center text-body-sm text-neutral-900 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw';
+const LINK_CLASSNAME = `cursor-pointer self-center text-body-sm text-neutral-900 transition-colors duration-fast hover:text-paw motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`;
 
 export function StaffLoginCard() {
   const [step, setStep] = useState<Step>('login');

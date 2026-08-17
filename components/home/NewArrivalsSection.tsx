@@ -2,6 +2,7 @@ import { getLocale, getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { ProductCard } from '@/components/product/ProductCard';
 import { MOCK_PRODUCTS } from '@/components/product/mock-data';
+import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 
 // design.md → Layout «View All — только в New Arrivals»: превью показывает только 2 товара из
 // isNew, "View All →" ведёт на /catalog (весь ассортимент с фильтрами уже там, разворачивать
@@ -40,7 +41,7 @@ export async function NewArrivalsSection() {
         <div className="mt-lg flex justify-center">
           <Link
             href="/catalog"
-            className="text-label-md text-paw transition-colors duration-fast hover:text-paw-hover motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
+            className={`text-label-md text-paw transition-colors duration-fast hover:text-paw-hover motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`}
           >
             {t('viewAll')}
           </Link>

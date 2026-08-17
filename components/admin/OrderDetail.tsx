@@ -2,21 +2,20 @@
 
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { ADMIN_LOCALE, ADMIN_TABLE_CELL_CLASSNAME, ORDER_DATETIME_FORMATTER, ORDER_STATUS_LABEL } from '@/components/admin/constants';
+import {
+  ADMIN_LOCALE,
+  ADMIN_TABLE_CELL_CLASSNAME,
+  ORDER_DATETIME_FORMATTER,
+  ORDER_STATUS_LABEL,
+  adminTableRowClassName,
+  orderStatusColorClassName,
+} from '@/components/admin/constants';
+import { getMockOrderTotal } from '@/components/admin/mock-data';
+import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 import { formatPrice } from '@/lib/utils';
 import type { MockOrder, OrderStatus } from '@/types';
 
 const STATUSES: OrderStatus[] = ['new', 'processing', 'done', 'cancelled'];
-
-// design.md → Order detail: смена статуса — select-field, оформленный цветом соответствующего
-// badge-status-*, а не нейтральный дропдаун. Те же пары фон/текст, что у Badge (order-* варианты),
-// но select, а не span — здесь это управление, не индикатор.
-const STATUS_SELECT_CLASSNAME: Record<OrderStatus, string> = {
-  new: 'bg-paw-tint text-paw',
-  processing: 'bg-tertiary-tint text-tertiary-on-tint',
-  done: 'bg-secondary-tint text-neutral-900',
-  cancelled: 'bg-error-tint text-error-on-tint',
-};
 
 const CELL_CLASSNAME = ADMIN_TABLE_CELL_CLASSNAME;
 
@@ -31,7 +30,7 @@ interface OrderDetailProps {
 export function OrderDetail({ order }: OrderDetailProps) {
   const [status, setStatus] = useState<OrderStatus>(order.status);
   const subtotal = order.items.reduce((sum, item) => sum + item.priceAtOrder * item.quantity, 0);
-  const total = subtotal + order.shippingPriceAtOrder;
+  const total = getMockOrderTotal(order);
 
   return (
     <div className="grid grid-cols-1 gap-lg lg:grid-cols-[1fr_340px]">
@@ -57,10 +56,7 @@ export function OrderDetail({ order }: OrderDetailProps) {
             </thead>
             <tbody>
               {order.items.map((item, index) => (
-                <tr
-                  key={item.id}
-                  className={`border-b border-neutral-300 last:border-b-0 ${index % 2 === 0 ? 'bg-neutral-100' : 'bg-surface'}`}
-                >
+                <tr key={item.id} className={adminTableRowClassName(index)}>
                   <td className={CELL_CLASSNAME}>
                     {item.productNameAtOrder}
                     <span className="block text-body-sm text-neutral-500">{item.variantLabelAtOrder}</span>
@@ -94,12 +90,12 @@ export function OrderDetail({ order }: OrderDetailProps) {
         <div className="flex flex-col gap-sm">
           <div className="flex items-center justify-between gap-md">
             <h2 className="text-h3 text-neutral-900">Customer</h2>
-            <div className={`relative inline-flex items-center rounded-full ${STATUS_SELECT_CLASSNAME[status]}`}>
+            <div className={`relative inline-flex items-center rounded-full ${orderStatusColorClassName(status)}`}>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as OrderStatus)}
                 aria-label="Order status"
-                className="appearance-none bg-transparent py-1.5 pl-3 pr-8 text-label-caps font-semibold text-current outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
+                className={`appearance-none bg-transparent py-1.5 pl-3 pr-8 text-label-caps font-semibold text-current outline-none ${FOCUS_RING_CLASSNAME}`}
               >
                 {STATUSES.map((s) => (
                   <option key={s} value={s}>

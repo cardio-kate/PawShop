@@ -1,22 +1,18 @@
 import type { InputHTMLAttributes } from 'react';
+import { TEXT_FIELD_BASE_CLASSNAME, TEXT_FIELD_SIZE_CLASSNAME, fieldStateClassName } from '@/components/ui/field-styles';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: boolean;
+  // Не называть `size` — HTMLInputElement уже несёт нативный `size` (ширина в символах),
+  // переобъявление с несовместимым типом не скомпилируется.
+  compact?: boolean;
 }
 
-const BASE_CLASSNAME =
-  'w-full rounded-md border bg-surface px-md py-[12px] text-body-md text-neutral-900 outline-none transition-colors duration-fast placeholder:text-neutral-500 motion-reduce:transition-none disabled:cursor-not-allowed disabled:bg-neutral-100 disabled:text-neutral-500';
-
-const STATE_CLASSNAME = {
-  default: 'border-neutral-300 focus:border-paw',
-  error: 'border-error text-error focus:border-error',
-};
-
-export function Input({ error, className, ...props }: InputProps) {
+export function Input({ error, compact, className, ...props }: InputProps) {
   return (
     <input
       aria-invalid={error || undefined}
-      className={`${BASE_CLASSNAME} ${error ? STATE_CLASSNAME.error : STATE_CLASSNAME.default} ${className ?? ''}`}
+      className={`${TEXT_FIELD_BASE_CLASSNAME} ${compact ? TEXT_FIELD_SIZE_CLASSNAME.compact : TEXT_FIELD_SIZE_CLASSNAME.default} ${fieldStateClassName(error)} ${className ?? ''}`}
       {...props}
     />
   );

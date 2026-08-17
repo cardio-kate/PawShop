@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -13,6 +12,14 @@ import { CartButton } from '@/components/cart/CartButton';
 import { CartDrawer } from '@/components/cart/CartDrawer';
 import { useResolvedCartItemCount } from '@/components/cart/useResolvedCartItems';
 import { FOCUSABLE_SELECTOR } from '@/components/ui/Panel';
+import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
+import { useSyncedValue } from '@/lib/hooks/useSyncedValue';
+
+// Search/mobile-nav/cart и так были взаимоисключающими по построению (каждый opener сбрасывал
+// два других вручную) — один `activePanel` вместо трёх независимых boolean делает этот инвариант
+// структурным: новую четвёртую панель нельзя добавить, забыв сбросить остальные, потому что тут
+// просто нет "остальных" — есть одно значение.
+type Panel = 'search' | 'mobileNav' | 'cart' | null;
 
 const ANCHOR_NAV_ITEMS = [
   { key: 'about', id: 'about' },
@@ -24,15 +31,13 @@ const ROUTE_NAV_ITEMS = [
   { key: 'contact', href: '/contact' },
 ] as const;
 
-const NAV_LINK_CLASSNAME =
-  'text-label-md text-neutral-900 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw';
+const NAV_LINK_CLASSNAME = `text-label-md text-neutral-900 transition-colors duration-fast hover:text-paw motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`;
 
 // -translate-y-px: чисто оптическая поправка — геометрически кнопка уже центрирована по высоте
 // шапки так же, как текст нав/EN-DE (проверено getBoundingClientRect, centerY совпадает), но
 // иконка внутри квадрата 20×20 визуально «тяжелее» в центре, чем текст, у которого масса букв
 // смещена к верху строки — без сдвига иконка читается ниже текста, хотя оба центрированы.
-const HEADER_TRIGGER_ICON_BUTTON_CLASSNAME =
-  'cursor-pointer rounded-full p-1 -translate-y-px text-neutral-900 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw';
+const HEADER_TRIGGER_ICON_BUTTON_CLASSNAME = `cursor-pointer rounded-full p-1 -translate-y-px text-neutral-900 transition-colors duration-fast hover:text-paw motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`;
 
 const MOBILE_NAV_LINK_CLASSNAME =
   'px-[15px] py-[12.5px] text-body-md text-neutral-900 transition-colors duration-fast hover:bg-paw-tint hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-paw';
@@ -45,11 +50,11 @@ export function Header() {
   const itemCount = useResolvedCartItemCount();
 
   const searchParam = searchParams.get('search') ?? '';
-  const [syncedSearchParam, setSyncedSearchParam] = useState(searchParam);
-  const [isSearchOpen, setIsSearchOpen] = useState(searchParam.length > 0);
+  const [activePanel, setActivePanel] = useState<Panel>(searchParam.length > 0 ? 'search' : null);
   const [query, setQuery] = useState(searchParam);
-  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const isSearchOpen = activePanel === 'search';
+  const isMobileNavOpen = activePanel === 'mobileNav';
+  const isCartOpen = activePanel === 'cart';
 
   const searchTriggerRef = useRef<HTMLButtonElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -57,17 +62,20 @@ export function Header() {
   const mobileNavTriggerRef = useRef<HTMLButtonElement>(null);
   const mobileNavRef = useRef<HTMLElement>(null);
 
-  if (searchParam !== syncedSearchParam) {
-    setSyncedSearchParam(searchParam);
-    setIsSearchOpen(searchParam.length > 0);
-    setQuery(searchParam);
-    // Тот же инвариант «поиск открыт ⇒ бургер закрыт», что и в openSearch() — сюда можно
-    // попасть в обход неё (например, client-side навигация назад на URL с ?search=), пока
-    // бургер-меню открыто на другой странице.
-    if (searchParam.length > 0) {
-      setIsMobileNavOpen(false);
+  // Реагирует на ?search=, меняющийся снаружи компонента (переход по ссылке, кнопка «назад») —
+  // тот же паттерн "adjust state during render", что и в CatalogClient.tsx, общий хук
+  // useSyncedValue (lib/hooks/). Непустой параметр берёт панель под поиск безусловно (тот же
+  // инвариант, что у openSearch() ниже — «поиск открыт ⇒ ничего другого не открыто»), пустой —
+  // закрывает поиск, только если он и был активной панелью (не отнимает cart/mobileNav, которые
+  // могли открыться независимо от URL).
+  useSyncedValue(searchParam, (value) => {
+    setQuery(value);
+    if (value.length > 0) {
+      setActivePanel('search');
+    } else {
+      setActivePanel((current) => (current === 'search' ? null : current));
     }
-  }
+  });
 
   // cart.store.ts: skipHydration — сервер не знает содержимое localStorage, поэтому гидратация
   // запускается вручную здесь, на клиенте после маунта (architecture.md, «Гидратация счётчика
@@ -103,7 +111,7 @@ export function Header() {
 
   function closeSearch() {
     pendingSearchFocusReturn.current = true;
-    setIsSearchOpen(false);
+    setActivePanel(null);
     setQuery('');
   }
 
@@ -113,23 +121,19 @@ export function Header() {
   }
 
   function openSearch() {
-    setIsMobileNavOpen(false);
-    setIsSearchOpen(true);
+    setActivePanel('search');
   }
 
   function openCart() {
-    setIsSearchOpen(false);
-    setIsMobileNavOpen(false);
-    setIsCartOpen(true);
+    setActivePanel('cart');
   }
 
   function toggleMobileNav() {
-    setIsSearchOpen(false);
-    setIsMobileNavOpen((open) => !open);
+    setActivePanel((current) => (current === 'mobileNav' ? null : 'mobileNav'));
   }
 
   function closeMobileNav() {
-    setIsMobileNavOpen(false);
+    setActivePanel(null);
     mobileNavTriggerRef.current?.focus();
   }
 
@@ -233,7 +237,7 @@ export function Header() {
                 <a
                   key={item.id}
                   href={navHref(item.id)}
-                  onClick={() => setIsMobileNavOpen(false)}
+                  onClick={() => setActivePanel(null)}
                   className={MOBILE_NAV_LINK_CLASSNAME}
                 >
                   {t(item.key)}
@@ -243,7 +247,7 @@ export function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  onClick={() => setIsMobileNavOpen(false)}
+                  onClick={() => setActivePanel(null)}
                   className={MOBILE_NAV_LINK_CLASSNAME}
                 >
                   {t(item.key)}
@@ -255,14 +259,14 @@ export function Header() {
                   нехватка горизонтального места в самой шапке. */}
               <div className="flex items-center justify-between border-t border-neutral-200 px-[15px] py-[12.5px]">
                 <span className="text-body-md text-neutral-700">{t('language')}</span>
-                <LocaleSwitcher onNavigate={() => setIsMobileNavOpen(false)} />
+                <LocaleSwitcher onNavigate={() => setActivePanel(null)} />
               </div>
             </nav>
           )}
 
           <Link
             href="/"
-            className="hidden items-center gap-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw sm:flex"
+            className={`hidden items-center gap-2 ${FOCUS_RING_CLASSNAME} sm:flex`}
           >
             <Logo />
           </Link>
@@ -271,10 +275,9 @@ export function Header() {
         <div className={`shrink-0 items-center justify-center ${hiddenNavWhenSearchOpen} sm:justify-start`}>
           <Link
             href="/"
-            className="flex flex-col items-center gap-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw sm:hidden"
+            className={`${FOCUS_RING_CLASSNAME} sm:hidden`}
           >
-            <Image src="/logo.png" alt="" width={32} height={32} className="h-8 w-8 shrink-0" priority />
-            <span className="text-h3 text-neutral-900">PawShop</span>
+            <Logo stacked />
           </Link>
 
           {/* gap-[12px] не по шкале — осознанно: на sm..lg gap-lg (24px) визуально расползался. */}
@@ -322,7 +325,7 @@ export function Header() {
                   type="button"
                   onClick={clearSearchQuery}
                   aria-label={t('clearSearch')}
-                  className="shrink-0 cursor-pointer rounded-full p-1 text-neutral-500 hover:text-paw focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
+                  className={`shrink-0 cursor-pointer rounded-full p-1 text-neutral-500 hover:text-paw ${FOCUS_RING_CLASSNAME}`}
                 >
                   <X className="h-4 w-4" aria-hidden="true" />
                 </button>
@@ -331,7 +334,7 @@ export function Header() {
                 type="button"
                 onClick={closeSearch}
                 aria-label={t('closeSearch')}
-                className="shrink-0 cursor-pointer rounded-full p-1 text-neutral-500 hover:text-paw focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
+                className={`shrink-0 cursor-pointer rounded-full p-1 text-neutral-500 hover:text-paw ${FOCUS_RING_CLASSNAME}`}
               >
                 <X className="h-4 w-4" aria-hidden="true" />
               </button>
@@ -361,7 +364,7 @@ export function Header() {
         </div>
       </div>
 
-      <CartDrawer open={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      <CartDrawer open={isCartOpen} onClose={() => setActivePanel(null)} />
     </header>
   );
 }

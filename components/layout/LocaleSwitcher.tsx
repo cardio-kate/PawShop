@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
+import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 
 // design.md не даёт отдельного компонента под переключатель локали — визуально следует тому же
 // языку, что nav-link/focus-ring в Header (docs/design.md → Do's and Don'ts, focus-visible везде):
@@ -15,7 +16,7 @@ import { routing } from '@/i18n/routing';
 // box-model — общий для активной и неактивной локали (LOCALE_BOX_CLASSNAME), иначе кликабельная
 // DE отличается по размеру от статичной EN и выглядит асимметрично, хотя визуально не двигается.
 const LOCALE_BOX_CLASSNAME = 'rounded-sm -mx-sm px-sm -my-xs py-xs';
-const INACTIVE_LINK_CLASSNAME = `${LOCALE_BOX_CLASSNAME} text-neutral-900 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw`;
+const INACTIVE_LINK_CLASSNAME = `${LOCALE_BOX_CLASSNAME} text-neutral-900 transition-colors duration-fast hover:text-paw motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`;
 
 export function LocaleSwitcher({ onNavigate }: { onNavigate?: () => void }) {
   const t = useTranslations('Header');

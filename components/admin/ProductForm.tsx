@@ -3,12 +3,14 @@
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/Input';
+import { Textarea } from '@/components/ui/Textarea';
 import { Select } from '@/components/ui/Select';
 import { Toggle } from '@/components/ui/Toggle';
 import { Button } from '@/components/ui/Button';
 import { ImageUploader } from '@/components/admin/ImageUploader';
 import { VariantEditor } from '@/components/admin/VariantEditor';
 import { MOCK_CATEGORIES } from '@/components/product/mock-data';
+import { PRODUCT_MIN_ITEMS } from '@/components/admin/constants';
 import type { AgeGroup, MockProduct, MockVariant } from '@/types';
 
 const AGE_GROUPS: AgeGroup[] = ['kitten', 'adult', 'senior'];
@@ -41,7 +43,7 @@ export function ProductForm({ product }: ProductFormProps) {
   // §10/architecture.md §3.1: товар без фото и без варианта сохранить нельзя — то же правило,
   // что и на сервере (products.service.ts, будущая фаза), видно уже здесь, а не только как ошибка
   // после попытки сохранить.
-  const canSave = images.length > 0 && variants.length > 0;
+  const canSave = images.length >= PRODUCT_MIN_ITEMS && variants.length >= PRODUCT_MIN_ITEMS;
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -80,12 +82,7 @@ export function ProductForm({ product }: ProductFormProps) {
 
       <label className="flex flex-col gap-xs">
         <span className="text-label-md text-neutral-900">Description</span>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          rows={4}
-          className="w-full rounded-md border border-neutral-300 bg-surface px-md py-[12px] text-body-md text-neutral-900 outline-none transition-colors duration-fast focus:border-paw motion-reduce:transition-none"
-        />
+        <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} />
       </label>
 
       <ImageUploader images={images} onChange={setImages} />

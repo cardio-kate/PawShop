@@ -161,6 +161,17 @@
       "body": "You may request access to, correction of, or deletion of your personal data at any time by contacting us at support@pawshop.example. If you request deletion, please note that removing the corresponding Telegram message is a manual step our manager completes as part of processing your request."
     }
   },
+  "Contact": {
+    "title": "Contact",
+    "intro": "Have a question about a product or an order? Fill in the form below or write to us directly at support@pawshop.example — since there's no online payment, our manager always reaches out personally to confirm your order and delivery details.",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "comment": "Comment",
+      "send": "Send"
+    }
+  },
   "Footer": {
     "tagline": "EVERY\nBITE\nMATTERS",
     "copyright": "© {year} PawShop. All rights reserved.",

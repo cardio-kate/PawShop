@@ -1,24 +1,22 @@
 import type { SelectHTMLAttributes } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { fieldStateClassName } from '@/components/ui/field-styles';
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   error?: boolean;
 }
 
+// Своя база, не TEXT_FIELD_BASE_CLASSNAME (Input/Textarea): appearance-none и место под шеврон
+// (pr-xl вместо px-md с обеих сторон), без placeholder-цвета — select его не показывает.
 const BASE_CLASSNAME =
   'w-full appearance-none rounded-md border bg-surface px-md py-[12px] pr-xl text-body-md text-neutral-900 outline-none transition-colors duration-fast motion-reduce:transition-none disabled:cursor-not-allowed disabled:bg-neutral-100 disabled:text-neutral-500';
-
-const STATE_CLASSNAME = {
-  default: 'border-neutral-300 focus:border-paw',
-  error: 'border-error text-error focus:border-error',
-};
 
 export function Select({ error, className, children, ...props }: SelectProps) {
   return (
     <div className="relative">
       <select
         aria-invalid={error || undefined}
-        className={`${BASE_CLASSNAME} ${error ? STATE_CLASSNAME.error : STATE_CLASSNAME.default} ${className ?? ''}`}
+        className={`${BASE_CLASSNAME} ${fieldStateClassName(error)} ${className ?? ''}`}
         {...props}
       >
         {children}

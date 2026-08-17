@@ -1,5 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import Link from 'next/link';
+import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 
 type ButtonVariant = 'primary' | 'secondary';
 type ButtonSize = 'md' | 'sm';
@@ -15,8 +16,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   href?: string;
 }
 
-const BASE_CLASSNAME =
-  'inline-flex items-center justify-center whitespace-nowrap rounded-full border px-[28px] text-label-md transition-colors duration-fast motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw';
+const BASE_CLASSNAME = `inline-flex items-center justify-center whitespace-nowrap rounded-full border px-[28px] text-label-md transition-colors duration-fast motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`;
 
 // sm — вдвое ниже md (высота, не ширина): пока единственный случай — Add to Cart на странице
 // товара (ProductDetailClient.tsx), где кнопка встаёт в ряд с компактными chip-вариантами.

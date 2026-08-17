@@ -161,6 +161,17 @@
       "body": "Sie können jederzeit Auskunft über, Berichtigung oder Löschung Ihrer personenbezogenen Daten verlangen, indem Sie uns unter support@pawshop.example kontaktieren. Bei einem Löschantrag ist die Entfernung der entsprechenden Telegram-Nachricht ein manueller Schritt, den unser Mitarbeiter im Rahmen der Bearbeitung Ihrer Anfrage durchführt."
     }
   },
+  "Contact": {
+    "title": "Kontakt",
+    "intro": "Haben Sie eine Frage zu einem Produkt oder einer Bestellung? Füllen Sie das Formular aus oder schreiben Sie uns direkt an support@pawshop.example — da es keine Online-Zahlung gibt, meldet sich unser Mitarbeiter immer persönlich, um Ihre Bestellung und die Lieferdetails zu bestätigen.",
+    "form": {
+      "name": "Name",
+      "email": "E-Mail",
+      "phone": "Telefon",
+      "comment": "Kommentar",
+      "send": "Senden"
+    }
+  },
   "Footer": {
     "tagline": "JEDER\nNAPF\nZÄHLT",
     "copyright": "© {year} PawShop. Alle Rechte vorbehalten.",

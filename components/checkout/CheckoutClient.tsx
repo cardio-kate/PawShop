@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Input } from '@/components/ui/Input';
+import { Textarea } from '@/components/ui/Textarea';
 import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
 import {
@@ -82,11 +83,7 @@ export function CheckoutClient() {
         </label>
         <label className="flex flex-col gap-xs">
           <span className="text-label-md text-neutral-900">{t('fields.comment')}</span>
-          <textarea
-            name="comment"
-            rows={3}
-            className="w-full rounded-md border border-neutral-300 bg-surface px-md py-[12px] text-body-md text-neutral-900 outline-none transition-colors duration-fast focus:border-paw motion-reduce:transition-none"
-          />
+          <Textarea name="comment" rows={3} />
         </label>
       </div>
 

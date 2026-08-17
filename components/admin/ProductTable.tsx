@@ -9,12 +9,17 @@ import { Toggle } from '@/components/ui/Toggle';
 import { Button } from '@/components/ui/Button';
 import { Panel } from '@/components/ui/Panel';
 import { MOCK_CATEGORIES, MOCK_PRODUCTS } from '@/components/product/mock-data';
-import { ADMIN_LOCALE, ADMIN_TABLE_CELL_CLASSNAME } from '@/components/admin/constants';
+import { ADMIN_LOCALE, ADMIN_TABLE_CELL_CLASSNAME, adminTableRowClassName } from '@/components/admin/constants';
 import { formatPrice } from '@/lib/utils';
+import { iconActionButtonClassName } from '@/components/ui/interaction-styles';
 import type { MockProduct } from '@/types';
 
+// MOCK_CATEGORIES не меняется в рантайме — построить Map один раз на модуль, а не искать
+// .find() внутри .map() по продуктам на каждый рендер таблицы (был O(n×m) на каждый Toggle-клик).
+const CATEGORY_NAME_BY_ID = new Map(MOCK_CATEGORIES.map((category) => [category.id, category.nameEn]));
+
 function getCategoryName(categoryId: string): string {
-  return MOCK_CATEGORIES.find((category) => category.id === categoryId)?.nameEn ?? '—';
+  return CATEGORY_NAME_BY_ID.get(categoryId) ?? '—';
 }
 
 const CELL_CLASSNAME = ADMIN_TABLE_CELL_CLASSNAME;
@@ -67,12 +72,7 @@ export function ProductTable() {
           </thead>
           <tbody>
             {products.map((product, index) => (
-              <tr
-                key={product.id}
-                className={`border-b border-neutral-300 last:border-b-0 ${
-                  index % 2 === 0 ? 'bg-neutral-100' : 'bg-surface'
-                }`}
-              >
+              <tr key={product.id} className={adminTableRowClassName(index)}>
                 <td className="px-md py-sm">
                   <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-sm bg-neutral-100">
                     <Image src={product.images[0]!} alt="" fill sizes="40px" className="object-cover" />
@@ -94,7 +94,7 @@ export function ProductTable() {
                     <Link
                       href={`/admin/dashboard/products/${product.id}/edit`}
                       aria-label={`Edit ${product.name}`}
-                      className="cursor-pointer rounded-full p-1 text-neutral-700 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
+                      className={iconActionButtonClassName()}
                     >
                       <Pencil className="h-4 w-4" aria-hidden="true" />
                     </Link>
@@ -102,7 +102,7 @@ export function ProductTable() {
                       type="button"
                       onClick={() => setProductToDelete(product)}
                       aria-label={`Delete ${product.name}`}
-                      className="cursor-pointer rounded-full p-1 text-neutral-700 transition-colors duration-fast hover:text-error motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
+                      className={iconActionButtonClassName('danger')}
                     >
                       <Trash2 className="h-4 w-4" aria-hidden="true" />
                     </button>

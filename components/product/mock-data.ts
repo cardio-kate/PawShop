@@ -11,7 +11,20 @@ export const MOCK_CATEGORIES: MockCategory[] = [
   { id: 'accessories', slug: 'accessories', nameEn: 'Accessories', nameDe: 'Zubehör' },
 ];
 
-export const MOCK_PRODUCTS: MockProduct[] = [
+type MockProductInput = Omit<MockProduct, 'price'>;
+
+// price — MIN(active ProductVariant.price), тот же агрегат, что будущий getProducts() посчитает в
+// SQL (CLAUDE.md → «База данных»). Раньше это было отдельное поле, которое приходилось вручную
+// держать синхронным с variants (types/index.ts хранил инвариант как комментарий — реального
+// гаранта не было: список вариантов не обязан быть отсортирован по цене, и "первый active" мог
+// разойтись с фактическим минимумом). Теперь считается один раз при построении MOCK_PRODUCTS —
+// разойтись физически не может.
+function withComputedPrice(product: MockProductInput): MockProduct {
+  const activePrices = product.variants.filter((variant) => variant.isActive).map((variant) => variant.price);
+  return { ...product, price: Math.min(...activePrices) };
+}
+
+const MOCK_PRODUCT_INPUTS: MockProductInput[] = [
   {
     id: '1',
     slug: 'kitten-chicken-pouches-in-jelly',
@@ -22,7 +35,6 @@ export const MOCK_PRODUCTS: MockProduct[] = [
     images: ['/mock/products/kitten-chicken-pouches-in-jelly.jpg'],
     isNew: true,
     isActive: true,
-    price: 1.4,
     variants: [
       { id: '1-85g', label: '85 g', price: 1.4, isActive: true },
       { id: '1-pack10', label: 'Pack 10×85 g (850 g)', price: 12.9, isActive: true },
@@ -38,7 +50,6 @@ export const MOCK_PRODUCTS: MockProduct[] = [
     images: ['/mock/products/kitten-chicken-milk-kibble.jpg'],
     isNew: false,
     isActive: true,
-    price: 3.9,
     variants: [
       { id: '2-300g', label: '300 g', price: 3.9, isActive: true },
       { id: '2-1_2kg', label: '1.2 kg', price: 14.3, isActive: true },
@@ -55,7 +66,6 @@ export const MOCK_PRODUCTS: MockProduct[] = [
     images: ['/mock/products/salmon-rice-kibble.jpg'],
     isNew: true,
     isActive: true,
-    price: 3.9,
     variants: [
       { id: '3-300g', label: '300 g', price: 3.9, isActive: true },
       { id: '3-1_2kg', label: '1.2 kg', price: 14.3, isActive: true },
@@ -72,7 +82,6 @@ export const MOCK_PRODUCTS: MockProduct[] = [
     images: ['/mock/products/beef-pouches-in-gravy.jpg'],
     isNew: false,
     isActive: true,
-    price: 1.3,
     variants: [
       { id: '4-85g', label: '85 g', price: 1.3, isActive: true },
       { id: '4-pack10', label: 'Pack 10×85 g (850 g)', price: 11.9, isActive: true },
@@ -88,7 +97,6 @@ export const MOCK_PRODUCTS: MockProduct[] = [
     images: ['/mock/products/turkey-indoor-kibble.jpg'],
     isNew: false,
     isActive: true,
-    price: 4.3,
     variants: [
       { id: '5-300g', label: '300 g', price: 4.3, isActive: true },
       { id: '5-1_2kg', label: '1.2 kg', price: 15.9, isActive: true },
@@ -107,7 +115,6 @@ export const MOCK_PRODUCTS: MockProduct[] = [
     images: ['/mock/products/chicken-pouches-in-jelly-senior.jpg'],
     isNew: false,
     isActive: true,
-    price: 1.4,
     variants: [
       { id: '6-85g', label: '85 g', price: 1.4, isActive: true },
       { id: '6-pack10', label: 'Pack 10×85 g (850 g)', price: 12.9, isActive: true },
@@ -123,7 +130,6 @@ export const MOCK_PRODUCTS: MockProduct[] = [
     images: ['/mock/products/salmon-kibble-senior.jpg'],
     isNew: false,
     isActive: true,
-    price: 4.5,
     variants: [
       { id: '7-300g', label: '300 g', price: 4.5, isActive: true },
       { id: '7-1_2kg', label: '1.2 kg', price: 16.5, isActive: true },
@@ -140,7 +146,6 @@ export const MOCK_PRODUCTS: MockProduct[] = [
     images: ['/mock/products/salmon-treats.jpg'],
     isNew: true,
     isActive: true,
-    price: 3.9,
     variants: [
       { id: '8-40g', label: '40 g', price: 3.9, isActive: true },
       { id: '8-pack10', label: 'Pack 10×40 g (400 g)', price: 34.9, isActive: true },
@@ -156,7 +161,6 @@ export const MOCK_PRODUCTS: MockProduct[] = [
     images: ['/mock/products/cheese-cream-treats.jpg'],
     isNew: false,
     isActive: true,
-    price: 3.2,
     variants: [
       { id: '9-40g', label: '40 g', price: 3.2, isActive: true },
       { id: '9-pack10', label: 'Pack 10×40 g (400 g)', price: 28.9, isActive: true },
@@ -172,13 +176,14 @@ export const MOCK_PRODUCTS: MockProduct[] = [
     images: ['/mock/products/whisker-friendly-bowl-set.jpg'],
     isNew: false,
     isActive: true,
-    price: 12.9,
     variants: [
       { id: '10-standard', label: 'Standard', price: 12.9, isActive: true },
       { id: '10-large', label: 'Large', price: 16.9, isActive: false },
     ],
   },
 ];
+
+export const MOCK_PRODUCTS: MockProduct[] = MOCK_PRODUCT_INPUTS.map(withComputedPrice);
 
 // Мок для §7.6 ТЗ (Delivery) — реальный набор заводится один раз через
 // scripts/seed-delivery-countries.ts (architecture.md §3.4, п.7), здесь только для витрины на моках.

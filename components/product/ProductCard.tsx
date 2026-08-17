@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { Badge } from '@/components/ui/Badge';
 import { AddToCartButton } from '@/components/product/AddToCartButton';
+import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 import { formatPrice } from '@/lib/utils';
 import type { MockProduct } from '@/types';
 
@@ -41,7 +42,7 @@ export function ProductCard({ product, locale, newLabel, addToCartLabel, unavail
     <div className="flex h-full w-full flex-col rounded-card bg-surface p-[10px]">
       <Link
         href={`/product/${product.slug}`}
-        className="relative block aspect-square overflow-hidden rounded-card bg-neutral-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
+        className={`relative block aspect-square overflow-hidden rounded-card bg-neutral-100 ${FOCUS_RING_CLASSNAME}`}
       >
         <Image
           // images[0] всегда есть — товар без единой фотографии не сохраняется на сервере
@@ -62,7 +63,7 @@ export function ProductCard({ product, locale, newLabel, addToCartLabel, unavail
 
       <Link
         href={`/product/${product.slug}`}
-        className="mt-sm block text-body-md text-neutral-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
+        className={`mt-sm block text-body-md text-neutral-900 ${FOCUS_RING_CLASSNAME}`}
       >
         {product.name}
       </Link>

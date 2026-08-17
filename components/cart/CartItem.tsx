@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Minus, Plus, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useCartStore } from '@/lib/store/cart.store';
+import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 import { formatPrice } from '@/lib/utils';
 import type { MockProduct, MockVariant } from '@/types';
 
@@ -37,7 +38,7 @@ export function CartItem({ product, variant, quantity, locale }: CartItemProps) 
             type="button"
             onClick={() => removeItem(product.id, variant.id)}
             aria-label={t('remove', { name: product.name })}
-            className="shrink-0 cursor-pointer rounded-full p-1 text-neutral-500 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
+            className={`shrink-0 cursor-pointer rounded-full p-1 text-neutral-500 transition-colors duration-fast hover:text-paw motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`}
           >
             <X className="h-4 w-4" aria-hidden="true" />
           </button>
@@ -51,7 +52,7 @@ export function CartItem({ product, variant, quantity, locale }: CartItemProps) 
               type="button"
               onClick={() => updateQuantity(product.id, variant.id, quantity - 1)}
               aria-label={t('decreaseQuantity')}
-              className="flex h-7 w-7 cursor-pointer items-center justify-center text-neutral-700 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
+              className={`flex h-7 w-7 cursor-pointer items-center justify-center text-neutral-700 transition-colors duration-fast hover:text-paw motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`}
             >
               <Minus className="h-3.5 w-3.5" aria-hidden="true" />
             </button>
@@ -60,7 +61,7 @@ export function CartItem({ product, variant, quantity, locale }: CartItemProps) 
               type="button"
               onClick={() => updateQuantity(product.id, variant.id, quantity + 1)}
               aria-label={t('increaseQuantity')}
-              className="flex h-7 w-7 cursor-pointer items-center justify-center text-neutral-700 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
+              className={`flex h-7 w-7 cursor-pointer items-center justify-center text-neutral-700 transition-colors duration-fast hover:text-paw motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`}
             >
               <Plus className="h-3.5 w-3.5" aria-hidden="true" />
             </button>

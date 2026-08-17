@@ -17,8 +17,11 @@ custom auth (bcrypt + JWT/jose) · Telegram Bot API · Vercel Blob · `next-intl
 
 ## Status
 
-The project is at the skeleton stage: folder structure, dependencies, and base configs are set up per
-`docs/architecture.md` (section 2). Business logic, components, and server actions are not implemented yet.
+Frontend-first phase: the storefront and admin UI (`app/**`, `components/**`) are built out and run on
+in-memory mock data (`components/*/mock-data.ts`), not a real database yet. The backend layer —
+`actions/**`, `lib/services/**`, `lib/db/queries/**`, `lib/db/schema.ts`, `lib/auth.ts` — is still an empty
+skeleton per `docs/architecture.md` (section 2); wiring it up (Drizzle schema, Server Actions, real
+`getProducts()`/`createOrder()` etc.) is the next phase, not started.
 
 ## Getting started
 

@@ -3,6 +3,8 @@
 import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { Plus, X } from 'lucide-react';
+import { PRODUCT_MIN_ITEMS } from '@/components/admin/constants';
+import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 
 interface ImageUploaderProps {
   images: string[];
@@ -72,7 +74,7 @@ export function ImageUploader({ images, onChange }: ImageUploaderProps) {
               <button
                 type="button"
                 onClick={() => handleSetCover(index)}
-                className="absolute inset-x-0 bottom-0 whitespace-nowrap bg-neutral-900/70 py-1 text-center text-[10px] font-semibold leading-none text-surface opacity-0 transition-opacity duration-fast focus:opacity-100 group-focus-within:opacity-100 group-hover:opacity-100 motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
+                className={`absolute inset-x-0 bottom-0 whitespace-nowrap bg-neutral-900/70 py-1 text-center text-[10px] font-semibold leading-none text-surface opacity-0 transition-opacity duration-fast focus:opacity-100 group-focus-within:opacity-100 group-hover:opacity-100 motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`}
               >
                 Set as cover
               </button>
@@ -81,12 +83,12 @@ export function ImageUploader({ images, onChange }: ImageUploaderProps) {
                 последнего варианта в VariantEditor, применено здесь тем же способом (кнопка
                 удаления скрыта, а не задизейблена). p-1.5 вокруг h-3.5 иконки — тач-таргет 26px,
                 проходит минимум 24×24 (WCAG 2.5.8); h-3 w-3 + p-1 давали только ~20px. */}
-            {images.length > 1 && (
+            {images.length > PRODUCT_MIN_ITEMS && (
               <button
                 type="button"
                 onClick={() => handleRemove(index)}
                 aria-label={`Remove photo ${index + 1}`}
-                className="absolute right-1 top-1 cursor-pointer rounded-full bg-neutral-900/70 p-1.5 text-surface opacity-0 transition-opacity duration-fast hover:bg-neutral-900 focus:opacity-100 group-focus-within:opacity-100 group-hover:opacity-100 motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
+                className={`absolute right-1 top-1 cursor-pointer rounded-full bg-neutral-900/70 p-1.5 text-surface opacity-0 transition-opacity duration-fast hover:bg-neutral-900 focus:opacity-100 group-focus-within:opacity-100 group-hover:opacity-100 motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`}
               >
                 <X className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
@@ -97,7 +99,7 @@ export function ImageUploader({ images, onChange }: ImageUploaderProps) {
           type="button"
           onClick={() => fileInputRef.current?.click()}
           aria-label="Add photo"
-          className="flex h-24 w-24 shrink-0 cursor-pointer items-center justify-center rounded-md border border-dashed border-neutral-300 text-neutral-500 transition-colors duration-fast hover:border-paw hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
+          className={`flex h-24 w-24 shrink-0 cursor-pointer items-center justify-center rounded-md border border-dashed border-neutral-300 text-neutral-500 transition-colors duration-fast hover:border-paw hover:text-paw motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`}
         >
           <Plus className="h-5 w-5" aria-hidden="true" />
         </button>

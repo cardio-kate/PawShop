@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Package, ClipboardList, Truck } from 'lucide-react';
 import { Logo } from '@/components/layout/Logo';
 import { CounterBadge } from '@/components/ui/CounterBadge';
+import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 import { MOCK_ORDERS } from '@/components/admin/mock-data';
 
 // design.md → §7.8 ТЗ: три раздела админ-панели (Products/Orders/Delivery). Порядок — как в ТЗ,
@@ -17,14 +18,17 @@ const NAV_ITEMS = [
 
 const ORDERS_HREF = '/admin/dashboard/orders';
 
-const NAV_LINK_CLASSNAME =
-  'flex items-center gap-sm rounded-md px-sm py-xs text-label-md transition-colors duration-fast motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw';
+// ТЗ §9.3: новые заявки отмечаются визуально в панели — тот же CounterBadge, что у счётчика
+// корзины в Header. MOCK_ORDERS не меняется в рантайме (нет реального backend, который бы
+// мутировал заказы) — посчитать один раз на модуль, а не фильтровать заново на каждый рендер
+// сайдбара (каждая навигация между /admin/dashboard/** страницами). С реальными данными это
+// станет серверным значением (или отдельным мемо на реальный запрос), не клиентским фильтром.
+const NEW_ORDERS_COUNT = MOCK_ORDERS.filter((order) => order.status === 'new').length;
+
+const NAV_LINK_CLASSNAME = `flex items-center gap-sm rounded-md px-sm py-xs text-label-md transition-colors duration-fast motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`;
 
 export function AdminSidebar() {
   const pathname = usePathname();
-  // ТЗ §9.3: новые заявки отмечаются визуально в панели — тот же CounterBadge, что у счётчика
-  // корзины в Header.
-  const newOrdersCount = MOCK_ORDERS.filter((order) => order.status === 'new').length;
 
   return (
     <aside className="flex shrink-0 flex-col gap-lg border-b border-neutral-200 bg-surface p-lg sm:w-60 sm:border-b-0 sm:border-r">
@@ -36,7 +40,7 @@ export function AdminSidebar() {
           // /admin/dashboard/products/new и /products/[id]/edit тоже должны подсвечивать
           // "Products" — startsWith, не точное совпадение пути.
           const active = pathname.startsWith(href);
-          const badgeCount = href === ORDERS_HREF ? newOrdersCount : 0;
+          const badgeCount = href === ORDERS_HREF ? NEW_ORDERS_COUNT : 0;
           return (
             <Link
               key={href}

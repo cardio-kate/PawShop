@@ -2,6 +2,7 @@
 
 import { Plus } from 'lucide-react';
 import { useCartStore } from '@/lib/store/cart.store';
+import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 
 interface AddToCartButtonProps {
   productId: string;
@@ -27,7 +28,7 @@ export function AddToCartButton({ productId, variantId, label, disabled }: AddTo
       disabled={disabled}
       onClick={() => addItem(productId, variantId)}
       aria-label={label}
-      className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full bg-paw text-surface transition-colors duration-fast hover:bg-paw-hover active:bg-paw-active motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:text-neutral-500 disabled:hover:bg-neutral-300 disabled:active:bg-neutral-300 enabled:cursor-pointer"
+      className={`flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full bg-paw text-surface transition-colors duration-fast hover:bg-paw-hover active:bg-paw-active motion-reduce:transition-none ${FOCUS_RING_CLASSNAME} disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:text-neutral-500 disabled:hover:bg-neutral-300 disabled:active:bg-neutral-300 enabled:cursor-pointer`}
     >
       <Plus className="h-5 w-5" aria-hidden="true" />
     </button>

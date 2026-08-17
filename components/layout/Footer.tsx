@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
+import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 
 const FOOTER_LINKS = [
   { key: 'delivery', href: '/delivery' },
@@ -59,8 +60,7 @@ const FOOTER_SOCIALS = [
 // touch target 24×24px по WCAG 2.2 §2.5.8 (проверено getBoundingClientRect). Паддинг компенсирован
 // уменьшенным gap у родительского списка (см. использование ниже), чтобы визуальный интервал между
 // пунктами не увеличился.
-const LINK_CLASSNAME =
-  'text-label-md py-xs transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw';
+const LINK_CLASSNAME = `text-label-md py-xs transition-colors duration-fast hover:text-paw motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`;
 
 export async function Footer() {
   const t = await getTranslations('Footer');
@@ -92,7 +92,7 @@ export async function Footer() {
           <p className="text-body-sm">{t('supportText')}</p>
           <a
             href={`mailto:${t('supportEmail')}`}
-            className="text-label-md font-semibold text-neutral-900 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
+            className={`text-label-md font-semibold text-neutral-900 underline ${FOCUS_RING_CLASSNAME}`}
           >
             {t('supportEmail')}
           </a>
@@ -130,7 +130,7 @@ export async function Footer() {
               <li key={key}>
                 <a
                   href={href}
-                  className="flex items-center gap-sm py-xs text-body-sm transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
+                  className={`flex items-center gap-sm py-xs text-body-sm transition-colors duration-fast hover:text-paw motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`}
                 >
                   <Icon className="h-5 w-5 shrink-0" />
                   {t(key)}

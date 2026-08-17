@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes } from 'react';
+import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 
 type ChipKind = 'filter' | 'variant';
 
@@ -7,8 +8,7 @@ interface ChipProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   selected?: boolean;
 }
 
-const BASE_CLASSNAME =
-  'inline-flex items-center justify-center whitespace-nowrap rounded-full border px-md py-sm text-body-sm transition-colors duration-fast motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw';
+const BASE_CLASSNAME = `inline-flex items-center justify-center whitespace-nowrap rounded-full border px-md py-sm text-body-sm transition-colors duration-fast motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`;
 
 const DEFAULT_CLASSNAME = 'border-neutral-300 bg-surface text-neutral-700';
 

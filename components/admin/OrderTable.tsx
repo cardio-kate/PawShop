@@ -2,16 +2,16 @@ import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { MOCK_ORDERS, getMockOrderTotal } from '@/components/admin/mock-data';
-import { ADMIN_LOCALE, ADMIN_TABLE_CELL_CLASSNAME, ORDER_DATE_FORMATTER, ORDER_STATUS_LABEL } from '@/components/admin/constants';
+import {
+  ADMIN_LOCALE,
+  ADMIN_TABLE_CELL_CLASSNAME,
+  ORDER_DATE_FORMATTER,
+  ORDER_STATUS_BADGE_VARIANT,
+  ORDER_STATUS_LABEL,
+  adminTableRowClassName,
+} from '@/components/admin/constants';
+import { iconActionButtonClassName } from '@/components/ui/interaction-styles';
 import { formatPrice } from '@/lib/utils';
-import type { OrderStatus } from '@/types';
-
-const STATUS_BADGE_VARIANT: Record<OrderStatus, 'order-new' | 'order-processing' | 'order-done' | 'order-cancelled'> = {
-  new: 'order-new',
-  processing: 'order-processing',
-  done: 'order-done',
-  cancelled: 'order-cancelled',
-};
 
 const CELL_CLASSNAME = ADMIN_TABLE_CELL_CLASSNAME;
 
@@ -46,19 +46,19 @@ export function OrderTable() {
         </thead>
         <tbody>
           {MOCK_ORDERS.map((order, index) => (
-            <tr key={order.id} className={`border-b border-neutral-300 last:border-b-0 ${index % 2 === 0 ? 'bg-neutral-100' : 'bg-surface'}`}>
+            <tr key={order.id} className={adminTableRowClassName(index)}>
               <td className={CELL_CLASSNAME}>#{order.id}</td>
               <td className={CELL_CLASSNAME}>{order.customerName}</td>
               <td className={CELL_CLASSNAME}>{ORDER_DATE_FORMATTER.format(new Date(order.createdAt))}</td>
               <td className={CELL_CLASSNAME}>{formatPrice(getMockOrderTotal(order), ADMIN_LOCALE)}</td>
               <td className="px-md py-sm">
-                <Badge variant={STATUS_BADGE_VARIANT[order.status]}>{ORDER_STATUS_LABEL[order.status]}</Badge>
+                <Badge variant={ORDER_STATUS_BADGE_VARIANT[order.status]}>{ORDER_STATUS_LABEL[order.status]}</Badge>
               </td>
               <td className="px-md py-sm">
                 <Link
                   href={`/admin/dashboard/orders/${order.id}`}
                   aria-label={`View order #${order.id}`}
-                  className="flex cursor-pointer items-center justify-center rounded-full p-1 text-neutral-700 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
+                  className={`flex items-center justify-center ${iconActionButtonClassName()}`}
                 >
                   <ChevronRight className="h-4 w-4" aria-hidden="true" />
                 </Link>

@@ -36,8 +36,8 @@ export interface MockProduct {
   isActive: boolean;
   // Уже агрегированная цена (MIN активных ProductVariant.price) — как её вернёт будущий
   // getProducts()/getProductBySlug() (architecture.md: агрегат считается в SQL, не в компоненте).
-  // Инвариант мока: всегда равна цене первого active-варианта в `variants` (см. mock-data.ts) —
-  // держим синхронно вручную, реальный getProducts() будет считать это агрегатом в SQL.
+  // В моках (mock-data.ts) вычисляется из `variants` при построении MOCK_PRODUCTS, не хранится
+  // вручную — реальный getProducts() будет считать тот же агрегат в SQL.
   price: number;
   variants: MockVariant[];
 }

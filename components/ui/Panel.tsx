@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react';
 import { X } from 'lucide-react';
+import { iconActionButtonClassName } from '@/components/ui/interaction-styles';
 
 type PanelSide = 'left' | 'right';
 
@@ -110,7 +111,7 @@ export function Panel({ open, onClose, side = 'right', ariaLabel, closeLabel, ch
           type="button"
           onClick={onClose}
           aria-label={closeLabel}
-          className="absolute right-md top-md z-10 cursor-pointer rounded-full p-1 text-neutral-700 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw"
+          className={`absolute right-md top-md z-10 ${iconActionButtonClassName()}`}
         >
           <X className="h-5 w-5" aria-hidden="true" />
         </button>

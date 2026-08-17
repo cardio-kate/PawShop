@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 
 // design.md → Imagery: первым и основным кадром всегда студийное фото (то же, что на карточке
 // каталога), доп. lifestyle-кадры — необязательны. Мок-товары несут по одному фото — миниатюры
@@ -33,7 +34,7 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
               onClick={() => setSelectedIndex(index)}
               aria-current={index === selectedIndex}
               aria-label={`${alt} — ${index + 1}`}
-              className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-neutral-100 transition-colors duration-fast motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw ${
+              className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-neutral-100 transition-colors duration-fast motion-reduce:transition-none ${FOCUS_RING_CLASSNAME} ${
                 index === selectedIndex ? 'ring-2 ring-paw' : ''
               }`}
             >

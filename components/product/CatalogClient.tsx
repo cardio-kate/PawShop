@@ -5,21 +5,19 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { ChevronLeft, ChevronRight, SearchX } from 'lucide-react';
 import { Chip } from '@/components/ui/Chip';
+import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { ProductCard } from '@/components/product/ProductCard';
 import { MOCK_CATEGORIES, MOCK_PRODUCTS } from '@/components/product/mock-data';
 import { getProductGridColumnsClassName } from '@/components/product/getProductGridColumnsClassName';
+import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
+import { useSyncedValue } from '@/lib/hooks/useSyncedValue';
 import type { AgeGroup } from '@/types';
 
 const AGE_GROUPS: AgeGroup[] = ['kitten', 'adult', 'senior'];
 // design.md → Layout «Пагинация»: 8 товаров на страницу (2 полных ряда по 4 колонки на десктопе),
 // то же значение зафиксировано и в architecture.md как дефолт limit для будущего getProducts().
 const PAGE_SIZE = 8;
-
-// design.md → Components «Price range filter»: py-xs (29.5px) заметно ниже соседних чипов
-// (37.5px) на одной строке фильтров — py-sm выравнивает высоту.
-const PRICE_FIELD_CLASSNAME =
-  'w-20 rounded-md border border-neutral-300 bg-surface px-[12px] py-sm text-body-sm text-neutral-900 outline-none transition-colors duration-fast placeholder:text-neutral-500 motion-reduce:transition-none focus:border-paw';
 
 function FilterRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -71,35 +69,31 @@ export function CatalogClient() {
     window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
   }, [scrollToTopSignal]);
 
-  // Смена поискового запроса приходит снаружи (Header → router.push('/catalog?search=...')) —
-  // тот же контракт, что и у остальных фильтров ниже: любое изменение условия сбрасывает на
-  // страницу 1, а не оставляет пользователя на, например, третьей странице пустого результата.
-  // Сброс состояния во время рендера (а не в useEffect) — официальный паттерн React для "adjusting
-  // state when a prop changes" без лишнего цикла рендера/лишнего кадра со старой страницей.
-  const [syncedSearch, setSyncedSearch] = useState(search);
-  if (search !== syncedSearch) {
-    setSyncedSearch(search);
-    setPage(1);
-  }
+  // Любое изменение условия фильтрации — поиска (приходит снаружи, Header → router.push
+  // ('/catalog?search=...')) или category/age/price (наши же обработчики ниже) — сбрасывает
+  // страницу на 1, а не оставляет пользователя на, например, третьей странице пустого результата.
+  // Раньше setPage(1) был продублирован в каждом обработчике по отдельности (риск забыть при
+  // добавлении шестого фильтра) — теперь один общий хук (useSyncedValue, тот же приём, что и в
+  // Header.tsx для своей синхронизации с ?search=) сравнивает составной ключ всех условий во время
+  // рендера и сбрасывает страницу ровно один раз на каждое реальное изменение, без лишнего кадра
+  // со старой страницей, который дал бы useEffect.
+  const filtersKey = JSON.stringify([search, selectedCategories, selectedAgeGroups, minPrice, maxPrice]);
+  useSyncedValue(filtersKey, () => setPage(1));
 
   function toggleCategory(id: string) {
     setSelectedCategories((prev) => (prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]));
-    setPage(1);
   }
 
   function toggleAgeGroup(age: AgeGroup) {
     setSelectedAgeGroups((prev) => (prev.includes(age) ? prev.filter((a) => a !== age) : [...prev, age]));
-    setPage(1);
   }
 
   function handleMinPriceChange(value: string) {
     setMinPrice(value);
-    setPage(1);
   }
 
   function handleMaxPriceChange(value: string) {
     setMaxPrice(value);
-    setPage(1);
   }
 
   const filtered = useMemo(() => {
@@ -163,7 +157,7 @@ export function CatalogClient() {
         </FilterRow>
 
         <FilterRow label={t('filters.price')}>
-          <input
+          <Input
             type="number"
             inputMode="decimal"
             min={0}
@@ -171,12 +165,13 @@ export function CatalogClient() {
             onChange={(e) => handleMinPriceChange(e.target.value)}
             placeholder={t('filters.priceFrom')}
             aria-label={t('filters.priceFrom')}
-            className={PRICE_FIELD_CLASSNAME}
+            compact
+            className="w-20"
           />
           <span className="text-body-sm text-neutral-500" aria-hidden="true">
             –
           </span>
-          <input
+          <Input
             type="number"
             inputMode="decimal"
             min={0}
@@ -184,7 +179,8 @@ export function CatalogClient() {
             onChange={(e) => handleMaxPriceChange(e.target.value)}
             placeholder={t('filters.priceTo')}
             aria-label={t('filters.priceTo')}
-            className={PRICE_FIELD_CLASSNAME}
+            compact
+            className="w-20"
           />
         </FilterRow>
       </div>
@@ -232,7 +228,7 @@ export function CatalogClient() {
             disabled={currentPage === 1}
             onClick={() => goToPage(Math.max(1, currentPage - 1))}
             aria-label={t('pagination.previous')}
-            className="flex h-9 w-9 items-center justify-center rounded-full text-neutral-700 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw disabled:cursor-not-allowed disabled:text-neutral-300 disabled:hover:text-neutral-300"
+            className={`flex h-9 w-9 items-center justify-center rounded-full text-neutral-700 transition-colors duration-fast hover:text-paw motion-reduce:transition-none ${FOCUS_RING_CLASSNAME} disabled:cursor-not-allowed disabled:text-neutral-300 disabled:hover:text-neutral-300`}
           >
             <ChevronLeft className="h-4 w-4" aria-hidden="true" />
           </button>
@@ -244,7 +240,7 @@ export function CatalogClient() {
               onClick={() => goToPage(p)}
               aria-current={p === currentPage ? 'page' : undefined}
               aria-label={t('pagination.goToPage', { page: p })}
-              className={`flex h-9 w-9 items-center justify-center rounded-full text-label-md transition-colors duration-fast motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw ${
+              className={`flex h-9 w-9 items-center justify-center rounded-full text-label-md transition-colors duration-fast motion-reduce:transition-none ${FOCUS_RING_CLASSNAME} ${
                 p === currentPage ? 'bg-paw text-surface' : 'text-neutral-700 hover:text-paw'
               }`}
             >
@@ -257,7 +253,7 @@ export function CatalogClient() {
             disabled={currentPage === pageCount}
             onClick={() => goToPage(Math.min(pageCount, currentPage + 1))}
             aria-label={t('pagination.next')}
-            className="flex h-9 w-9 items-center justify-center rounded-full text-neutral-700 transition-colors duration-fast hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw disabled:cursor-not-allowed disabled:hover:text-neutral-300 disabled:text-neutral-300"
+            className={`flex h-9 w-9 items-center justify-center rounded-full text-neutral-700 transition-colors duration-fast hover:text-paw motion-reduce:transition-none ${FOCUS_RING_CLASSNAME} disabled:cursor-not-allowed disabled:hover:text-neutral-300 disabled:text-neutral-300`}
           >
             <ChevronRight className="h-4 w-4" aria-hidden="true" />
           </button>
