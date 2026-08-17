@@ -1,5 +1,9 @@
 import type { TextareaHTMLAttributes } from 'react';
-import { TEXT_FIELD_BASE_CLASSNAME, TEXT_FIELD_SIZE_CLASSNAME, fieldStateClassName } from '@/components/ui/field-styles';
+import {
+  TEXT_FIELD_BASE_CLASSNAME,
+  TEXT_FIELD_SIZE_CLASSNAME,
+  fieldStateClassName,
+} from '@/components/ui/field-styles';
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   error?: boolean;

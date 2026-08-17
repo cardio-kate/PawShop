@@ -32,7 +32,7 @@ export function VariantEditor({ variants, onChange }: VariantEditorProps) {
   }
 
   return (
-    <div className="flex flex-col gap-sm">
+    <div className="gap-sm flex flex-col">
       <span className="text-label-md text-neutral-900">Variants</span>
       <div className="overflow-x-auto rounded-md border border-neutral-300">
         <table className="w-full min-w-[420px] border-collapse text-left">
@@ -99,7 +99,13 @@ export function VariantEditor({ variants, onChange }: VariantEditorProps) {
           </tbody>
         </table>
       </div>
-      <Button type="button" variant="secondary" size="sm" onClick={addVariant} className="self-start">
+      <Button
+        type="button"
+        variant="secondary"
+        size="sm"
+        onClick={addVariant}
+        className="self-start"
+      >
         + Add variant
       </Button>
     </div>

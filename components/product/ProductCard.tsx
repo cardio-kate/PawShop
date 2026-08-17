@@ -18,7 +18,13 @@ interface ProductCardProps {
 // можно рендерить и из Server Component (Catalog/New Arrivals), и временно из клиентского
 // ui-playground для визуальной проверки, не пробрасывая через границу server/client функцию t().
 // Тексты и locale приходят пропсами, резолвит их вызывающий компонент.
-export function ProductCard({ product, locale, newLabel, addToCartLabel, unavailableLabel }: ProductCardProps) {
+export function ProductCard({
+  product,
+  locale,
+  newLabel,
+  addToCartLabel,
+  unavailableLabel,
+}: ProductCardProps) {
   const price = formatPrice(product.price, locale);
   // Карточка каталога не даёт выбрать вариант — в корзину уходит самый дешёвый активный, тот же,
   // чья цена уже показана на карточке (product.price = MIN активных вариантов, CLAUDE.md → «База
@@ -39,10 +45,10 @@ export function ProductCard({ product, locale, newLabel, addToCartLabel, unavail
     // длинным названием (2 строки) без этого проседали ниже соседних — цена/кнопка съезжали
     // на разную высоту от карточки к карточке. Требует stretch по высоте от родительского ряда
     // (родитель должен НЕ выставлять свой items-center, иначе h-full не от чего считать).
-    <div className="flex h-full w-full flex-col rounded-card bg-surface p-[10px]">
+    <div className="rounded-card bg-surface flex h-full w-full flex-col p-[10px]">
       <Link
         href={`/product/${product.slug}`}
-        className={`relative block aspect-square overflow-hidden rounded-card bg-neutral-100 ${FOCUS_RING_CLASSNAME}`}
+        className={`rounded-card relative block aspect-square overflow-hidden bg-neutral-100 ${FOCUS_RING_CLASSNAME}`}
       >
         <Image
           // images[0] всегда есть — товар без единой фотографии не сохраняется на сервере
@@ -55,7 +61,7 @@ export function ProductCard({ product, locale, newLabel, addToCartLabel, unavail
           className="rounded-card object-cover"
         />
         {product.isNew && (
-          <Badge variant="new" className="absolute left-sm top-sm">
+          <Badge variant="new" className="left-sm top-sm absolute">
             {newLabel}
           </Badge>
         )}
@@ -63,12 +69,12 @@ export function ProductCard({ product, locale, newLabel, addToCartLabel, unavail
 
       <Link
         href={`/product/${product.slug}`}
-        className={`mt-sm block text-body-md text-neutral-900 ${FOCUS_RING_CLASSNAME}`}
+        className={`mt-sm text-body-md block text-neutral-900 ${FOCUS_RING_CLASSNAME}`}
       >
         {product.name}
       </Link>
 
-      <div className="mt-auto flex items-center justify-between gap-sm">
+      <div className="gap-sm mt-auto flex items-center justify-between">
         <span className="text-price text-neutral-900">{price}</span>
         <AddToCartButton
           productId={product.id}

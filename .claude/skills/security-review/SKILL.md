@@ -30,11 +30,11 @@ GraphQL, платежи) — это перечислено в конце как 
 
 ```typescript
 // PASS
-const jwtSecret = process.env.JWT_SECRET
-if (!jwtSecret) throw new Error('JWT_SECRET not configured')
+const jwtSecret = process.env.JWT_SECRET;
+if (!jwtSecret) throw new Error('JWT_SECRET not configured');
 
 // FAIL — секрет прямо в коде
-const jwtSecret = 'a1b2c3...'
+const jwtSecret = 'a1b2c3...';
 ```
 
 - [ ] `import 'server-only'` — первая строка в каждом файле `lib/db/**`, `lib/auth.ts`,
@@ -54,11 +54,11 @@ const jwtSecret = 'a1b2c3...'
 ```typescript
 // actions/orders.actions.ts
 export async function createOrder(input: unknown) {
-  const parsed = createOrderSchema.safeParse(input)
+  const parsed = createOrderSchema.safeParse(input);
   if (!parsed.success) {
-    return { success: false, errors: parsed.error.issues }
+    return { success: false, errors: parsed.error.issues };
   }
-  return orderService.createOrder(parsed.data)
+  return orderService.createOrder(parsed.data);
 }
 ```
 
@@ -78,10 +78,10 @@ export async function createOrder(input: unknown) {
 
 ```typescript
 // PASS
-await db.select().from(products).where(eq(products.slug, slug))
+await db.select().from(products).where(eq(products.slug, slug));
 
 // FAIL — конкатенация, даже через Drizzle sql``
-await db.execute(sql.raw(`SELECT * FROM products WHERE slug = '${slug}'`))
+await db.execute(sql.raw(`SELECT * FROM products WHERE slug = '${slug}'`));
 ```
 
 - [ ] Нет строковой конкатенации значений пользователя в SQL; если нужен raw SQL — только
@@ -146,10 +146,10 @@ PII клиента: `customerName`, `phone`, `street`/`city`/`postalCode`, `comm
 
 ```typescript
 // FAIL
-console.error('createOrder failed', order) // весь объект с PII в логах
+console.error('createOrder failed', order); // весь объект с PII в логах
 
 // PASS
-console.error('createOrder failed', { orderId: order.id })
+console.error('createOrder failed', { orderId: order.id });
 ```
 
 - [ ] PII заказа (имя/адрес/телефон/comment) не уходит в `console.log`/логи целиком

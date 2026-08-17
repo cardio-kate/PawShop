@@ -11,7 +11,7 @@ export function CounterBadge({ count, className }: CounterBadgeProps) {
   return (
     <span
       aria-hidden="true"
-      className={`flex h-4 min-w-4 items-center justify-center rounded-full bg-paw px-1 text-[10px] font-semibold leading-none text-surface ${className ?? ''}`}
+      className={`bg-paw text-surface flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] leading-none font-semibold ${className ?? ''}`}
     >
       {count}
     </span>

@@ -31,11 +31,11 @@ export function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex shrink-0 flex-col gap-lg border-b border-neutral-200 bg-surface p-lg sm:w-60 sm:border-b-0 sm:border-r">
+    <aside className="gap-lg bg-surface p-lg flex shrink-0 flex-col border-b border-neutral-200 sm:w-60 sm:border-r sm:border-b-0">
       <Link href="/admin/dashboard/products" className="self-start">
         <Logo />
       </Link>
-      <nav aria-label="Admin" className="flex flex-row gap-xs sm:flex-col">
+      <nav aria-label="Admin" className="gap-xs flex flex-row sm:flex-col">
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
           // /admin/dashboard/products/new и /products/[id]/edit тоже должны подсвечивать
           // "Products" — startsWith, не точное совпадение пути.
@@ -47,7 +47,9 @@ export function AdminSidebar() {
               href={href}
               aria-current={active ? 'page' : undefined}
               className={`${NAV_LINK_CLASSNAME} ${
-                active ? 'bg-neutral-100 text-paw' : 'text-neutral-700 hover:bg-neutral-100 hover:text-paw'
+                active
+                  ? 'text-paw bg-neutral-100'
+                  : 'hover:text-paw text-neutral-700 hover:bg-neutral-100'
               }`}
             >
               <Icon className="h-5 w-5 shrink-0" aria-hidden="true" />

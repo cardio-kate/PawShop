@@ -24,31 +24,33 @@ export function ProductDetailClient({
   const locale = useLocale();
   const addItem = useCartStore((state) => state.addItem);
 
-  const firstActiveVariant = product.variants.find((variant) => variant.isActive) ?? product.variants[0]!;
+  const firstActiveVariant =
+    product.variants.find((variant) => variant.isActive) ?? product.variants[0]!;
   const [selectedVariantId, setSelectedVariantId] = useState(firstActiveVariant.id);
-  const selectedVariant = product.variants.find((variant) => variant.id === selectedVariantId) ?? firstActiveVariant;
+  const selectedVariant =
+    product.variants.find((variant) => variant.id === selectedVariantId) ?? firstActiveVariant;
   const price = formatPrice(selectedVariant.price, locale);
 
   return (
-    <div className="flex flex-col gap-[12px] min-[640px]:max-[670px]:gap-sm">
+    <div className="min-[640px]:max-[670px]:gap-sm flex flex-col gap-[12px]">
       <h1 className="text-h1 text-neutral-900">{product.name}</h1>
       <p className="text-price text-neutral-900">{price}</p>
       <p className="text-body-md text-neutral-700">{product.description}</p>
 
       {/* Характеристики — не chip-фильтр, а некликабельные метки в том же визуальном языке
           (design.md → Layout «Страница товара»): без обводки, без interactive-состояний. */}
-      <div className="flex flex-wrap gap-sm">
-        <span className="rounded-full bg-neutral-100 px-md py-sm text-body-sm text-neutral-700">
+      <div className="gap-sm flex flex-wrap">
+        <span className="px-md py-sm text-body-sm rounded-full bg-neutral-100 text-neutral-700">
           {categoryLabel}
         </span>
-        <span className="rounded-full bg-neutral-100 px-md py-sm text-body-sm text-neutral-700">
+        <span className="px-md py-sm text-body-sm rounded-full bg-neutral-100 text-neutral-700">
           {ageGroupLabel}
         </span>
       </div>
 
       {/* Чипы не оборачиваются в fieldset/radiogroup: design.md использует тот же паттерн
           selected-состояния, что у filter-чипов каталога, — простые toggle-кнопки. */}
-      <div className="flex flex-wrap gap-sm">
+      <div className="gap-sm flex flex-wrap">
         {product.variants.map((variant) => (
           <Chip
             key={variant.id}
@@ -76,7 +78,7 @@ export function ProductDetailClient({
         variant="primary"
         size="sm"
         disabled={!selectedVariant.isActive}
-        className="mt-lg w-full sm:w-[clamp(200px,calc(40vw_-_60px),294px)] min-[640px]:max-[670px]:mt-0"
+        className="mt-lg w-full min-[640px]:max-[670px]:mt-0 sm:w-[clamp(200px,calc(40vw_-_60px),294px)]"
         onClick={() => addItem(product.id, selectedVariant.id)}
       >
         {selectedVariant.isActive ? t('addToCart') : t('outOfStock')}

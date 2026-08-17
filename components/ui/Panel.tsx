@@ -32,7 +32,15 @@ const SIDE_HIDDEN_TRANSFORM: Record<PanelSide, string> = {
 export const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-export function Panel({ open, onClose, side = 'right', ariaLabel, closeLabel, children, className }: PanelProps) {
+export function Panel({
+  open,
+  onClose,
+  side = 'right',
+  ariaLabel,
+  closeLabel,
+  children,
+  className,
+}: PanelProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const previouslyFocusedRef = useRef<HTMLElement | null>(null);
   const onCloseRef = useRef(onClose);
@@ -92,7 +100,7 @@ export function Panel({ open, onClose, side = 'right', ariaLabel, closeLabel, ch
       <div
         aria-hidden="true"
         onClick={onClose}
-        className={`absolute inset-0 bg-neutral-900/40 transition-opacity duration-base motion-reduce:transition-none ${
+        className={`duration-base absolute inset-0 bg-neutral-900/40 transition-opacity motion-reduce:transition-none ${
           open ? 'opacity-100' : 'opacity-0'
         }`}
       />
@@ -103,7 +111,7 @@ export function Panel({ open, onClose, side = 'right', ariaLabel, closeLabel, ch
         aria-label={ariaLabel}
         tabIndex={-1}
         onKeyDown={handleTabKey}
-        className={`absolute inset-y-0 flex w-full flex-col bg-surface shadow-[0_4px_16px_rgba(14,14,18,0.08)] outline-none transition-transform duration-base motion-reduce:transition-none sm:w-[400px] ${SIDE_CLASSNAME[side]} ${
+        className={`bg-surface duration-base absolute inset-y-0 flex w-full flex-col shadow-[0_4px_16px_rgba(14,14,18,0.08)] transition-transform outline-none motion-reduce:transition-none sm:w-[400px] ${SIDE_CLASSNAME[side]} ${
           open ? 'translate-x-0' : SIDE_HIDDEN_TRANSFORM[side]
         } ${className ?? ''}`}
       >
@@ -111,7 +119,7 @@ export function Panel({ open, onClose, side = 'right', ariaLabel, closeLabel, ch
           type="button"
           onClick={onClose}
           aria-label={closeLabel}
-          className={`absolute right-md top-md z-10 ${iconActionButtonClassName()}`}
+          className={`right-md top-md absolute z-10 ${iconActionButtonClassName()}`}
         >
           <X className="h-5 w-5" aria-hidden="true" />
         </button>

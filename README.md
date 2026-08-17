@@ -49,13 +49,13 @@ npm run seed:delivery-countries
 
 ## Scripts
 
-| Command                                                  | Purpose                    |
-| --------------------------------------------------------- | --------------------------- |
-| `npm run dev`                                            | local development           |
-| `npm run build` / `npm run start`                        | production build and start  |
-| `npm run lint` / `npm run typecheck` / `npm run format`  | static checks                |
-| `npm run db:generate` / `db:migrate` / `db:studio`       | Drizzle migrations           |
-| `npm run test` / `test:unit` / `test:integration`        | Jest                          |
+| Command                                                 | Purpose                    |
+| ------------------------------------------------------- | -------------------------- |
+| `npm run dev`                                           | local development          |
+| `npm run build` / `npm run start`                       | production build and start |
+| `npm run lint` / `npm run typecheck` / `npm run format` | static checks              |
+| `npm run db:generate` / `db:migrate` / `db:studio`      | Drizzle migrations         |
+| `npm run test` / `test:unit` / `test:integration`       | Jest                       |
 
 ## Structure
 

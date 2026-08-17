@@ -15,11 +15,19 @@ const RIGHT_ITEMS = [
   { key: 'madeWithCare', Icon: Heart },
 ] as const;
 
-function ValueItem({ Icon, title, description }: { Icon: typeof Leaf; title: string; description: string }) {
+function ValueItem({
+  Icon,
+  title,
+  description,
+}: {
+  Icon: typeof Leaf;
+  title: string;
+  description: string;
+}) {
   return (
-    <div className="flex gap-md">
-      <Icon className="h-6 w-6 shrink-0 text-paw" aria-hidden="true" />
-      <div className="flex flex-col gap-xs">
+    <div className="gap-md flex">
+      <Icon className="text-paw h-6 w-6 shrink-0" aria-hidden="true" />
+      <div className="gap-xs flex flex-col">
         <h3 className="text-label-md text-neutral-900">{title}</h3>
         <p className="text-body-sm text-neutral-700">{description}</p>
       </div>
@@ -31,31 +39,41 @@ export async function ValuePropsSection() {
   const t = await getTranslations('Home.valueProps');
 
   return (
-    <section id="value-props" className="rounded-t-2xl bg-paw-tint px-lg py-xl sm:px-[40px]">
-      <div className="flex flex-col items-center gap-sm text-center">
+    <section id="value-props" className="bg-paw-tint px-lg py-xl rounded-t-2xl sm:px-[40px]">
+      <div className="gap-sm flex flex-col items-center text-center">
         <p className="text-label-caps text-neutral-500">{t('eyebrow')}</p>
-        <h2 className="text-section-heading uppercase text-neutral-900">{t('title')}</h2>
+        <h2 className="text-section-heading text-neutral-900 uppercase">{t('title')}</h2>
       </div>
 
-      <div className="mt-xl flex flex-col items-center gap-xl md:flex-row md:items-start md:justify-center md:gap-2xl">
-        <div className="flex w-full flex-col gap-lg sm:w-[280px]">
+      <div className="mt-xl gap-xl md:gap-2xl flex flex-col items-center md:flex-row md:items-start md:justify-center">
+        <div className="gap-lg flex w-full flex-col sm:w-[280px]">
           {LEFT_ITEMS.map(({ key, Icon }) => (
-            <ValueItem key={key} Icon={Icon} title={t(`${key}.title`)} description={t(`${key}.description`)} />
+            <ValueItem
+              key={key}
+              Icon={Icon}
+              title={t(`${key}.title`)}
+              description={t(`${key}.description`)}
+            />
           ))}
         </div>
 
         {/* value-props-illustration (design.md, 150×190px) — место зарезервировано под конкретный
             арт заказчика, не токен дизайн-системы; placeholder до готовности реального ассета. */}
         <div
-          className="flex h-[190px] w-[150px] shrink-0 items-center justify-center rounded-2xl bg-surface"
+          className="bg-surface flex h-[190px] w-[150px] shrink-0 items-center justify-center rounded-2xl"
           aria-hidden="true"
         >
-          <Cat className="h-16 w-16 text-paw" strokeWidth={1.5} />
+          <Cat className="text-paw h-16 w-16" strokeWidth={1.5} />
         </div>
 
-        <div className="flex w-full flex-col gap-lg sm:w-[280px]">
+        <div className="gap-lg flex w-full flex-col sm:w-[280px]">
           {RIGHT_ITEMS.map(({ key, Icon }) => (
-            <ValueItem key={key} Icon={Icon} title={t(`${key}.title`)} description={t(`${key}.description`)} />
+            <ValueItem
+              key={key}
+              Icon={Icon}
+              title={t(`${key}.title`)}
+              description={t(`${key}.description`)}
+            />
           ))}
         </div>
       </div>

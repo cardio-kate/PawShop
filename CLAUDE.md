@@ -31,8 +31,7 @@ PostgreSQL на Neon · Drizzle ORM · Zod · собственный auth на b
 `UI (components) → Actions (тонкие, /actions) → Services (бизнес-правила, lib/services) → Queries
 (Drizzle, lib/db/queries) → Postgres`.
 
-Каждый Server Action делает ровно: 1) проверка сессии (для админских — `requireAdminSession()`)
-2) Zod-валидация входа 3) вызов соответствующей функции `services` 4) `revalidateTag`/`revalidatePath`
+Каждый Server Action делает ровно: 1) проверка сессии (для админских — `requireAdminSession()`) 2) Zod-валидация входа 3) вызов соответствующей функции `services` 4) `revalidateTag`/`revalidatePath`
 для затронутых страниц 5) типизированный ответ `{ success, data }` / `{ success: false, errors }`. SQL и
 бизнес-условия в actions не пишутся — это обязанность `services`, иначе логика расползается и её нельзя
 юнит-тестировать без поднятия Next.js. Исключение из шага 1 — публичные actions без сессии по конструкции
@@ -183,6 +182,7 @@ upload-токен → грузит файл напрямую в Vercel Blob → 
 
 Отдельно — отображение (каталог, карточка товара, не относится к загрузке выше): `next/image` с
 осознанным `priority`/`sizes`, не «как получится».
+
 - `priority` — только для изображений в первом экране (первые 2–4 карточки каталога / hero на странице
   товара), не на всю сетку — иначе `priority` теряет смысл: браузер прелоадит всё разом, выигрыша нет.
 - `sizes` — под фактическую раскладку сетки каталога (например,

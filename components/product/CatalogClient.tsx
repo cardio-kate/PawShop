@@ -21,9 +21,9 @@ const PAGE_SIZE = 8;
 
 function FilterRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-sm sm:flex-row sm:items-center">
+    <div className="gap-sm flex flex-col sm:flex-row sm:items-center">
       <span className="text-label-md text-neutral-900 sm:w-28 sm:shrink-0">{label}</span>
-      <div className="flex flex-wrap items-center gap-sm">{children}</div>
+      <div className="gap-sm flex flex-wrap items-center">{children}</div>
     </div>
   );
 }
@@ -77,15 +77,25 @@ export function CatalogClient() {
   // Header.tsx для своей синхронизации с ?search=) сравнивает составной ключ всех условий во время
   // рендера и сбрасывает страницу ровно один раз на каждое реальное изменение, без лишнего кадра
   // со старой страницей, который дал бы useEffect.
-  const filtersKey = JSON.stringify([search, selectedCategories, selectedAgeGroups, minPrice, maxPrice]);
+  const filtersKey = JSON.stringify([
+    search,
+    selectedCategories,
+    selectedAgeGroups,
+    minPrice,
+    maxPrice,
+  ]);
   useSyncedValue(filtersKey, () => setPage(1));
 
   function toggleCategory(id: string) {
-    setSelectedCategories((prev) => (prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]));
+    setSelectedCategories((prev) =>
+      prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id],
+    );
   }
 
   function toggleAgeGroup(age: AgeGroup) {
-    setSelectedAgeGroups((prev) => (prev.includes(age) ? prev.filter((a) => a !== age) : [...prev, age]));
+    setSelectedAgeGroups((prev) =>
+      prev.includes(age) ? prev.filter((a) => a !== age) : [...prev, age],
+    );
   }
 
   function handleMinPriceChange(value: string) {
@@ -103,8 +113,10 @@ export function CatalogClient() {
 
     return MOCK_PRODUCTS.filter((product) => {
       if (query && !product.name.toLowerCase().includes(query)) return false;
-      if (selectedCategories.length > 0 && !selectedCategories.includes(product.categoryId)) return false;
-      if (selectedAgeGroups.length > 0 && !selectedAgeGroups.includes(product.ageGroup)) return false;
+      if (selectedCategories.length > 0 && !selectedCategories.includes(product.categoryId))
+        return false;
+      if (selectedAgeGroups.length > 0 && !selectedAgeGroups.includes(product.ageGroup))
+        return false;
       if (min !== null && !Number.isNaN(min) && product.price < min) return false;
       if (max !== null && !Number.isNaN(max) && product.price > max) return false;
       return true;
@@ -115,7 +127,11 @@ export function CatalogClient() {
   const currentPage = Math.min(page, pageCount);
   const pageItems = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
   const hasActiveFilters =
-    selectedCategories.length > 0 || selectedAgeGroups.length > 0 || minPrice !== '' || maxPrice !== '' || search !== '';
+    selectedCategories.length > 0 ||
+    selectedAgeGroups.length > 0 ||
+    minPrice !== '' ||
+    maxPrice !== '' ||
+    search !== '';
 
   // design.md → Components «Empty state»: сбрасывает и фильтры, и поисковый запрос разом — состояние
   // «ничего не найдено» может быть вызвано любым из них по отдельности или всеми сразу. search
@@ -134,8 +150,8 @@ export function CatalogClient() {
   }
 
   return (
-    <div className="flex flex-col gap-lg">
-      <div className="flex flex-col gap-md border-b border-neutral-200 pb-lg">
+    <div className="gap-lg flex flex-col">
+      <div className="gap-md pb-lg flex flex-col border-b border-neutral-200">
         <FilterRow label={t('filters.category')}>
           {MOCK_CATEGORIES.map((category) => (
             <Chip
@@ -150,7 +166,11 @@ export function CatalogClient() {
 
         <FilterRow label={t('filters.age')}>
           {AGE_GROUPS.map((age) => (
-            <Chip key={age} selected={selectedAgeGroups.includes(age)} onClick={() => toggleAgeGroup(age)}>
+            <Chip
+              key={age}
+              selected={selectedAgeGroups.includes(age)}
+              onClick={() => toggleAgeGroup(age)}
+            >
               {t(`ageGroups.${age}`)}
             </Chip>
           ))}
@@ -195,7 +215,9 @@ export function CatalogClient() {
         // странице (getProductGridColumnsClassName) — при узких фильтрах/последней неполной странице
         // пустые track'и без карточки внутри всё равно растягивались бы до 290px (Maximize Tracks
         // не смотрит на контент), и результат висел бы у левого края вместо центрирования.
-        <div className={`grid justify-items-center justify-center gap-gutter ${getProductGridColumnsClassName(pageItems.length)}`}>
+        <div
+          className={`gap-gutter grid justify-center justify-items-center ${getProductGridColumnsClassName(pageItems.length)}`}
+        >
           {pageItems.map((product) => (
             <div key={product.id} className="w-full max-w-[290px]">
               <ProductCard
@@ -209,7 +231,7 @@ export function CatalogClient() {
           ))}
         </div>
       ) : (
-        <div className="flex flex-col items-center gap-sm py-3xl text-center">
+        <div className="gap-sm py-3xl flex flex-col items-center text-center">
           <SearchX className="h-10 w-10 text-neutral-300" aria-hidden="true" />
           <p className="text-body-md text-neutral-900">{t('emptyTitle')}</p>
           <p className="text-body-sm text-neutral-500">{t('emptyDescription')}</p>
@@ -222,13 +244,16 @@ export function CatalogClient() {
       )}
 
       {pageCount > 1 && (
-        <nav aria-label={t('pagination.ariaLabel')} className="flex items-center justify-center gap-xs pt-md">
+        <nav
+          aria-label={t('pagination.ariaLabel')}
+          className="gap-xs pt-md flex items-center justify-center"
+        >
           <button
             type="button"
             disabled={currentPage === 1}
             onClick={() => goToPage(Math.max(1, currentPage - 1))}
             aria-label={t('pagination.previous')}
-            className={`flex h-9 w-9 items-center justify-center rounded-full text-neutral-700 transition-colors duration-fast hover:text-paw motion-reduce:transition-none ${FOCUS_RING_CLASSNAME} disabled:cursor-not-allowed disabled:text-neutral-300 disabled:hover:text-neutral-300`}
+            className={`duration-fast hover:text-paw flex h-9 w-9 items-center justify-center rounded-full text-neutral-700 transition-colors motion-reduce:transition-none ${FOCUS_RING_CLASSNAME} disabled:cursor-not-allowed disabled:text-neutral-300 disabled:hover:text-neutral-300`}
           >
             <ChevronLeft className="h-4 w-4" aria-hidden="true" />
           </button>
@@ -240,8 +265,8 @@ export function CatalogClient() {
               onClick={() => goToPage(p)}
               aria-current={p === currentPage ? 'page' : undefined}
               aria-label={t('pagination.goToPage', { page: p })}
-              className={`flex h-9 w-9 items-center justify-center rounded-full text-label-md transition-colors duration-fast motion-reduce:transition-none ${FOCUS_RING_CLASSNAME} ${
-                p === currentPage ? 'bg-paw text-surface' : 'text-neutral-700 hover:text-paw'
+              className={`text-label-md duration-fast flex h-9 w-9 items-center justify-center rounded-full transition-colors motion-reduce:transition-none ${FOCUS_RING_CLASSNAME} ${
+                p === currentPage ? 'bg-paw text-surface' : 'hover:text-paw text-neutral-700'
               }`}
             >
               {p}
@@ -253,7 +278,7 @@ export function CatalogClient() {
             disabled={currentPage === pageCount}
             onClick={() => goToPage(Math.min(pageCount, currentPage + 1))}
             aria-label={t('pagination.next')}
-            className={`flex h-9 w-9 items-center justify-center rounded-full text-neutral-700 transition-colors duration-fast hover:text-paw motion-reduce:transition-none ${FOCUS_RING_CLASSNAME} disabled:cursor-not-allowed disabled:hover:text-neutral-300 disabled:text-neutral-300`}
+            className={`duration-fast hover:text-paw flex h-9 w-9 items-center justify-center rounded-full text-neutral-700 transition-colors motion-reduce:transition-none ${FOCUS_RING_CLASSNAME} disabled:cursor-not-allowed disabled:text-neutral-300 disabled:hover:text-neutral-300`}
           >
             <ChevronRight className="h-4 w-4" aria-hidden="true" />
           </button>

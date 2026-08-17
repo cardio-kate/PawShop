@@ -8,7 +8,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   setRequestLocale(locale);
 
   return (
-    <div className="mx-auto flex max-w-container flex-col gap-[60px] px-lg pt-[60px]">
+    <div className="max-w-container px-lg mx-auto flex flex-col gap-[60px] pt-[60px]">
       <AboutSection />
       <NewArrivalsSection />
       <ValuePropsSection />

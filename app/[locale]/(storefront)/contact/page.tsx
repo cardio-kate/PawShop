@@ -25,32 +25,32 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
   const t = await getTranslations('Contact');
 
   return (
-    <div className="mx-auto max-w-container px-lg pt-[60px]">
+    <div className="max-w-container px-lg mx-auto pt-[60px]">
       <div className="max-w-reading">
-        <h1 className="text-h1 uppercase text-neutral-900">{t('title')}</h1>
+        <h1 className="text-h1 text-neutral-900 uppercase">{t('title')}</h1>
         <p className="mt-md text-body-md text-neutral-700">{t('intro')}</p>
 
-        <form className="mt-xl flex flex-col gap-md">
-          <label className="flex flex-col gap-xs">
+        <form className="mt-xl gap-md flex flex-col">
+          <label className="gap-xs flex flex-col">
             <span className="text-label-md text-neutral-900">
               {t('form.name')} <span aria-hidden="true">*</span>
             </span>
             <Input name="name" autoComplete="name" required />
           </label>
 
-          <label className="flex flex-col gap-xs">
+          <label className="gap-xs flex flex-col">
             <span className="text-label-md text-neutral-900">
               {t('form.email')} <span aria-hidden="true">*</span>
             </span>
             <Input type="email" name="email" autoComplete="email" required />
           </label>
 
-          <label className="flex flex-col gap-xs">
+          <label className="gap-xs flex flex-col">
             <span className="text-label-md text-neutral-900">{t('form.phone')}</span>
             <Input type="tel" name="phone" autoComplete="tel" />
           </label>
 
-          <label className="flex flex-col gap-xs">
+          <label className="gap-xs flex flex-col">
             <span className="text-label-md text-neutral-900">{t('form.comment')}</span>
             <Textarea name="comment" rows={4} />
           </label>

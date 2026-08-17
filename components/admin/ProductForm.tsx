@@ -14,7 +14,11 @@ import { PRODUCT_MIN_ITEMS } from '@/components/admin/constants';
 import type { AgeGroup, MockProduct, MockVariant } from '@/types';
 
 const AGE_GROUPS: AgeGroup[] = ['kitten', 'adult', 'senior'];
-const AGE_GROUP_LABEL: Record<AgeGroup, string> = { kitten: 'Kitten', adult: 'Adult', senior: 'Senior' };
+const AGE_GROUP_LABEL: Record<AgeGroup, string> = {
+  kitten: 'Kitten',
+  adult: 'Adult',
+  senior: 'Senior',
+};
 
 interface ProductFormProps {
   product?: MockProduct;
@@ -52,13 +56,16 @@ export function ProductForm({ product }: ProductFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex max-w-[560px] flex-col gap-lg rounded-lg bg-surface p-lg">
-      <label className="flex flex-col gap-xs">
+    <form
+      onSubmit={handleSubmit}
+      className="gap-lg bg-surface p-lg flex max-w-[560px] flex-col rounded-lg"
+    >
+      <label className="gap-xs flex flex-col">
         <span className="text-label-md text-neutral-900">Name</span>
         <Input value={name} onChange={(e) => setName(e.target.value)} required />
       </label>
 
-      <label className="flex flex-col gap-xs">
+      <label className="gap-xs flex flex-col">
         <span className="text-label-md text-neutral-900">Category</span>
         <Select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
           {MOCK_CATEGORIES.map((category) => (
@@ -69,7 +76,7 @@ export function ProductForm({ product }: ProductFormProps) {
         </Select>
       </label>
 
-      <label className="flex flex-col gap-xs">
+      <label className="gap-xs flex flex-col">
         <span className="text-label-md text-neutral-900">Age group</span>
         <Select value={ageGroup} onChange={(e) => setAgeGroup(e.target.value as AgeGroup)}>
           {AGE_GROUPS.map((group) => (
@@ -80,7 +87,7 @@ export function ProductForm({ product }: ProductFormProps) {
         </Select>
       </label>
 
-      <label className="flex flex-col gap-xs">
+      <label className="gap-xs flex flex-col">
         <span className="text-label-md text-neutral-900">Description</span>
         <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} />
       </label>
@@ -89,17 +96,17 @@ export function ProductForm({ product }: ProductFormProps) {
 
       <VariantEditor variants={variants} onChange={setVariants} />
 
-      <label className="flex items-center justify-between gap-md">
+      <label className="gap-md flex items-center justify-between">
         <span className="text-label-md text-neutral-900">Active</span>
         <Toggle checked={isActive} onChange={setIsActive} aria-label="Active" />
       </label>
 
-      <label className="flex items-center justify-between gap-md">
+      <label className="gap-md flex items-center justify-between">
         <span className="text-label-md text-neutral-900">New arrival</span>
         <Toggle checked={isNew} onChange={setIsNew} aria-label="New arrival" />
       </label>
 
-      <div className="flex flex-col gap-sm">
+      <div className="gap-sm flex flex-col">
         <Button type="submit" variant="primary" disabled={!canSave} className="w-full">
           Save
         </Button>

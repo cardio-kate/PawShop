@@ -10,7 +10,7 @@ export const revalidate = 86400;
 export default function StorefrontLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <Suspense fallback={<div className="h-20 border-b border-neutral-200 bg-surface" />}>
+      <Suspense fallback={<div className="bg-surface h-20 border-b border-neutral-200" />}>
         <Header />
       </Suspense>
       <main>{children}</main>

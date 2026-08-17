@@ -30,7 +30,8 @@ const SIZE_CLASSNAME: Record<ButtonSize, string> = {
 // cursor-not-allowed — если оба класса присутствуют на disabled-кнопке одновременно, выигрывает
 // pointer, а не not-allowed. Держим их взаимоисключающими через branching, как остальные стили.
 const VARIANT_CLASSNAME: Record<ButtonVariant, string> = {
-  primary: 'cursor-pointer border-transparent bg-paw text-surface hover:bg-paw-hover active:bg-paw-active',
+  primary:
+    'cursor-pointer border-transparent bg-paw text-surface hover:bg-paw-hover active:bg-paw-active',
   secondary:
     'cursor-pointer border-paw bg-surface text-paw hover:bg-paw-tint active:border-paw-active active:bg-paw-tint active:text-paw-active',
 };
@@ -39,7 +40,15 @@ const VARIANT_CLASSNAME: Record<ButtonVariant, string> = {
 // не приглушённый вариант основного цвета — общий и для primary, и для secondary.
 const DISABLED_CLASSNAME = 'cursor-not-allowed border-neutral-300 bg-neutral-300 text-neutral-500';
 
-export function Button({ variant = 'primary', size = 'md', disabled, className, href, children, ...props }: ButtonProps) {
+export function Button({
+  variant = 'primary',
+  size = 'md',
+  disabled,
+  className,
+  href,
+  children,
+  ...props
+}: ButtonProps) {
   const classes = `${BASE_CLASSNAME} ${SIZE_CLASSNAME[size]} ${disabled ? DISABLED_CLASSNAME : VARIANT_CLASSNAME[variant]} ${className ?? ''}`;
 
   if (href) {

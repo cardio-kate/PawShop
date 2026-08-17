@@ -21,7 +21,13 @@ const SELECTED_CLASSNAME: Record<ChipKind, string> = {
 
 const DISABLED_CLASSNAME = 'cursor-not-allowed border-neutral-100 bg-neutral-100 text-neutral-500';
 
-export function Chip({ kind = 'filter', selected = false, disabled, className, ...props }: ChipProps) {
+export function Chip({
+  kind = 'filter',
+  selected = false,
+  disabled,
+  className,
+  ...props
+}: ChipProps) {
   const stateClassName = disabled
     ? DISABLED_CLASSNAME
     : selected

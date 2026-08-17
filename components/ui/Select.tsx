@@ -23,7 +23,7 @@ export function Select({ error, className, children, ...props }: SelectProps) {
       </select>
       <ChevronDown
         aria-hidden="true"
-        className="pointer-events-none absolute right-md top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-700"
+        className="right-md pointer-events-none absolute top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-700"
       />
     </div>
   );

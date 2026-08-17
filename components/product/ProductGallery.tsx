@@ -13,8 +13,8 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
   const selected = images[selectedIndex] ?? images[0]!;
 
   return (
-    <div className="mx-auto flex w-full max-w-[450px] flex-col gap-sm sm:mx-0">
-      <div className="relative aspect-square overflow-hidden rounded-card bg-neutral-100">
+    <div className="gap-sm mx-auto flex w-full max-w-[450px] flex-col sm:mx-0">
+      <div className="rounded-card relative aspect-square overflow-hidden bg-neutral-100">
         <Image
           src={selected}
           alt={alt}
@@ -26,7 +26,7 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
       </div>
 
       {images.length > 1 && (
-        <div className="flex gap-sm overflow-x-auto">
+        <div className="gap-sm flex overflow-x-auto">
           {images.map((image, index) => (
             <button
               key={image}
@@ -34,8 +34,8 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
               onClick={() => setSelectedIndex(index)}
               aria-current={index === selectedIndex}
               aria-label={`${alt} — ${index + 1}`}
-              className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-neutral-100 transition-colors duration-fast motion-reduce:transition-none ${FOCUS_RING_CLASSNAME} ${
-                index === selectedIndex ? 'ring-2 ring-paw' : ''
+              className={`duration-fast relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-neutral-100 transition-colors motion-reduce:transition-none ${FOCUS_RING_CLASSNAME} ${
+                index === selectedIndex ? 'ring-paw ring-2' : ''
               }`}
             >
               <Image src={image} alt="" fill sizes="64px" className="object-cover" />

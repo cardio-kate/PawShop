@@ -28,7 +28,7 @@ export function AddToCartButton({ productId, variantId, label, disabled }: AddTo
       disabled={disabled}
       onClick={() => addItem(productId, variantId)}
       aria-label={label}
-      className={`flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full bg-paw text-surface transition-colors duration-fast hover:bg-paw-hover active:bg-paw-active motion-reduce:transition-none ${FOCUS_RING_CLASSNAME} disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:text-neutral-500 disabled:hover:bg-neutral-300 disabled:active:bg-neutral-300 enabled:cursor-pointer`}
+      className={`bg-paw text-surface duration-fast hover:bg-paw-hover active:bg-paw-active flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full transition-colors motion-reduce:transition-none ${FOCUS_RING_CLASSNAME} enabled:cursor-pointer disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:text-neutral-500 disabled:hover:bg-neutral-300 disabled:active:bg-neutral-300`}
     >
       <Plus className="h-5 w-5" aria-hidden="true" />
     </button>

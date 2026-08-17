@@ -14,8 +14,8 @@ export default async function CatalogPage({ params }: { params: Promise<{ locale
   const t = await getTranslations('Catalog');
 
   return (
-    <div className="mx-auto max-w-container px-lg pt-[60px]">
-      <h1 className="mb-lg text-center text-h1 uppercase text-neutral-900">{t('title')}</h1>
+    <div className="max-w-container px-lg mx-auto pt-[60px]">
+      <h1 className="mb-lg text-h1 text-center text-neutral-900 uppercase">{t('title')}</h1>
       {/* useSearchParams в CatalogClient требует Suspense-границу — тот же паттерн, что у Header
           в app/[locale]/(storefront)/layout.tsx. */}
       <Suspense fallback={<div className="h-[60vh]" />}>

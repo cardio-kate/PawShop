@@ -15,9 +15,14 @@ interface CartButtonProps {
 // поиске (design.md → Header, единый язык всех icon-кнопок шапки), дублировать его здесь не нужно.
 export function CartButton({ itemCount, onClick, label, className }: CartButtonProps) {
   return (
-    <button type="button" onClick={onClick} aria-label={label} className={`relative shrink-0 ${className ?? ''}`}>
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      className={`relative shrink-0 ${className ?? ''}`}
+    >
       <ShoppingCart className="h-5 w-5" aria-hidden="true" />
-      {itemCount > 0 && <CounterBadge count={itemCount} className="absolute -right-0.5 -top-0.5" />}
+      {itemCount > 0 && <CounterBadge count={itemCount} className="absolute -top-0.5 -right-0.5" />}
     </button>
   );
 }

@@ -70,24 +70,32 @@ export async function Footer() {
     // pb-[5px] намеренно не симметричен pt — низ страницы, а не отступ между секциями. pt —
     // единственный источник правды для отступа перед Footer (design.md → Typography, «Отступ
     // перед Footer»); страницы-обёртки свой pb-* снизу не добавляют.
-    <footer className="mx-auto max-w-container px-lg pt-[60px] pb-[5px]">
+    <footer className="max-w-container px-lg mx-auto pt-[60px] pb-[5px]">
       {/* Точечный брейкпоинт 800/801px вместо стандартного sm — причина и разбор в design.md
           → Footer → «Адаптив ниже bp-sm». Важно не забыть при правке: max-[Npx] в Tailwind v4
           компилируется как "< Npx", не "<= Npx" — пара обязана быть max-[801px]/min-[801px],
           иначе на границе 800px раскладка и паддинги/шрифт разъедутся. */}
-      <div className="grid grid-cols-1 gap-md min-[801px]:grid-cols-[1.5fr_1fr_0.75fr] min-[801px]:grid-rows-2">
-        <div className="flex flex-col justify-between gap-md rounded-footer-mobile bg-paw p-[30px] max-[801px]:p-[20px] text-surface min-[801px]:col-start-1 min-[801px]:row-start-1 min-[801px]:row-span-2 min-[801px]:rounded-tl-2xl min-[801px]:rounded-bl-2xl min-[801px]:rounded-tr-card min-[801px]:rounded-br-card">
-          <p className="whitespace-pre-line text-[50px] max-[801px]:text-[40px] font-semibold leading-[1.15]">{t('tagline')}</p>
-          <div className="flex items-center gap-sm">
+      <div className="gap-md grid grid-cols-1 min-[801px]:grid-cols-[1.5fr_1fr_0.75fr] min-[801px]:grid-rows-2">
+        <div className="gap-md rounded-footer-mobile bg-paw text-surface min-[801px]:rounded-tr-card min-[801px]:rounded-br-card flex flex-col justify-between p-[30px] max-[801px]:p-[20px] min-[801px]:col-start-1 min-[801px]:row-span-2 min-[801px]:row-start-1 min-[801px]:rounded-tl-2xl min-[801px]:rounded-bl-2xl">
+          <p className="text-[50px] leading-[1.15] font-semibold whitespace-pre-line max-[801px]:text-[40px]">
+            {t('tagline')}
+          </p>
+          <div className="gap-sm flex items-center">
             {/* h-5 w-5 (20px) намеренно меньше логотипа в Header (32px) — здесь это мелкий
                 акцент рядом с copyright, не сам логотип; width/height=32 оставлены под
                 исходник, next/image сам подберёт качество под рендер-размер. */}
-            <Image src="/logo-white.png" alt="" width={32} height={32} className="h-5 w-5 shrink-0" />
+            <Image
+              src="/logo-white.png"
+              alt=""
+              width={32}
+              height={32}
+              className="h-5 w-5 shrink-0"
+            />
             <p className="text-label-caps text-surface">{t('copyright', { year })}</p>
           </div>
         </div>
 
-        <div className="flex flex-col gap-sm rounded-footer-mobile bg-secondary p-[30px] max-[801px]:p-[20px] text-on-secondary min-[801px]:col-start-2 min-[801px]:row-start-1 min-[801px]:rounded-xl">
+        <div className="gap-sm rounded-footer-mobile bg-secondary text-on-secondary flex flex-col p-[30px] max-[801px]:p-[20px] min-[801px]:col-start-2 min-[801px]:row-start-1 min-[801px]:rounded-xl">
           <h2 className="text-label-md text-neutral-900">{t('supportTitle')}</h2>
           <p className="text-body-sm">{t('supportText')}</p>
           <a
@@ -98,7 +106,7 @@ export async function Footer() {
           </a>
         </div>
 
-        <div className="flex flex-col gap-xs rounded-footer-mobile bg-paw-tint p-[30px] max-[801px]:p-[20px] text-neutral-900 min-[801px]:col-start-2 min-[801px]:row-start-2 min-[801px]:rounded-xl">
+        <div className="gap-xs rounded-footer-mobile bg-paw-tint flex flex-col p-[30px] text-neutral-900 max-[801px]:p-[20px] min-[801px]:col-start-2 min-[801px]:row-start-2 min-[801px]:rounded-xl">
           {/* В отличие от заголовков соседних карточек (Support/Follow us — обычный текст),
               этот h2 кликабельный: дублирует маршрут /contact из nav-list Header. Асимметрия
               с соседними карточками осознанная, не забытая правка. */}
@@ -111,7 +119,7 @@ export async function Footer() {
               всеми строками (Contact/Delivery/Privacy Policy) — та же формула, что у списка
               соцсетей ниже. gap-sm у родителя без gap-xs здесь давал 16px до первой ссылки
               против 8px между Delivery/Privacy Policy — заметный на глаз разнобой. */}
-          <nav aria-label={t('linksNav')} className="flex flex-col gap-xs">
+          <nav aria-label={t('linksNav')} className="gap-xs flex flex-col">
             {FOOTER_LINKS.map((link) => (
               <Link key={link.key} href={link.href} className={LINK_CLASSNAME}>
                 {t(link.key)}
@@ -120,17 +128,17 @@ export async function Footer() {
           </nav>
         </div>
 
-        <div className="flex flex-col gap-md rounded-footer-mobile bg-paw-tint p-[30px] max-[801px]:p-[20px] text-neutral-900 min-[801px]:col-start-3 min-[801px]:row-start-1 min-[801px]:row-span-2 min-[801px]:rounded-tr-2xl min-[801px]:rounded-br-2xl min-[801px]:rounded-tl-card min-[801px]:rounded-bl-card">
+        <div className="gap-md rounded-footer-mobile bg-paw-tint min-[801px]:rounded-tl-card min-[801px]:rounded-bl-card flex flex-col p-[30px] text-neutral-900 max-[801px]:p-[20px] min-[801px]:col-start-3 min-[801px]:row-span-2 min-[801px]:row-start-1 min-[801px]:rounded-tr-2xl min-[801px]:rounded-br-2xl">
           <h2 className="text-label-md">{t('socialTitle')}</h2>
           {/* gap-xs у списка + py-xs у ссылки = те же 12px между строками, что и раньше
               (4 + 4 + 4), но кликабельная область каждой ссылки выросла с 20px до 28px — иначе
               не проходит минимум touch target 24×24px по WCAG 2.2 §2.5.8. */}
-          <ul className="flex flex-col gap-xs">
+          <ul className="gap-xs flex flex-col">
             {FOOTER_SOCIALS.map(({ key, href, Icon }) => (
               <li key={key}>
                 <a
                   href={href}
-                  className={`flex items-center gap-sm py-xs text-body-sm transition-colors duration-fast hover:text-paw motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`}
+                  className={`gap-sm py-xs text-body-sm duration-fast hover:text-paw flex items-center transition-colors motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`}
                 >
                   <Icon className="h-5 w-5 shrink-0" />
                   {t(key)}

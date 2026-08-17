@@ -13,7 +13,7 @@ export default async function CheckoutPage({ params }: { params: Promise<{ local
   const t = await getTranslations('Checkout');
 
   return (
-    <div className="mx-auto max-w-container px-lg pt-[60px]">
+    <div className="max-w-container px-lg mx-auto pt-[60px]">
       <h1 className="text-h1 text-neutral-900">{t('title')}</h1>
       <div className="mt-xl">
         <CheckoutClient />

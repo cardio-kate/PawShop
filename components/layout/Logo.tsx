@@ -10,7 +10,9 @@ interface LogoProps {
 
 export function Logo({ className, stacked }: LogoProps) {
   return (
-    <span className={`inline-flex items-center ${stacked ? 'flex-col gap-1' : 'gap-2'} ${className ?? ''}`}>
+    <span
+      className={`inline-flex items-center ${stacked ? 'flex-col gap-1' : 'gap-2'} ${className ?? ''}`}
+    >
       <Image src="/logo.png" alt="" width={32} height={32} className="h-8 w-8 shrink-0" priority />
       <span className="text-h3 text-neutral-900">PawShop</span>
     </span>

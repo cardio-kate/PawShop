@@ -60,21 +60,24 @@ export function ImageUploader({ images, onChange }: ImageUploaderProps) {
   }
 
   return (
-    <div className="flex flex-col gap-sm">
+    <div className="gap-sm flex flex-col">
       <span className="text-label-md text-neutral-900">Photos</span>
-      <div className="flex flex-wrap gap-sm">
+      <div className="gap-sm flex flex-wrap">
         {images.map((src, index) => (
-          <div key={src} className="group relative h-24 w-24 shrink-0 overflow-hidden rounded-md bg-neutral-100">
+          <div
+            key={src}
+            className="group relative h-24 w-24 shrink-0 overflow-hidden rounded-md bg-neutral-100"
+          >
             <Image src={src} alt="" fill sizes="96px" unoptimized className="object-cover" />
             {index === 0 ? (
-              <span className="absolute bottom-1 left-1 rounded-full bg-neutral-900/70 px-2 py-0.5 text-label-caps text-surface">
+              <span className="text-label-caps text-surface absolute bottom-1 left-1 rounded-full bg-neutral-900/70 px-2 py-0.5">
                 Cover
               </span>
             ) : (
               <button
                 type="button"
                 onClick={() => handleSetCover(index)}
-                className={`absolute inset-x-0 bottom-0 whitespace-nowrap bg-neutral-900/70 py-1 text-center text-[10px] font-semibold leading-none text-surface opacity-0 transition-opacity duration-fast focus:opacity-100 group-focus-within:opacity-100 group-hover:opacity-100 motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`}
+                className={`text-surface duration-fast absolute inset-x-0 bottom-0 bg-neutral-900/70 py-1 text-center text-[10px] leading-none font-semibold whitespace-nowrap opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 focus:opacity-100 motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`}
               >
                 Set as cover
               </button>
@@ -88,7 +91,7 @@ export function ImageUploader({ images, onChange }: ImageUploaderProps) {
                 type="button"
                 onClick={() => handleRemove(index)}
                 aria-label={`Remove photo ${index + 1}`}
-                className={`absolute right-1 top-1 cursor-pointer rounded-full bg-neutral-900/70 p-1.5 text-surface opacity-0 transition-opacity duration-fast hover:bg-neutral-900 focus:opacity-100 group-focus-within:opacity-100 group-hover:opacity-100 motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`}
+                className={`text-surface duration-fast absolute top-1 right-1 cursor-pointer rounded-full bg-neutral-900/70 p-1.5 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-neutral-900 focus:opacity-100 motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`}
               >
                 <X className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
@@ -99,7 +102,7 @@ export function ImageUploader({ images, onChange }: ImageUploaderProps) {
           type="button"
           onClick={() => fileInputRef.current?.click()}
           aria-label="Add photo"
-          className={`flex h-24 w-24 shrink-0 cursor-pointer items-center justify-center rounded-md border border-dashed border-neutral-300 text-neutral-500 transition-colors duration-fast hover:border-paw hover:text-paw motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`}
+          className={`duration-fast hover:border-paw hover:text-paw flex h-24 w-24 shrink-0 cursor-pointer items-center justify-center rounded-md border border-dashed border-neutral-300 text-neutral-500 transition-colors motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`}
         >
           <Plus className="h-5 w-5" aria-hidden="true" />
         </button>

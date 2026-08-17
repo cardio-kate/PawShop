@@ -20,7 +20,9 @@ type MockProductInput = Omit<MockProduct, 'price'>;
 // разойтись с фактическим минимумом). Теперь считается один раз при построении MOCK_PRODUCTS —
 // разойтись физически не может.
 function withComputedPrice(product: MockProductInput): MockProduct {
-  const activePrices = product.variants.filter((variant) => variant.isActive).map((variant) => variant.price);
+  const activePrices = product.variants
+    .filter((variant) => variant.isActive)
+    .map((variant) => variant.price);
   return { ...product, price: Math.min(...activePrices) };
 }
 
@@ -205,5 +207,8 @@ export const MOCK_DELIVERY_COUNTRIES: MockDeliveryCountry[] = [
 // Мок §7.3 ТЗ (getRelatedProducts) — до 4 товаров той же ageGroup, исключая сам товар; сервер
 // исключит isActive: false и лимитирует до 4, здесь делаем то же самое над мок-массивом.
 export function getMockRelatedProducts(product: MockProduct): MockProduct[] {
-  return MOCK_PRODUCTS.filter((p) => p.id !== product.id && p.ageGroup === product.ageGroup).slice(0, 4);
+  return MOCK_PRODUCTS.filter((p) => p.id !== product.id && p.ageGroup === product.ageGroup).slice(
+    0,
+    4,
+  );
 }

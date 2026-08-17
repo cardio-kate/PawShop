@@ -18,8 +18,20 @@ export const MOCK_ORDERS: MockOrder[] = [
     status: 'new',
     createdAt: '2026-08-15T09:20:00.000Z',
     items: [
-      { id: '1024-1', productNameAtOrder: 'Kitten Chicken Pouches in Jelly', variantLabelAtOrder: 'Pack 10×85 g (850 g)', quantity: 2, priceAtOrder: 12.9 },
-      { id: '1024-2', productNameAtOrder: 'Salmon & Rice Kibble', variantLabelAtOrder: '1.2 kg', quantity: 1, priceAtOrder: 14.3 },
+      {
+        id: '1024-1',
+        productNameAtOrder: 'Kitten Chicken Pouches in Jelly',
+        variantLabelAtOrder: 'Pack 10×85 g (850 g)',
+        quantity: 2,
+        priceAtOrder: 12.9,
+      },
+      {
+        id: '1024-2',
+        productNameAtOrder: 'Salmon & Rice Kibble',
+        variantLabelAtOrder: '1.2 kg',
+        quantity: 1,
+        priceAtOrder: 14.3,
+      },
     ],
   },
   {
@@ -34,7 +46,15 @@ export const MOCK_ORDERS: MockOrder[] = [
     comment: null,
     status: 'new',
     createdAt: '2026-08-15T07:05:00.000Z',
-    items: [{ id: '1023-1', productNameAtOrder: 'Whisker-Friendly Bowl Set', variantLabelAtOrder: 'Standard', quantity: 1, priceAtOrder: 12.9 }],
+    items: [
+      {
+        id: '1023-1',
+        productNameAtOrder: 'Whisker-Friendly Bowl Set',
+        variantLabelAtOrder: 'Standard',
+        quantity: 1,
+        priceAtOrder: 12.9,
+      },
+    ],
   },
   {
     id: '1022',
@@ -49,8 +69,20 @@ export const MOCK_ORDERS: MockOrder[] = [
     status: 'processing',
     createdAt: '2026-08-14T16:40:00.000Z',
     items: [
-      { id: '1022-1', productNameAtOrder: 'Salmon Treats', variantLabelAtOrder: 'Pack 10×40 g (400 g)', quantity: 1, priceAtOrder: 34.9 },
-      { id: '1022-2', productNameAtOrder: 'Cheese & Cream Treats', variantLabelAtOrder: '40 g', quantity: 3, priceAtOrder: 3.2 },
+      {
+        id: '1022-1',
+        productNameAtOrder: 'Salmon Treats',
+        variantLabelAtOrder: 'Pack 10×40 g (400 g)',
+        quantity: 1,
+        priceAtOrder: 34.9,
+      },
+      {
+        id: '1022-2',
+        productNameAtOrder: 'Cheese & Cream Treats',
+        variantLabelAtOrder: '40 g',
+        quantity: 3,
+        priceAtOrder: 3.2,
+      },
     ],
   },
   {
@@ -65,7 +97,15 @@ export const MOCK_ORDERS: MockOrder[] = [
     comment: null,
     status: 'done',
     createdAt: '2026-08-12T11:15:00.000Z',
-    items: [{ id: '1021-1', productNameAtOrder: 'Turkey Indoor Kibble', variantLabelAtOrder: '3 kg', quantity: 1, priceAtOrder: 36.9 }],
+    items: [
+      {
+        id: '1021-1',
+        productNameAtOrder: 'Turkey Indoor Kibble',
+        variantLabelAtOrder: '3 kg',
+        quantity: 1,
+        priceAtOrder: 36.9,
+      },
+    ],
   },
   {
     id: '1020',
@@ -79,7 +119,15 @@ export const MOCK_ORDERS: MockOrder[] = [
     comment: null,
     status: 'cancelled',
     createdAt: '2026-08-10T13:50:00.000Z',
-    items: [{ id: '1020-1', productNameAtOrder: 'Beef Pouches in Gravy', variantLabelAtOrder: 'Pack 10×85 g (850 g)', quantity: 1, priceAtOrder: 11.9 }],
+    items: [
+      {
+        id: '1020-1',
+        productNameAtOrder: 'Beef Pouches in Gravy',
+        variantLabelAtOrder: 'Pack 10×85 g (850 g)',
+        quantity: 1,
+        priceAtOrder: 11.9,
+      },
+    ],
   },
   {
     id: '1019',
@@ -94,8 +142,20 @@ export const MOCK_ORDERS: MockOrder[] = [
     status: 'done',
     createdAt: '2026-08-08T08:30:00.000Z',
     items: [
-      { id: '1019-1', productNameAtOrder: 'Salmon Kibble Senior', variantLabelAtOrder: '1.2 kg', quantity: 1, priceAtOrder: 16.5 },
-      { id: '1019-2', productNameAtOrder: 'Chicken Pouches in Jelly Senior', variantLabelAtOrder: '85 g', quantity: 4, priceAtOrder: 1.4 },
+      {
+        id: '1019-1',
+        productNameAtOrder: 'Salmon Kibble Senior',
+        variantLabelAtOrder: '1.2 kg',
+        quantity: 1,
+        priceAtOrder: 16.5,
+      },
+      {
+        id: '1019-2',
+        productNameAtOrder: 'Chicken Pouches in Jelly Senior',
+        variantLabelAtOrder: '85 g',
+        quantity: 4,
+        priceAtOrder: 1.4,
+      },
     ],
   },
 ];

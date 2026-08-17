@@ -33,8 +33,8 @@ export function OrderDetail({ order }: OrderDetailProps) {
   const total = getMockOrderTotal(order);
 
   return (
-    <div className="grid grid-cols-1 gap-lg lg:grid-cols-[1fr_340px]">
-      <div className="flex flex-col gap-md">
+    <div className="gap-lg grid grid-cols-1 lg:grid-cols-[1fr_340px]">
+      <div className="gap-md flex flex-col">
         <h2 className="text-h3 text-neutral-900">Items</h2>
         <div className="overflow-x-auto rounded-md border border-neutral-300">
           <table className="w-full min-w-[480px] border-collapse text-left">
@@ -59,18 +59,22 @@ export function OrderDetail({ order }: OrderDetailProps) {
                 <tr key={item.id} className={adminTableRowClassName(index)}>
                   <td className={CELL_CLASSNAME}>
                     {item.productNameAtOrder}
-                    <span className="block text-body-sm text-neutral-500">{item.variantLabelAtOrder}</span>
+                    <span className="text-body-sm block text-neutral-500">
+                      {item.variantLabelAtOrder}
+                    </span>
                   </td>
                   <td className={CELL_CLASSNAME}>{item.quantity}</td>
                   <td className={CELL_CLASSNAME}>{formatPrice(item.priceAtOrder, ADMIN_LOCALE)}</td>
-                  <td className={CELL_CLASSNAME}>{formatPrice(item.priceAtOrder * item.quantity, ADMIN_LOCALE)}</td>
+                  <td className={CELL_CLASSNAME}>
+                    {formatPrice(item.priceAtOrder * item.quantity, ADMIN_LOCALE)}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        <div className="flex w-full flex-col gap-xs text-body-sm text-neutral-700 sm:w-64 sm:self-end">
+        <div className="gap-xs text-body-sm flex w-full flex-col text-neutral-700 sm:w-64 sm:self-end">
           <div className="flex items-center justify-between">
             <span>Subtotal</span>
             <span>{formatPrice(subtotal, ADMIN_LOCALE)}</span>
@@ -79,23 +83,25 @@ export function OrderDetail({ order }: OrderDetailProps) {
             <span>Shipping</span>
             <span>{formatPrice(order.shippingPriceAtOrder, ADMIN_LOCALE)}</span>
           </div>
-          <div className="flex items-center justify-between text-label-md text-neutral-900">
+          <div className="text-label-md flex items-center justify-between text-neutral-900">
             <span>Total</span>
             <span>{formatPrice(total, ADMIN_LOCALE)}</span>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col gap-lg">
-        <div className="flex flex-col gap-sm">
-          <div className="flex items-center justify-between gap-md">
+      <div className="gap-lg flex flex-col">
+        <div className="gap-sm flex flex-col">
+          <div className="gap-md flex items-center justify-between">
             <h2 className="text-h3 text-neutral-900">Customer</h2>
-            <div className={`relative inline-flex items-center rounded-full ${orderStatusColorClassName(status)}`}>
+            <div
+              className={`relative inline-flex items-center rounded-full ${orderStatusColorClassName(status)}`}
+            >
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as OrderStatus)}
                 aria-label="Order status"
-                className={`appearance-none bg-transparent py-1.5 pl-3 pr-8 text-label-caps font-semibold text-current outline-none ${FOCUS_RING_CLASSNAME}`}
+                className={`text-label-caps appearance-none bg-transparent py-1.5 pr-8 pl-3 font-semibold text-current outline-none ${FOCUS_RING_CLASSNAME}`}
               >
                 {STATUSES.map((s) => (
                   <option key={s} value={s}>
@@ -105,16 +111,18 @@ export function OrderDetail({ order }: OrderDetailProps) {
               </select>
               <ChevronDown
                 aria-hidden="true"
-                className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-current"
+                className="pointer-events-none absolute top-1/2 right-2.5 h-3.5 w-3.5 -translate-y-1/2 text-current"
               />
             </div>
           </div>
-          <p className="text-body-sm text-neutral-500">Order #{order.id} · {ORDER_DATETIME_FORMATTER.format(new Date(order.createdAt))}</p>
+          <p className="text-body-sm text-neutral-500">
+            Order #{order.id} · {ORDER_DATETIME_FORMATTER.format(new Date(order.createdAt))}
+          </p>
           <p className="text-body-sm text-neutral-900">{order.customerName}</p>
           <p className="text-body-sm text-neutral-900">{order.phone}</p>
         </div>
 
-        <div className="flex flex-col gap-sm">
+        <div className="gap-sm flex flex-col">
           <h2 className="text-h3 text-neutral-900">Delivery address</h2>
           <p className="text-body-sm text-neutral-900">
             {order.street}
@@ -125,7 +133,7 @@ export function OrderDetail({ order }: OrderDetailProps) {
           </p>
         </div>
 
-        <div className="flex flex-col gap-sm">
+        <div className="gap-sm flex flex-col">
           <h2 className="text-h3 text-neutral-900">Comment</h2>
           <p className="text-body-sm text-neutral-500">{order.comment ?? 'No comment'}</p>
         </div>

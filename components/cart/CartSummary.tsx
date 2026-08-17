@@ -17,19 +17,19 @@ export function CartSummary({ subtotal, disabled, onCheckout }: CartSummaryProps
   const t = useTranslations('Cart');
 
   return (
-    <div className="border-t border-neutral-200 px-lg py-lg">
+    <div className="px-lg py-lg border-t border-neutral-200">
       {/* gap-xs на всех трёх строках разом, а не mt-xs/mt-sm по отдельности — иначе зазор
           Sub Total→Shipping (4px) и Shipping→Total (8px) визуально несимметричны. */}
-      <div className="flex flex-col gap-xs">
-        <div className="flex items-center justify-between text-body-sm text-neutral-700">
+      <div className="gap-xs flex flex-col">
+        <div className="text-body-sm flex items-center justify-between text-neutral-700">
           <span>{t('subtotal')}</span>
           <span>{subtotal}</span>
         </div>
-        <div className="flex items-center justify-between text-body-sm text-neutral-700">
+        <div className="text-body-sm flex items-center justify-between text-neutral-700">
           <span>{t('shipping')}</span>
           <span>{t('shippingNote')}</span>
         </div>
-        <div className="flex items-center justify-between text-label-md text-neutral-900">
+        <div className="text-label-md flex items-center justify-between text-neutral-900">
           <span>{t('total')}</span>
           <span>{subtotal}</span>
         </div>

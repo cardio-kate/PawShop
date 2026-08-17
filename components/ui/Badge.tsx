@@ -1,6 +1,7 @@
 import type { HTMLAttributes } from 'react';
 
-export type BadgeVariant = 'new' | 'out-of-stock' | 'order-new' | 'order-processing' | 'order-done' | 'order-cancelled';
+export type BadgeVariant =
+  'new' | 'out-of-stock' | 'order-new' | 'order-processing' | 'order-done' | 'order-cancelled';
 
 interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   variant: BadgeVariant;
@@ -31,7 +32,7 @@ export const BADGE_COLOR_CLASSNAME: Record<BadgeVariant, string> = {
 export function Badge({ variant, className, ...props }: BadgeProps) {
   return (
     <span
-      className={`inline-flex w-fit items-center text-label-caps ${VARIANT_SHAPE_CLASSNAME[variant]} ${BADGE_COLOR_CLASSNAME[variant]} ${className ?? ''}`}
+      className={`text-label-caps inline-flex w-fit items-center ${VARIANT_SHAPE_CLASSNAME[variant]} ${BADGE_COLOR_CLASSNAME[variant]} ${className ?? ''}`}
       {...props}
     />
   );

@@ -16,8 +16,8 @@ export default async function DeliveryPage({ params }: { params: Promise<{ local
   const t = await getTranslations('Delivery');
 
   return (
-    <div className="mx-auto max-w-container px-lg pt-[60px]">
-      <h1 className="text-center text-h1 uppercase text-neutral-900">{t('title')}</h1>
+    <div className="max-w-container px-lg mx-auto pt-[60px]">
+      <h1 className="text-h1 text-center text-neutral-900 uppercase">{t('title')}</h1>
       <p className="mt-md max-w-reading text-body-md text-neutral-700">{t('intro')}</p>
 
       <div className="mt-xl overflow-x-auto">

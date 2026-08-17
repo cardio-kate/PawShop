@@ -6,7 +6,7 @@ import { StaffLoginCard } from '@/components/auth/StaffLoginCard';
 // что держит About/Footer, не пустой белый экран и не повтор фона витрины.
 export default function StaffEntryPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-paw-tint px-md">
+    <div className="bg-paw-tint px-md flex min-h-screen items-center justify-center">
       <StaffLoginCard />
     </div>
   );

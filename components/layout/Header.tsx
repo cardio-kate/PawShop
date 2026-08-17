@@ -149,7 +149,13 @@ export function Header() {
       return;
     }
 
-    if (e.key !== 'Tab' || !isMobileNavOpen || !mobileNavRef.current || !mobileNavTriggerRef.current) return;
+    if (
+      e.key !== 'Tab' ||
+      !isMobileNavOpen ||
+      !mobileNavRef.current ||
+      !mobileNavTriggerRef.current
+    )
+      return;
 
     const focusable = [
       mobileNavTriggerRef.current,
@@ -186,13 +192,16 @@ export function Header() {
   const hiddenNavWhenSearchOpen = isSearchOpen ? 'hidden lg:flex' : 'flex';
 
   return (
-    <header className="sticky top-0 z-50 border-b border-neutral-200 bg-surface">
+    <header className="bg-surface sticky top-0 z-50 border-b border-neutral-200">
       <div
-        className={`mx-auto h-20 max-w-container items-center gap-md px-[10px] sm:px-lg ${
+        className={`max-w-container gap-md sm:px-lg mx-auto h-20 items-center px-[10px] ${
           isSearchOpen ? 'flex' : 'grid grid-cols-[1fr_auto_1fr]'
         } sm:flex sm:justify-between`}
       >
-        <div className={`shrink-0 items-center ${hiddenLogoWhenSearchOpen}`} onKeyDown={handleMobileNavKeyDown}>
+        <div
+          className={`shrink-0 items-center ${hiddenLogoWhenSearchOpen}`}
+          onKeyDown={handleMobileNavKeyDown}
+        >
           {/* Без aria-controls: mobile-nav-menu монтируется только при isMobileNavOpen, в закрытом
               состоянии ссылка указывала бы на несуществующий id. aria-expanded + aria-label уже
               полностью описывают состояние. */}
@@ -223,7 +232,11 @@ export function Header() {
             // идёт в DOM раньше <nav>, поэтому на одном уровне стека (оба position, оба z-auto)
             // список рисуется поверх, а не наоборот. Клик по подложке закрывает меню — тот же UX,
             // что у Panel (корзина/admin-модалки).
-            <div className="fixed inset-0 bg-neutral-900/40 sm:hidden" onClick={closeMobileNav} aria-hidden="true" />
+            <div
+              className="fixed inset-0 bg-neutral-900/40 sm:hidden"
+              onClick={closeMobileNav}
+              aria-hidden="true"
+            />
           )}
 
           {isMobileNavOpen && (
@@ -231,7 +244,7 @@ export function Header() {
               ref={mobileNavRef}
               id="mobile-nav-menu"
               aria-label={t('mainNav')}
-              className="absolute inset-x-0 top-full flex flex-col border-t border-neutral-200 bg-surface py-sm sm:hidden"
+              className="bg-surface py-sm absolute inset-x-0 top-full flex flex-col border-t border-neutral-200 sm:hidden"
             >
               {ANCHOR_NAV_ITEMS.map((item) => (
                 <a
@@ -264,24 +277,23 @@ export function Header() {
             </nav>
           )}
 
-          <Link
-            href="/"
-            className={`hidden items-center gap-2 ${FOCUS_RING_CLASSNAME} sm:flex`}
-          >
+          <Link href="/" className={`hidden items-center gap-2 ${FOCUS_RING_CLASSNAME} sm:flex`}>
             <Logo />
           </Link>
         </div>
 
-        <div className={`shrink-0 items-center justify-center ${hiddenNavWhenSearchOpen} sm:justify-start`}>
-          <Link
-            href="/"
-            className={`${FOCUS_RING_CLASSNAME} sm:hidden`}
-          >
+        <div
+          className={`shrink-0 items-center justify-center ${hiddenNavWhenSearchOpen} sm:justify-start`}
+        >
+          <Link href="/" className={`${FOCUS_RING_CLASSNAME} sm:hidden`}>
             <Logo stacked />
           </Link>
 
           {/* gap-[12px] не по шкале — осознанно: на sm..lg gap-lg (24px) визуально расползался. */}
-          <nav aria-label={t('mainNav')} className="hidden shrink-0 items-center gap-[12px] sm:flex lg:gap-lg">
+          <nav
+            aria-label={t('mainNav')}
+            className="lg:gap-lg hidden shrink-0 items-center gap-[12px] sm:flex"
+          >
             {ANCHOR_NAV_ITEMS.map((item) => (
               <a key={item.id} href={navHref(item.id)} className={NAV_LINK_CLASSNAME}>
                 {t(item.key)}
@@ -295,7 +307,7 @@ export function Header() {
           </nav>
         </div>
 
-        <div className="flex min-w-0 items-center justify-end gap-sm">
+        <div className="gap-sm flex min-w-0 items-center justify-end">
           <div className="hidden sm:block">
             <LocaleSwitcher />
           </div>
@@ -304,7 +316,7 @@ export function Header() {
             <form
               onSubmit={handleSearchSubmit}
               role="search"
-              className="flex min-w-0 w-full items-center gap-sm rounded-full border border-neutral-300 px-md py-sm focus-within:border-paw lg:w-56"
+              className="gap-sm px-md py-sm focus-within:border-paw flex w-full min-w-0 items-center rounded-full border border-neutral-300 lg:w-56"
             >
               <label htmlFor="header-search-input" className="sr-only">
                 {t('searchAriaLabel')}
@@ -318,14 +330,14 @@ export function Header() {
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={t('searchPlaceholder')}
                 autoFocus
-                className="w-full min-w-0 text-body-sm text-neutral-900 outline-none placeholder:text-neutral-500"
+                className="text-body-sm w-full min-w-0 text-neutral-900 outline-none placeholder:text-neutral-500"
               />
               {query.length > 0 && (
                 <button
                   type="button"
                   onClick={clearSearchQuery}
                   aria-label={t('clearSearch')}
-                  className={`shrink-0 cursor-pointer rounded-full p-1 text-neutral-500 hover:text-paw ${FOCUS_RING_CLASSNAME}`}
+                  className={`hover:text-paw shrink-0 cursor-pointer rounded-full p-1 text-neutral-500 ${FOCUS_RING_CLASSNAME}`}
                 >
                   <X className="h-4 w-4" aria-hidden="true" />
                 </button>
@@ -334,7 +346,7 @@ export function Header() {
                 type="button"
                 onClick={closeSearch}
                 aria-label={t('closeSearch')}
-                className={`shrink-0 cursor-pointer rounded-full p-1 text-neutral-500 hover:text-paw ${FOCUS_RING_CLASSNAME}`}
+                className={`hover:text-paw shrink-0 cursor-pointer rounded-full p-1 text-neutral-500 ${FOCUS_RING_CLASSNAME}`}
               >
                 <X className="h-4 w-4" aria-hidden="true" />
               </button>

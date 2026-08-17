@@ -3,14 +3,22 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ProductGallery } from '@/components/product/ProductGallery';
 import { ProductDetailClient } from '@/components/product/ProductDetailClient';
 import { ProductCard } from '@/components/product/ProductCard';
-import { MOCK_CATEGORIES, MOCK_PRODUCTS, getMockRelatedProducts } from '@/components/product/mock-data';
+import {
+  MOCK_CATEGORIES,
+  MOCK_PRODUCTS,
+  getMockRelatedProducts,
+} from '@/components/product/mock-data';
 import { getProductGridColumnsClassName } from '@/components/product/getProductGridColumnsClassName';
 
 export function generateStaticParams() {
   return MOCK_PRODUCTS.map((product) => ({ slug: product.slug }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}) {
   const { slug } = await params;
   const product = MOCK_PRODUCTS.find((p) => p.slug === slug);
   if (!product) return {};
@@ -43,7 +51,7 @@ export default async function ProductPage({
   const related = getMockRelatedProducts(product);
 
   return (
-    <div className="mx-auto max-w-container px-lg pt-[60px]">
+    <div className="max-w-container px-lg mx-auto pt-[60px]">
       {/* Колонка галереи — clamp(…,50vw,450px), не фиксированные 450px: на bp-sm..~1024px
           450px съедал бы почти всю ширину экрана, оставляя тексту только свой min-content
           (кнопка Add to Cart, см. ProductDetailClient.tsx) — колонки визуально «расходились»,
@@ -52,16 +60,22 @@ export default async function ProductPage({
           у верхних потолков). Gap — тем же приёмом: gap-xl (40px) только до bp-sm (вертикальный
           зазор между фото и текстом в один столбец), с bp-sm — clamp сжимается до 16px и
           восстанавливается до gap-xl к тому же ~1024px, где галерея и кнопка достигают потолка. */}
-      <div className="grid grid-cols-1 gap-xl sm:grid-cols-[clamp(240px,calc(50vw_-_60px),450px)_1fr] sm:gap-[clamp(16px,calc(6vw_-_22px),40px)]">
+      <div className="gap-xl grid grid-cols-1 sm:grid-cols-[clamp(240px,calc(50vw_-_60px),450px)_1fr] sm:gap-[clamp(16px,calc(6vw_-_22px),40px)]">
         <ProductGallery images={product.images} alt={product.name} />
-        <ProductDetailClient product={product} categoryLabel={categoryLabel} ageGroupLabel={ageGroupLabel} />
+        <ProductDetailClient
+          product={product}
+          categoryLabel={categoryLabel}
+          ageGroupLabel={ageGroupLabel}
+        />
       </div>
 
       {/* design.md → Components «You may also like»: не рендерится вовсе, если подходящих
           товаров не нашлось — не показывать пустую сетку с одним заголовком. */}
       {related.length > 0 && (
-        <div className="mt-[60px] flex flex-col gap-lg">
-          <h2 className="text-center text-section-heading uppercase text-neutral-900">{tProductPage('relatedTitle')}</h2>
+        <div className="gap-lg mt-[60px] flex flex-col">
+          <h2 className="text-section-heading text-center text-neutral-900 uppercase">
+            {tProductPage('relatedTitle')}
+          </h2>
           {/* Та же зафиксированная ширина карточки, что в CatalogClient.tsx — design.md → Layout.
               Число колонок ограничено числом реальных карточек (getProductGridColumnsClassName) —
               «You may also like» почти никогда не набирает все 4 совпадения по ageGroup, а лишние
@@ -76,7 +90,7 @@ export default async function ProductPage({
               justify-content — при 2+ карточках (несколько узких track'ов внутри широкого
               контейнера). */}
           <div
-            className={`grid justify-items-center justify-center gap-gutter lg:justify-items-start lg:justify-start ${getProductGridColumnsClassName(related.length)}`}
+            className={`gap-gutter grid justify-center justify-items-center lg:justify-start lg:justify-items-start ${getProductGridColumnsClassName(related.length)}`}
           >
             {related.map((relatedProduct) => (
               <div key={relatedProduct.id} className="w-full max-w-[290px]">

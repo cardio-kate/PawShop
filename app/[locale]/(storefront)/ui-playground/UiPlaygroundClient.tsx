@@ -26,9 +26,9 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="flex flex-col gap-md border-b border-neutral-200 py-lg">
+    <section className="gap-md py-lg flex flex-col border-b border-neutral-200">
       <h2 className="text-h3 text-neutral-900">{title}</h2>
-      <div className={rowClassName ?? 'flex flex-wrap items-center gap-md'}>{children}</div>
+      <div className={rowClassName ?? 'gap-md flex flex-wrap items-center'}>{children}</div>
     </section>
   );
 }
@@ -42,7 +42,7 @@ export function UiPlaygroundClient() {
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
 
   return (
-    <div className="mx-auto max-w-container px-lg py-3xl">
+    <div className="max-w-container px-lg py-3xl mx-auto">
       <h1 className="text-h1 text-neutral-900">UI playground — Фаза 1</h1>
 
       <Section title="Button">
@@ -75,7 +75,11 @@ export function UiPlaygroundClient() {
       </Section>
 
       <Section title="Chip — variant">
-        <Chip kind="variant" selected={variantSelected} onClick={() => setVariantSelected((v) => !v)}>
+        <Chip
+          kind="variant"
+          selected={variantSelected}
+          onClick={() => setVariantSelected((v) => !v)}
+        >
           400g
         </Chip>
         <Chip kind="variant" disabled>
@@ -137,10 +141,18 @@ export function UiPlaygroundClient() {
         ))}
       </Section>
 
-      <Panel open={isCartOpen} onClose={() => setIsCartOpen(false)} ariaLabel="Cart" closeLabel="Close" side="right">
-        <div className="flex flex-col gap-md p-lg pt-2xl">
+      <Panel
+        open={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        ariaLabel="Cart"
+        closeLabel="Close"
+        side="right"
+      >
+        <div className="gap-md p-lg pt-2xl flex flex-col">
           <h2 className="text-h3 text-neutral-900">Your cart</h2>
-          <p className="text-body-sm text-neutral-500">Panel primitive demo — tab through, Escape closes.</p>
+          <p className="text-body-sm text-neutral-500">
+            Panel primitive demo — tab through, Escape closes.
+          </p>
           <a href="#" className="text-label-md text-paw">
             A focusable link
           </a>
@@ -155,7 +167,7 @@ export function UiPlaygroundClient() {
         closeLabel="Close"
         side="left"
       >
-        <div className="flex flex-col gap-md p-lg pt-2xl">
+        <div className="gap-md p-lg pt-2xl flex flex-col">
           <h2 className="text-h3 text-neutral-900">Delete product?</h2>
           <p className="text-body-sm text-neutral-500">This action cannot be undone.</p>
           <Button variant="primary" onClick={() => setIsAdminModalOpen(false)}>

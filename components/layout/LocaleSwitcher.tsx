@@ -29,7 +29,11 @@ export function LocaleSwitcher({ onNavigate }: { onNavigate?: () => void }) {
   // скринридером игнорируется (проверено accessibility-снапшотом — EN/DE звучали без подписи
   // «Language» ни на десктопе, ни в мобильном бургер-меню).
   return (
-    <div role="group" aria-label={t('language')} className="flex items-center gap-1 text-label-caps">
+    <div
+      role="group"
+      aria-label={t('language')}
+      className="text-label-caps flex items-center gap-1"
+    >
       {routing.locales.map((locale, index) => (
         <span key={locale} className="flex items-center gap-1">
           {index > 0 && (
@@ -42,7 +46,12 @@ export function LocaleSwitcher({ onNavigate }: { onNavigate?: () => void }) {
               {locale.toUpperCase()}
             </span>
           ) : (
-            <Link href={{ pathname, query }} locale={locale} onClick={onNavigate} className={INACTIVE_LINK_CLASSNAME}>
+            <Link
+              href={{ pathname, query }}
+              locale={locale}
+              onClick={onNavigate}
+              className={INACTIVE_LINK_CLASSNAME}
+            >
               {locale.toUpperCase()}
             </Link>
           )}

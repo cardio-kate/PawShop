@@ -49,10 +49,16 @@ export function OrderTable() {
             <tr key={order.id} className={adminTableRowClassName(index)}>
               <td className={CELL_CLASSNAME}>#{order.id}</td>
               <td className={CELL_CLASSNAME}>{order.customerName}</td>
-              <td className={CELL_CLASSNAME}>{ORDER_DATE_FORMATTER.format(new Date(order.createdAt))}</td>
-              <td className={CELL_CLASSNAME}>{formatPrice(getMockOrderTotal(order), ADMIN_LOCALE)}</td>
+              <td className={CELL_CLASSNAME}>
+                {ORDER_DATE_FORMATTER.format(new Date(order.createdAt))}
+              </td>
+              <td className={CELL_CLASSNAME}>
+                {formatPrice(getMockOrderTotal(order), ADMIN_LOCALE)}
+              </td>
               <td className="px-md py-sm">
-                <Badge variant={ORDER_STATUS_BADGE_VARIANT[order.status]}>{ORDER_STATUS_LABEL[order.status]}</Badge>
+                <Badge variant={ORDER_STATUS_BADGE_VARIANT[order.status]}>
+                  {ORDER_STATUS_LABEL[order.status]}
+                </Badge>
               </td>
               <td className="px-md py-sm">
                 <Link

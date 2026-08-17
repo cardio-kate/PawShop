@@ -28,7 +28,7 @@ export function StaffLoginCard() {
   }
 
   return (
-    <div className="flex w-[380px] max-w-full flex-col gap-lg rounded-lg bg-surface p-xl shadow-[0_4px_16px_rgba(14,14,18,0.08)]">
+    <div className="gap-lg bg-surface p-xl flex w-[380px] max-w-full flex-col rounded-lg shadow-[0_4px_16px_rgba(14,14,18,0.08)]">
       {/* Визуально страница держится на Logo (design.md — «лапка + PawShop как в Header», без
           отдельного заголовка), но документу всё равно нужен один h1 — иначе у /staff-entry нет
           ни одного heading-элемента и скринридер не может ни перейти к контенту, ни озвучить
@@ -65,19 +65,28 @@ function LoginStep({
   }
 
   return (
-    <form className="flex flex-col gap-md" onSubmit={handleSubmit}>
+    <form className="gap-md flex flex-col" onSubmit={handleSubmit}>
       {locked && (
-        <p role="alert" className="rounded-md bg-error-tint px-md py-sm text-body-sm text-error-on-tint">
+        <p
+          role="alert"
+          className="bg-error-tint px-md py-sm text-body-sm text-error-on-tint rounded-md"
+        >
           Too many failed attempts. Try again in 15 minutes.
         </p>
       )}
-      <label className="flex flex-col gap-xs">
+      <label className="gap-xs flex flex-col">
         <span className="text-label-md text-neutral-900">Username</span>
         <Input name="username" autoComplete="username" disabled={locked} required autoFocus />
       </label>
-      <label className="flex flex-col gap-xs">
+      <label className="gap-xs flex flex-col">
         <span className="text-label-md text-neutral-900">Password</span>
-        <Input name="password" type="password" autoComplete="current-password" disabled={locked} required />
+        <Input
+          name="password"
+          type="password"
+          autoComplete="current-password"
+          disabled={locked}
+          required
+        />
       </label>
       <Button type="submit" variant="primary" disabled={locked} className="w-full">
         Sign in
@@ -96,8 +105,8 @@ function ForgotStep({ onCodeSent }: { onCodeSent: () => void }) {
   }
 
   return (
-    <form className="flex flex-col gap-md" onSubmit={handleSubmit}>
-      <label className="flex flex-col gap-xs">
+    <form className="gap-md flex flex-col" onSubmit={handleSubmit}>
+      <label className="gap-xs flex flex-col">
         <span className="text-label-md text-neutral-900">Username</span>
         <Input name="username" autoComplete="username" required autoFocus />
       </label>
@@ -115,13 +124,13 @@ function ResetStep({ onReset }: { onReset: () => void }) {
   }
 
   return (
-    <form className="flex flex-col gap-md" onSubmit={handleSubmit}>
+    <form className="gap-md flex flex-col" onSubmit={handleSubmit}>
       <p className="text-body-sm text-neutral-500">Code sent to your Telegram</p>
-      <label className="flex flex-col gap-xs">
+      <label className="gap-xs flex flex-col">
         <span className="text-label-md text-neutral-900">Code</span>
         <Input name="code" inputMode="numeric" autoComplete="one-time-code" required autoFocus />
       </label>
-      <label className="flex flex-col gap-xs">
+      <label className="gap-xs flex flex-col">
         <span className="text-label-md text-neutral-900">New password</span>
         <Input name="newPassword" type="password" autoComplete="new-password" required />
       </label>
@@ -143,11 +152,11 @@ function ResetSuccessStep({ onBackToSignIn }: { onBackToSignIn: () => void }) {
   }, []);
 
   return (
-    <div className="flex flex-col items-center gap-md text-center">
-      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary-tint text-secondary-on-tint">
+    <div className="gap-md flex flex-col items-center text-center">
+      <span className="bg-secondary-tint text-secondary-on-tint flex h-12 w-12 items-center justify-center rounded-full">
         <Check className="h-6 w-6" aria-hidden="true" />
       </span>
-      <div className="flex flex-col gap-xs">
+      <div className="gap-xs flex flex-col">
         {/* tabIndex={-1} — фокусируемый, но не попадающий в обычный Tab-порядок элемент, на который
             переходит фокус при смене шага (иначе после каждого шага фокус улетает на body — ни
             один шаг ниже не двигает фокус сам, кроме автофокуса на первом поле формы). */}

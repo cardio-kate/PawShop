@@ -1,5 +1,9 @@
 import type { InputHTMLAttributes } from 'react';
-import { TEXT_FIELD_BASE_CLASSNAME, TEXT_FIELD_SIZE_CLASSNAME, fieldStateClassName } from '@/components/ui/field-styles';
+import {
+  TEXT_FIELD_BASE_CLASSNAME,
+  TEXT_FIELD_SIZE_CLASSNAME,
+  fieldStateClassName,
+} from '@/components/ui/field-styles';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: boolean;
