@@ -22,7 +22,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
   const locale = useLocale();
   const router = useRouter();
   const resolvedItems = useResolvedCartItems();
-  const unavailableCount = useUnavailableCartItemCount();
+  const unavailableCount = useUnavailableCartItemCount(resolvedItems);
 
   const subtotalValue = getCartSubtotal(resolvedItems);
   const subtotal = formatPrice(subtotalValue, locale);

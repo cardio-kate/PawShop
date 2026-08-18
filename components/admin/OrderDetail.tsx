@@ -10,7 +10,7 @@ import {
   adminTableRowClassName,
   orderStatusColorClassName,
 } from '@/components/admin/constants';
-import { getMockOrderTotal } from '@/components/admin/mock-data';
+import { getMockOrderSubtotal } from '@/components/admin/mock-data';
 import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 import { formatPrice } from '@/lib/utils';
 import type { MockOrder, OrderStatus } from '@/types';
@@ -29,8 +29,8 @@ interface OrderDetailProps {
 // как toggle в ProductTable.
 export function OrderDetail({ order }: OrderDetailProps) {
   const [status, setStatus] = useState<OrderStatus>(order.status);
-  const subtotal = order.items.reduce((sum, item) => sum + item.priceAtOrder * item.quantity, 0);
-  const total = getMockOrderTotal(order);
+  const subtotal = getMockOrderSubtotal(order);
+  const total = subtotal + order.shippingPriceAtOrder;
 
   return (
     <div className="gap-lg grid grid-cols-1 lg:grid-cols-[1fr_340px]">

@@ -24,7 +24,7 @@ export function CheckoutClient() {
   const tCart = useTranslations('Cart');
   const locale = useLocale();
   const resolvedItems = useResolvedCartItems();
-  const unavailableCount = useUnavailableCartItemCount();
+  const unavailableCount = useUnavailableCartItemCount(resolvedItems);
   const [countryId, setCountryId] = useState(MOCK_DELIVERY_COUNTRIES[0]!.id);
 
   if (resolvedItems.length === 0) {

@@ -57,10 +57,12 @@ export function useResolvedCartItemCount(): number {
 // а не оставляют пользователя гадать, почему сумма и localStorage разошлись. Число — разница
 // длин сырых items и уже отфильтрованных resolvedItems (flatMap выше отображает каждую строку
 // стора либо в одну резолвленную запись, либо ни в одну), а не отдельный проход с тем же
-// MOCK_PRODUCTS.find()/variants.find() — раньше это был независимый второй обход корзины.
-export function useUnavailableCartItemCount(): number {
+// MOCK_PRODUCTS.find()/variants.find(). resolvedItems приходит параметром, а не вторым вызовом
+// useResolvedCartItems() здесь же: оба потребителя (CartDrawer, CheckoutClient) уже резолвят
+// корзину для своего списка карточек, второй независимый resolve на каждый рендер был бы тем же
+// MOCK_PRODUCTS-проходом впустую.
+export function useUnavailableCartItemCount(resolvedItems: ResolvedCartItem[]): number {
   const items = useCartStore((state) => state.items);
-  const resolvedItems = useResolvedCartItems();
 
   return items.length - resolvedItems.length;
 }

@@ -4,7 +4,10 @@ import Image from 'next/image';
 import { Minus, Plus, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useCartStore } from '@/lib/store/cart.store';
-import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
+import {
+  FOCUS_RING_CLASSNAME,
+  iconActionButtonClassName,
+} from '@/components/ui/interaction-styles';
 import { formatPrice } from '@/lib/utils';
 import type { MockProduct, MockVariant } from '@/types';
 
@@ -27,7 +30,7 @@ export function CartItem({ product, variant, quantity, locale }: CartItemProps) 
 
   return (
     <li className="gap-md flex">
-      <div className="rounded-card relative h-16 w-16 shrink-0 overflow-hidden bg-neutral-100">
+      <div className="rounded-card relative w-16 shrink-0 self-stretch overflow-hidden bg-neutral-100">
         <Image
           src={product.images[0]!}
           alt={product.name}
@@ -44,7 +47,7 @@ export function CartItem({ product, variant, quantity, locale }: CartItemProps) 
             type="button"
             onClick={() => removeItem(product.id, variant.id)}
             aria-label={t('remove', { name: product.name })}
-            className={`duration-fast hover:text-paw shrink-0 cursor-pointer rounded-full p-1 text-neutral-500 transition-colors motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`}
+            className={`shrink-0 ${iconActionButtonClassName('muted')}`}
           >
             <X className="h-4 w-4" aria-hidden="true" />
           </button>

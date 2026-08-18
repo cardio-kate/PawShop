@@ -20,14 +20,14 @@ export const MOCK_ORDERS: MockOrder[] = [
     items: [
       {
         id: '1024-1',
-        productNameAtOrder: 'Kitten Chicken Pouches in Jelly',
+        productNameAtOrder: 'Kitten chicken pouches in jelly',
         variantLabelAtOrder: 'Pack 10×85 g (850 g)',
         quantity: 2,
         priceAtOrder: 12.9,
       },
       {
         id: '1024-2',
-        productNameAtOrder: 'Salmon & Rice Kibble',
+        productNameAtOrder: 'Salmon & rice kibble',
         variantLabelAtOrder: '1.2 kg',
         quantity: 1,
         priceAtOrder: 14.3,
@@ -49,7 +49,7 @@ export const MOCK_ORDERS: MockOrder[] = [
     items: [
       {
         id: '1023-1',
-        productNameAtOrder: 'Whisker-Friendly Bowl Set',
+        productNameAtOrder: 'Whisker-friendly bowl set',
         variantLabelAtOrder: 'Standard',
         quantity: 1,
         priceAtOrder: 12.9,
@@ -71,14 +71,14 @@ export const MOCK_ORDERS: MockOrder[] = [
     items: [
       {
         id: '1022-1',
-        productNameAtOrder: 'Salmon Treats',
+        productNameAtOrder: 'Salmon treats',
         variantLabelAtOrder: 'Pack 10×40 g (400 g)',
         quantity: 1,
         priceAtOrder: 34.9,
       },
       {
         id: '1022-2',
-        productNameAtOrder: 'Cheese & Cream Treats',
+        productNameAtOrder: 'Cheese & cream treats',
         variantLabelAtOrder: '40 g',
         quantity: 3,
         priceAtOrder: 3.2,
@@ -100,7 +100,7 @@ export const MOCK_ORDERS: MockOrder[] = [
     items: [
       {
         id: '1021-1',
-        productNameAtOrder: 'Turkey Indoor Kibble',
+        productNameAtOrder: 'Turkey indoor kibble',
         variantLabelAtOrder: '3 kg',
         quantity: 1,
         priceAtOrder: 36.9,
@@ -122,7 +122,7 @@ export const MOCK_ORDERS: MockOrder[] = [
     items: [
       {
         id: '1020-1',
-        productNameAtOrder: 'Beef Pouches in Gravy',
+        productNameAtOrder: 'Beef pouches in gravy',
         variantLabelAtOrder: 'Pack 10×85 g (850 g)',
         quantity: 1,
         priceAtOrder: 11.9,
@@ -144,14 +144,14 @@ export const MOCK_ORDERS: MockOrder[] = [
     items: [
       {
         id: '1019-1',
-        productNameAtOrder: 'Salmon Kibble Senior',
+        productNameAtOrder: 'Salmon kibble senior',
         variantLabelAtOrder: '1.2 kg',
         quantity: 1,
         priceAtOrder: 16.5,
       },
       {
         id: '1019-2',
-        productNameAtOrder: 'Chicken Pouches in Jelly Senior',
+        productNameAtOrder: 'Chicken pouches in jelly senior',
         variantLabelAtOrder: '85 g',
         quantity: 4,
         priceAtOrder: 1.4,
@@ -160,7 +160,12 @@ export const MOCK_ORDERS: MockOrder[] = [
   },
 ];
 
+// Вынесено отдельно от getMockOrderTotal — OrderDetail.tsx показывает Subtotal отдельной строкой
+// над Total и раньше пересчитывал ту же сумму вторым независимым reduce по order.items.
+export function getMockOrderSubtotal(order: MockOrder): number {
+  return order.items.reduce((sum, item) => sum + item.priceAtOrder * item.quantity, 0);
+}
+
 export function getMockOrderTotal(order: MockOrder): number {
-  const itemsTotal = order.items.reduce((sum, item) => sum + item.priceAtOrder * item.quantity, 0);
-  return itemsTotal + order.shippingPriceAtOrder;
+  return getMockOrderSubtotal(order) + order.shippingPriceAtOrder;
 }
