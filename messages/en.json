@@ -140,6 +140,10 @@
   "PrivacyPolicy": {
     "title": "Privacy Policy",
     "intro": "This page explains what personal data we collect when you place an order with PawShop, why we collect it, and how you can exercise your rights under the GDPR.",
+    "controller": {
+      "title": "Who is responsible for your data (data controller)",
+      "body": "The controller responsible for the personal data described on this page is PawShop UG (haftungsbeschränkt), Musterstraße 12, 10115 Berlin, Germany, represented by Managing Director Lena Hartmann. You can reach us at support@pawshop.example."
+    },
     "whatWeCollect": {
       "title": "What information we collect",
       "body": "When you submit an order request, we collect your name, phone number, delivery address, and any comment you choose to add. We do not collect payment card details — payment is arranged directly with our manager after we contact you."
@@ -148,17 +152,21 @@
       "title": "Why we collect it",
       "body": "We use this information solely to process your order request, arrange delivery, and get in touch with you to confirm payment and shipping details. The legal basis for this processing is the performance of a contract you are entering into with us (Art. 6(1)(b) GDPR)."
     },
+    "recipients": {
+      "title": "Who has access to your data",
+      "body": "Your order data is stored in our PostgreSQL database, operated by our hosting provider Neon Inc. in an EU data centre (Frankfurt), which processes it solely as our data processor. When you submit an order, your name, phone number, delivery address, and comment are also sent to our manager as a Telegram notification."
+    },
+    "transfers": {
+      "title": "International data transfers",
+      "body": "Telegram Messenger Inc. is based outside the European Economic Area, so the notification described above involves a transfer of your personal data outside the EEA (GDPR Chapter V). Telegram does not currently publish standard contractual clauses covering this type of transfer. We are stating this openly rather than claiming a safeguard that is not actually in place — this is a known limitation shared by many small businesses that rely on consumer messaging apps for internal order notifications."
+    },
     "retention": {
       "title": "How long we keep it",
-      "body": "We retain order data for as long as necessary to fulfil your order and to meet our legal and accounting obligations, after which it is deleted or anonymised."
+      "body": "If your order request is not confirmed, we retain it for 6 months on the basis of our legitimate interest in keeping accurate records of customer inquiries and defending against potential claims (Art. 6(1)(f) GDPR), and then delete or anonymise it. If it proceeds to a confirmed transaction, the resulting business records (invoices, commercial correspondence) are kept for the periods required under German commercial and tax law — six years for commercial correspondence (§ 257 HGB) and ten years for accounting records (§ 147 AO), counted from the end of the relevant calendar year."
     },
-    "telegram": {
-      "title": "Telegram notifications",
-      "body": "When you submit an order, your name, phone number, delivery address, and comment are sent to our manager as a Telegram notification. Telegram Messenger Inc. is based outside the European Economic Area, so this involves a transfer of your personal data outside the EEA (GDPR Chapter V)."
-    },
-    "requests": {
+    "rights": {
       "title": "Your rights and how to reach us",
-      "body": "You may request access to, correction of, or deletion of your personal data at any time by contacting us at support@pawshop.example. If you request deletion, please note that removing the corresponding Telegram message is a manual step our manager completes as part of processing your request."
+      "body": "You have the right to request access to, correction of, restriction of processing of, or deletion of your personal data, to object to processing carried out on the basis of our legitimate interests, and to receive your data in a portable format — by contacting us at support@pawshop.example. If you request deletion, please note that removing the corresponding Telegram message is a manual step our manager completes as part of processing your request. You also have the right to lodge a complaint with a data protection supervisory authority — given our registered office in Berlin, in particular the Berliner Beauftragte für Datenschutz und Informationsfreiheit, though you are free to contact the authority in your own EU member state instead."
     }
   },
   "Impressum": {

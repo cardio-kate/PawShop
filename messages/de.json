@@ -140,6 +140,10 @@
   "PrivacyPolicy": {
     "title": "Datenschutzerklärung",
     "intro": "Diese Seite erläutert, welche personenbezogenen Daten wir bei einer Bestellung bei PawShop erheben, warum wir sie erheben und wie Sie Ihre Rechte gemäß DSGVO wahrnehmen können.",
+    "controller": {
+      "title": "Wer für Ihre Daten verantwortlich ist (Verantwortlicher)",
+      "body": "Verantwortlich für die auf dieser Seite beschriebenen personenbezogenen Daten ist die PawShop UG (haftungsbeschränkt), Musterstraße 12, 10115 Berlin, Deutschland, vertreten durch die Geschäftsführerin Lena Hartmann. Sie erreichen uns unter support@pawshop.example."
+    },
     "whatWeCollect": {
       "title": "Welche Daten wir erheben",
       "body": "Wenn Sie eine Bestellanfrage absenden, erheben wir Ihren Namen, Ihre Telefonnummer, Ihre Lieferadresse sowie einen optionalen Kommentar. Zahlungsdaten erheben wir nicht — die Zahlung wird direkt mit unserem Mitarbeiter vereinbart, nachdem wir Sie kontaktiert haben."
@@ -148,17 +152,21 @@
       "title": "Warum wir diese Daten erheben",
       "body": "Wir verwenden diese Angaben ausschließlich zur Bearbeitung Ihrer Bestellanfrage, zur Organisation der Lieferung und zur Kontaktaufnahme, um Zahlung und Versand zu bestätigen. Rechtsgrundlage ist die Erfüllung eines Vertrags, den Sie mit uns eingehen (Art. 6 Abs. 1 lit. b DSGVO)."
     },
+    "recipients": {
+      "title": "Wer Zugriff auf Ihre Daten hat",
+      "body": "Ihre Bestelldaten werden in unserer PostgreSQL-Datenbank gespeichert, die von unserem Hosting-Anbieter Neon Inc. in einem EU-Rechenzentrum (Frankfurt) betrieben wird und diese ausschließlich als unser Auftragsverarbeiter verarbeitet. Bei Eingang Ihrer Bestellung werden Ihr Name, Ihre Telefonnummer, Ihre Lieferadresse und Ihr Kommentar zusätzlich als Telegram-Nachricht an unseren Mitarbeiter gesendet."
+    },
+    "transfers": {
+      "title": "Internationale Datenübermittlung",
+      "body": "Telegram Messenger Inc. hat ihren Sitz außerhalb des Europäischen Wirtschaftsraums, sodass die oben beschriebene Benachrichtigung eine Übermittlung Ihrer personenbezogenen Daten außerhalb des EWR darstellt (Kapitel V DSGVO). Telegram veröffentlicht derzeit keine Standardvertragsklauseln für diese Art der Übermittlung. Wir weisen dies offen aus, anstatt eine tatsächlich nicht bestehende Garantie zu behaupten — dies ist eine bekannte Einschränkung, die viele kleine Unternehmen betrifft, die für interne Bestellbenachrichtigungen auf Messenger-Apps für Verbraucher zurückgreifen."
+    },
     "retention": {
       "title": "Wie lange wir sie speichern",
-      "body": "Wir speichern Bestelldaten so lange, wie es zur Abwicklung Ihrer Bestellung sowie zur Erfüllung gesetzlicher und steuerlicher Aufbewahrungspflichten erforderlich ist; danach werden sie gelöscht oder anonymisiert."
+      "body": "Wird eine Bestellanfrage nicht bestätigt, speichern wir sie 6 Monate lang auf Grundlage unseres berechtigten Interesses an einer ordnungsgemäßen Dokumentation von Kundenanfragen und der Abwehr möglicher Ansprüche (Art. 6 Abs. 1 lit. f DSGVO) und löschen oder anonymisieren sie anschließend. Kommt es zu einer bestätigten Transaktion, werden die daraus entstehenden Geschäftsunterlagen (Rechnungen, Handelskorrespondenz) gemäß den handels- und steuerrechtlichen Aufbewahrungspflichten aufbewahrt — sechs Jahre für Handelskorrespondenz (§ 257 HGB) und zehn Jahre für Buchungsbelege (§ 147 AO), gerechnet ab Ende des jeweiligen Kalenderjahres."
     },
-    "telegram": {
-      "title": "Telegram-Benachrichtigungen",
-      "body": "Bei Eingang Ihrer Bestellung werden Ihr Name, Ihre Telefonnummer, Ihre Lieferadresse und Ihr Kommentar als Telegram-Nachricht an unseren Mitarbeiter gesendet. Telegram Messenger Inc. hat ihren Sitz außerhalb des Europäischen Wirtschaftsraums, wodurch eine Übermittlung Ihrer personenbezogenen Daten außerhalb des EWR stattfindet (Kapitel V DSGVO)."
-    },
-    "requests": {
+    "rights": {
       "title": "Ihre Rechte und Kontakt",
-      "body": "Sie können jederzeit Auskunft über, Berichtigung oder Löschung Ihrer personenbezogenen Daten verlangen, indem Sie uns unter support@pawshop.example kontaktieren. Bei einem Löschantrag ist die Entfernung der entsprechenden Telegram-Nachricht ein manueller Schritt, den unser Mitarbeiter im Rahmen der Bearbeitung Ihrer Anfrage durchführt."
+      "body": "Sie haben das Recht, Auskunft über, Berichtigung, Einschränkung der Verarbeitung oder Löschung Ihrer personenbezogenen Daten zu verlangen, der auf unseren berechtigten Interessen beruhenden Verarbeitung zu widersprechen und Ihre Daten in einem übertragbaren Format zu erhalten — kontaktieren Sie uns dazu unter support@pawshop.example. Bei einem Löschantrag ist die Entfernung der entsprechenden Telegram-Nachricht ein manueller Schritt, den unser Mitarbeiter im Rahmen der Bearbeitung Ihrer Anfrage durchführt. Außerdem haben Sie das Recht, Beschwerde bei einer Datenschutzaufsichtsbehörde einzulegen — aufgrund unseres Sitzes in Berlin insbesondere bei der Berliner Beauftragten für Datenschutz und Informationsfreiheit; Sie können sich jedoch auch an die Behörde Ihres eigenen EU-Mitgliedstaats wenden."
     }
   },
   "Impressum": {
