@@ -8,7 +8,16 @@ interface ChipProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   selected?: boolean;
 }
 
-const BASE_CLASSNAME = `inline-flex items-center justify-center whitespace-nowrap rounded-full border px-md py-sm text-body-sm transition-colors duration-fast motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`;
+const BASE_CLASSNAME = `inline-flex items-center justify-center whitespace-nowrap rounded-full border text-body-sm transition-colors duration-fast motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`;
+
+// filter — design.md → chip-filter, padding 8px 16px, без изменений. variant — по прямому запросу
+// (страница товара, вариант фасовки): py-[4px] px-[8px], отдельно от filter — не общий padding на
+// обоих kind, тот же принцип раздельных токенов, что уже есть в design.md (chip-filter/variant-chip
+// документированы как два разных компонента).
+const KIND_PADDING_CLASSNAME: Record<ChipKind, string> = {
+  filter: 'px-md py-sm',
+  variant: 'px-[8px] py-[4px]',
+};
 
 const DEFAULT_CLASSNAME = 'border-neutral-300 bg-surface text-neutral-700';
 
@@ -39,7 +48,7 @@ export function Chip({
       type="button"
       disabled={disabled}
       aria-pressed={selected}
-      className={`${BASE_CLASSNAME} ${stateClassName} ${className ?? ''}`}
+      className={`${BASE_CLASSNAME} ${KIND_PADDING_CLASSNAME[kind]} ${stateClassName} ${className ?? ''}`}
       {...props}
     />
   );

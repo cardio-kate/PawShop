@@ -36,6 +36,9 @@ const MOCK_PRODUCT_INPUTS: MockProductInput[] = [
     categoryId: 'wet-food',
     name: 'Kitten chicken pouches in jelly',
     description: 'Supports growth and energy',
+    composition:
+      'Chicken (min. 40%), chicken broth, jelly (thickener: guar gum), minerals, vitamins A, D3, E, taurine.',
+    analyticalConstituents: 'Protein 10%, Fat 3%, Fibre 0.5%, Ash 2%, Moisture 82%.',
     ageGroup: 'kitten',
     images: ['/mock/products/kitten-chicken-pouches-in-jelly.jpg'],
     isNew: true,
@@ -51,6 +54,9 @@ const MOCK_PRODUCT_INPUTS: MockProductInput[] = [
     categoryId: 'dry-food',
     name: 'Kitten chicken & milk kibble',
     description: 'Calcium for strong bones',
+    composition:
+      'Chicken meal (min. 32%), rice, milk powder (4%), animal fat, calcium carbonate, vitamins A, D3, E, taurine.',
+    analyticalConstituents: 'Protein 34%, Fat 16%, Fibre 2%, Ash 7%, Moisture 8%.',
     ageGroup: 'kitten',
     images: ['/mock/products/kitten-chicken-milk-kibble.jpg'],
     isNew: false,
@@ -67,6 +73,9 @@ const MOCK_PRODUCT_INPUTS: MockProductInput[] = [
     categoryId: 'dry-food',
     name: 'Salmon & rice kibble',
     description: 'Everyday diet',
+    composition:
+      'Salmon meal (min. 30%), rice, salmon oil (3%), minerals, vitamins A, D3, E, taurine.',
+    analyticalConstituents: 'Protein 32%, Fat 15%, Fibre 2.5%, Ash 7%, Moisture 8%.',
     ageGroup: 'adult',
     images: ['/mock/products/salmon-rice-kibble.jpg'],
     isNew: true,
@@ -83,6 +92,9 @@ const MOCK_PRODUCT_INPUTS: MockProductInput[] = [
     categoryId: 'wet-food',
     name: 'Beef pouches in gravy',
     description: 'Everyday diet',
+    composition:
+      'Beef (min. 40%), beef broth, gravy (thickener: guar gum), minerals, vitamins A, D3, E, taurine.',
+    analyticalConstituents: 'Protein 9%, Fat 3.5%, Fibre 0.5%, Ash 2%, Moisture 82%.',
     ageGroup: 'adult',
     images: ['/mock/products/beef-pouches-in-gravy.jpg'],
     isNew: false,
@@ -98,6 +110,9 @@ const MOCK_PRODUCT_INPUTS: MockProductInput[] = [
     categoryId: 'dry-food',
     name: 'Turkey indoor kibble',
     description: 'Hairball control',
+    composition:
+      'Turkey meal (min. 30%), rice, beet pulp (fibre, 4%), poultry fat, minerals, vitamins A, D3, E, taurine.',
+    analyticalConstituents: 'Protein 30%, Fat 12%, Fibre 4%, Ash 7%, Moisture 8%.',
     ageGroup: 'adult',
     images: ['/mock/products/turkey-indoor-kibble.jpg'],
     isNew: false,
@@ -116,6 +131,9 @@ const MOCK_PRODUCT_INPUTS: MockProductInput[] = [
     categoryId: 'wet-food',
     name: 'Chicken pouches in jelly senior',
     description: 'Soft, easy-to-chew texture',
+    composition:
+      'Chicken (min. 38%), chicken broth, jelly (thickener: guar gum), minerals, vitamins A, D3, E, taurine.',
+    analyticalConstituents: 'Protein 9%, Fat 3%, Fibre 0.5%, Ash 2%, Moisture 82%.',
     ageGroup: 'senior',
     images: ['/mock/products/chicken-pouches-in-jelly-senior.jpg'],
     isNew: false,
@@ -131,6 +149,9 @@ const MOCK_PRODUCT_INPUTS: MockProductInput[] = [
     categoryId: 'dry-food',
     name: 'Salmon kibble senior',
     description: 'Joint support',
+    composition:
+      'Salmon meal (min. 28%), rice, salmon oil (3%), glucosamine, chondroitin, minerals, vitamins A, D3, E, taurine.',
+    analyticalConstituents: 'Protein 30%, Fat 13%, Fibre 3%, Ash 7%, Moisture 8%.',
     ageGroup: 'senior',
     images: ['/mock/products/salmon-kibble-senior.jpg'],
     isNew: false,
@@ -147,6 +168,8 @@ const MOCK_PRODUCT_INPUTS: MockProductInput[] = [
     categoryId: 'treats',
     name: 'Salmon treats',
     description: 'Ideal for training and rewards',
+    composition: '100% freeze-dried salmon fillet — single ingredient, no additives.',
+    analyticalConstituents: 'Protein 80%, Fat 8%, Fibre 1%, Ash 6%, Moisture 5%.',
     ageGroup: 'adult',
     images: ['/mock/products/salmon-treats.jpg'],
     isNew: true,
@@ -162,6 +185,8 @@ const MOCK_PRODUCT_INPUTS: MockProductInput[] = [
     categoryId: 'treats',
     name: 'Cheese & cream treats',
     description: 'Lickable, creamy texture',
+    composition: 'Cheese (28%), cream (12%), wheat flour, vitamins A, D3, E.',
+    analyticalConstituents: 'Protein 15%, Fat 20%, Fibre 0.5%, Ash 3%, Moisture 20%.',
     ageGroup: 'adult',
     images: ['/mock/products/cheese-cream-treats.jpg'],
     isNew: false,
@@ -177,6 +202,10 @@ const MOCK_PRODUCT_INPUTS: MockProductInput[] = [
     categoryId: 'accessories',
     name: 'Whisker-friendly bowl set',
     description: 'Ceramic set with shallow, wide bowls — reduces whisker fatigue',
+    // Не еда — Composition/Analytical constituents на странице товара не рендерятся вовсе
+    // (см. ProductDetailClient.tsx).
+    composition: null,
+    analyticalConstituents: null,
     ageGroup: 'adult',
     images: ['/mock/products/whisker-friendly-bowl-set.jpg'],
     isNew: false,

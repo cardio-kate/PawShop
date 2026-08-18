@@ -105,6 +105,8 @@
   "ProductPage": {
     "outOfStock": "Out of stock",
     "addToCart": "Add to Cart",
+    "composition": "Composition",
+    "analyticalConstituents": "Analytical constituents",
     "relatedTitle": "You may also like"
   },
   "Checkout": {

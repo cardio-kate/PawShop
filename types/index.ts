@@ -27,6 +27,14 @@ export interface MockProduct {
   categoryId: string;
   name: string;
   description: string;
+  // Короткий список ингредиентов (§7.3, страница товара — «Composition», свёрнутый по умолчанию
+  // блок под Add to Cart). Nullable — не у всех товаров категории есть состав в привычном смысле
+  // (accessories, id 10 — керамические миски, не еда).
+  composition: string | null;
+  // Analytical constituents (гарантированный анализ, % белка/жира/клетчатки/золы/влаги) — вторая
+  // обязательная секция реальной этикетки корма ЕС, отдельная от Composition. Тот же nullable-
+  // инвариант, что у composition — null ровно там же, где null у composition (accessories).
+  analyticalConstituents: string | null;
   ageGroup: AgeGroup;
   images: string[];
   isNew: boolean;

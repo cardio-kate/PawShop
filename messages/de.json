@@ -105,6 +105,8 @@
   "ProductPage": {
     "outOfStock": "Ausverkauft",
     "addToCart": "In den Warenkorb",
+    "composition": "Zusammensetzung",
+    "analyticalConstituents": "Analytische Bestandteile",
     "relatedTitle": "Das könnte Ihnen auch gefallen"
   },
   "Checkout": {

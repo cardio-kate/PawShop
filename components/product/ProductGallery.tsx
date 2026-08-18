@@ -13,14 +13,25 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
   const selected = images[selectedIndex] ?? images[0]!;
 
   return (
-    <div className="gap-sm mx-auto flex w-full max-w-[450px] flex-col sm:mx-0">
-      <div className="rounded-card relative aspect-square overflow-hidden bg-neutral-100">
+    <div className="gap-sm mx-auto flex w-full max-w-[360px] flex-col sm:mx-0">
+      {/* aspect-[4/5], не aspect-square — тот же прямоугольный кадр, что у product-card в каталоге
+          (design.md → Components «Product card»), по прямому запросу. Высота остаётся 450px (та
+          же, что раньше у квадрата 450×450) — ширина уменьшается до 360px (450 × 4/5), а не
+          наоборот, чтобы не поднимать высоту колонки галереи. */}
+      <div className="rounded-card relative aspect-[4/5] overflow-hidden bg-neutral-100">
         <Image
           src={selected}
           alt={alt}
           fill
           priority
-          sizes="(min-width: 1024px) 450px, (min-width: 640px) calc(50vw - 60px), 450px"
+          // sizes отражает реальную отрисованную ширину колонки (page.tsx →
+          // clamp(312px, calc(40vw − 48px), 360px)), не формулу клэмпа буквально: между 640 и
+          // 900px картинка зафиксирована на полу клэмпа (312px, не убывает дальше), между 900 и
+          // 1024px растёт до потолка 360px — единое "(min-width: 900px) 360px" на этот верхний
+          // диапазон безопасно (чуть заказывает с запасом, никогда не меньше фактической
+          // ширины), а calc(40vw − 48px) в этом же диапазоне ушёл бы ниже 312px и заставил бы
+          // next/image запросить более лёгкий (размытый на факте отрисовки) вариант картинки.
+          sizes="(min-width: 900px) 360px, (min-width: 640px) 312px, 360px"
           className="object-cover"
         />
       </div>
