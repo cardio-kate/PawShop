@@ -9,6 +9,9 @@ import {
   getMockRelatedProducts,
 } from '@/components/product/mock-data';
 import { getProductGridColumnsClassName } from '@/components/product/getProductGridColumnsClassName';
+import { RELATED_PRODUCTS_TOP_GAP_CLASSNAME } from '@/components/product/related-products-styles';
+import { PRODUCT_CARD_GRID_GAP_CLASSNAME } from '@/components/product/product-grid-styles';
+import { STOREFRONT_PAGE_CONTAINER_CLASSNAME } from '@/components/layout/page-styles';
 
 export function generateStaticParams() {
   return MOCK_PRODUCTS.map((product) => ({ slug: product.slug }));
@@ -51,7 +54,7 @@ export default async function ProductPage({
   const related = getMockRelatedProducts(product);
 
   return (
-    <div className="max-w-container px-lg mx-auto pt-[60px]">
+    <div className={STOREFRONT_PAGE_CONTAINER_CLASSNAME}>
       {/* Колонка галереи — clamp(…,50vw,450px), не фиксированные 450px: на bp-sm..~1024px
           450px съедал бы почти всю ширину экрана, оставляя тексту только свой min-content
           (кнопка Add to Cart, см. ProductDetailClient.tsx) — колонки визуально «расходились»,
@@ -72,7 +75,11 @@ export default async function ProductPage({
       {/* design.md → Components «You may also like»: не рендерится вовсе, если подходящих
           товаров не нашлось — не показывать пустую сетку с одним заголовком. */}
       {related.length > 0 && (
-        <div className="gap-lg mt-[60px] flex flex-col">
+        // gap-[50px] (не gap-lg) — тот же зазор заголовок→контент, что и у секций главной
+        // (components/home/section-styles.ts, SECTION_HEADING_GAP_CLASSNAME); здесь как gap,
+        // а не margin-top, потому что h2 и сетка — единственные два ребёнка одного flex-col.
+        // RELATED_PRODUCTS_TOP_GAP_CLASSNAME (80px, было 60px) — по прямому запросу.
+        <div className={`${RELATED_PRODUCTS_TOP_GAP_CLASSNAME} flex flex-col gap-[50px]`}>
           <h2 className="text-section-heading text-center text-neutral-900 uppercase">
             {tProductPage('relatedTitle')}
           </h2>
@@ -88,11 +95,13 @@ export default async function ProductPage({
               под ней — нет). justify-items-start/justify-start нужны оба — justify-items решает
               позицию при единственной карточке (grid-cols-1, одна на всю ширину track'а),
               justify-content — при 2+ карточках (несколько узких track'ов внутри широкого
-              контейнера). */}
+              контейнера). PRODUCT_CARD_GRID_GAP_CLASSNAME (30px), не gap-gutter (24px) — по
+              прямому запросу, единое значение для всех сеток карточек товара на сайте
+              (components/product/product-grid-styles.ts). */}
           <div
-            className={`gap-gutter grid justify-center justify-items-center lg:justify-start lg:justify-items-start ${getProductGridColumnsClassName(related.length)}`}
+            className={`grid justify-center justify-items-center lg:justify-start lg:justify-items-start ${PRODUCT_CARD_GRID_GAP_CLASSNAME} ${getProductGridColumnsClassName(related.length)}`}
           >
-            {related.map((relatedProduct) => (
+            {related.map((relatedProduct, index) => (
               <div key={relatedProduct.id} className="w-full max-w-[290px]">
                 <ProductCard
                   product={relatedProduct}
@@ -100,6 +109,7 @@ export default async function ProductPage({
                   newLabel={tProduct('newBadge')}
                   addToCartLabel={tProduct('addToCart', { name: relatedProduct.name })}
                   unavailableLabel={tProduct('unavailable', { name: relatedProduct.name })}
+                  priority={index < 4}
                 />
               </div>
             ))}

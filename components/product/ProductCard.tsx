@@ -12,6 +12,10 @@ interface ProductCardProps {
   newLabel: string;
   addToCartLabel: string;
   unavailableLabel: string;
+  // CLAUDE.md → «Загрузка изображений»: priority только для первых 2–4 карточек в первом экране,
+  // не на всю сетку — по умолчанию false, вызывающая сторона (CatalogClient/NewArrivalsSection)
+  // решает, какие карточки выше сгиба.
+  priority?: boolean;
 }
 
 // Презентационный компонент без getTranslations/getLocale внутри (в отличие от Footer) — так его
@@ -24,6 +28,7 @@ export function ProductCard({
   newLabel,
   addToCartLabel,
   unavailableLabel,
+  priority,
 }: ProductCardProps) {
   const price = formatPrice(product.price, locale);
   // Карточка каталога не даёт выбрать вариант — в корзину уходит самый дешёвый активный, тот же,
@@ -45,10 +50,12 @@ export function ProductCard({
     // длинным названием (2 строки) без этого проседали ниже соседних — цена/кнопка съезжали
     // на разную высоту от карточки к карточке. Требует stretch по высоте от родительского ряда
     // (родитель должен НЕ выставлять свой items-center, иначе h-full не от чего считать).
-    <div className="rounded-card bg-surface flex h-full w-full flex-col p-[10px]">
+    // Без padding на карточке (design.md → «Product card», токен product-card) — фото 4:5 ложится
+    // вплотную к краям, название/цена/кнопка ниже идут в том же инсете без собственного отступа.
+    <div className="rounded-card bg-surface flex h-full w-full flex-col">
       <Link
         href={`/product/${product.slug}`}
-        className={`rounded-card relative block aspect-square overflow-hidden bg-neutral-100 ${FOCUS_RING_CLASSNAME}`}
+        className={`rounded-card relative block aspect-[4/5] overflow-hidden bg-neutral-100 ${FOCUS_RING_CLASSNAME}`}
       >
         <Image
           // images[0] всегда есть — товар без единой фотографии не сохраняется на сервере
@@ -59,6 +66,7 @@ export function ProductCard({
           fill
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
           className="rounded-card object-cover"
+          priority={priority}
         />
         {product.isNew && (
           <Badge variant="new" className="left-sm top-sm absolute">

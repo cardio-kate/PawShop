@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { ProductCard } from '@/components/product/ProductCard';
 import { MOCK_CATEGORIES, MOCK_PRODUCTS } from '@/components/product/mock-data';
 import { getProductGridColumnsClassName } from '@/components/product/getProductGridColumnsClassName';
+import { PRODUCT_CARD_GRID_GAP_CLASSNAME } from '@/components/product/product-grid-styles';
 import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 import { useSyncedValue } from '@/lib/hooks/useSyncedValue';
 import type { AgeGroup } from '@/types';
@@ -177,31 +178,37 @@ export function CatalogClient() {
         </FilterRow>
 
         <FilterRow label={t('filters.price')}>
-          <Input
-            type="number"
-            inputMode="decimal"
-            min={0}
-            value={minPrice}
-            onChange={(e) => handleMinPriceChange(e.target.value)}
-            placeholder={t('filters.priceFrom')}
-            aria-label={t('filters.priceFrom')}
-            compact
-            className="w-20"
-          />
+          {/* w-20 на обёртке, не на Input — TEXT_FIELD_BASE_CLASSNAME несёт w-full, и в
+              скомпилированном Tailwind-CSS правило .w-full идёт после .w-20, так что при
+              одинаковой специфичности побеждает w-full независимо от порядка классов в JSX.
+              Фиксированная ширина обёртки даёт w-full внутри посчитаться от неё. */}
+          <div className="w-20">
+            <Input
+              type="number"
+              inputMode="decimal"
+              min={0}
+              value={minPrice}
+              onChange={(e) => handleMinPriceChange(e.target.value)}
+              placeholder={t('filters.priceFrom')}
+              aria-label={t('filters.priceFrom')}
+              compact
+            />
+          </div>
           <span className="text-body-sm text-neutral-500" aria-hidden="true">
             –
           </span>
-          <Input
-            type="number"
-            inputMode="decimal"
-            min={0}
-            value={maxPrice}
-            onChange={(e) => handleMaxPriceChange(e.target.value)}
-            placeholder={t('filters.priceTo')}
-            aria-label={t('filters.priceTo')}
-            compact
-            className="w-20"
-          />
+          <div className="w-20">
+            <Input
+              type="number"
+              inputMode="decimal"
+              min={0}
+              value={maxPrice}
+              onChange={(e) => handleMaxPriceChange(e.target.value)}
+              placeholder={t('filters.priceTo')}
+              aria-label={t('filters.priceTo')}
+              compact
+            />
+          </div>
         </FilterRow>
       </div>
 
@@ -215,10 +222,15 @@ export function CatalogClient() {
         // странице (getProductGridColumnsClassName) — при узких фильтрах/последней неполной странице
         // пустые track'и без карточки внутри всё равно растягивались бы до 290px (Maximize Tracks
         // не смотрит на контент), и результат висел бы у левого края вместо центрирования.
+        // PRODUCT_CARD_GRID_GAP_CLASSNAME (30px), не gap-gutter (24px, design.md → Layout
+        // «Сетка каталога») — по прямому запросу, единое значение для всех сеток карточек товара
+        // на сайте (components/product/product-grid-styles.ts). Колонки — minmax(0, 290px), не
+        // фикс. ширина ряда (в отличие от New Arrivals), поэтому увеличение gap не требует
+        // пересчёта контейнера — грид просто шире раздвигает карточки внутри max-w-container.
         <div
-          className={`gap-gutter grid justify-center justify-items-center ${getProductGridColumnsClassName(pageItems.length)}`}
+          className={`grid justify-center justify-items-center ${PRODUCT_CARD_GRID_GAP_CLASSNAME} ${getProductGridColumnsClassName(pageItems.length)}`}
         >
-          {pageItems.map((product) => (
+          {pageItems.map((product, index) => (
             <div key={product.id} className="w-full max-w-[290px]">
               <ProductCard
                 product={product}
@@ -226,6 +238,9 @@ export function CatalogClient() {
                 newLabel={tProduct('newBadge')}
                 addToCartLabel={tProduct('addToCart', { name: product.name })}
                 unavailableLabel={tProduct('unavailable', { name: product.name })}
+                // CLAUDE.md → «Загрузка изображений»: первые 2–4 карточки каталога — в первом
+                // экране, остальные — обычный lazy (next/image по умолчанию).
+                priority={index < 4}
               />
             </div>
           ))}
@@ -244,9 +259,11 @@ export function CatalogClient() {
       )}
 
       {pageCount > 1 && (
+        // pt-[30px]/pb-[20px], не pt-md (16px) — по прямому запросу, не токен spacing-шкалы
+        // (ближайшие — lg/24px и md/16px, оба не совпадают ни с одним из двух значений).
         <nav
           aria-label={t('pagination.ariaLabel')}
-          className="gap-xs pt-md flex items-center justify-center"
+          className="gap-xs flex items-center justify-center pt-[30px] pb-[20px]"
         >
           <button
             type="button"
