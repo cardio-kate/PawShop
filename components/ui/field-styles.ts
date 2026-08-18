@@ -13,7 +13,7 @@ export function fieldStateClassName(error?: boolean): string {
 }
 
 export const TEXT_FIELD_BASE_CLASSNAME =
-  'w-full rounded-md border bg-surface outline-none transition-colors duration-fast placeholder:text-neutral-500 motion-reduce:transition-none disabled:cursor-not-allowed disabled:bg-neutral-100 disabled:text-neutral-500';
+  'w-full rounded-md border bg-surface text-neutral-900 outline-none transition-colors duration-fast placeholder:text-neutral-500 motion-reduce:transition-none disabled:cursor-not-allowed disabled:bg-neutral-100 disabled:text-neutral-500';
 
 // design.md → Components «Price range filter»: компактный вариант (padding 8px 12px, body-sm)
 // сейчас нужен только Input (два числовых поля в CatalogClient) — Textarea всегда полноразмерный.

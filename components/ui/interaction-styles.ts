@@ -5,17 +5,25 @@ export const FOCUS_RING_CLASSNAME =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw';
 
 const ICON_ACTION_BUTTON_BASE_CLASSNAME =
-  'cursor-pointer rounded-full p-1 text-neutral-700 transition-colors duration-fast motion-reduce:transition-none';
+  'cursor-pointer rounded-full p-1 transition-colors duration-fast motion-reduce:transition-none';
 
-const ICON_ACTION_BUTTON_HOVER_CLASSNAME = {
-  default: 'hover:text-paw',
-  danger: 'hover:text-error',
+// Цвет — часть варианта, не общей базы: design.md → «Nav link» держит три разных базовых цвета для
+// формально одной и той же формы иконки-кнопки, это не отклонение, а фиксированная часть системы:
+// `trigger` (neutral-900) — только триггеры верхнего уровня Header (бургер/поиск/корзина, «тот же
+// neutral-900, чтобы не спорить весом с текстом нав-списка рядом»); `default` (neutral-700) —
+// обычное действие таблицы/панели (Panel close, ProductTable edit, OrderTable view); `muted`
+// (neutral-500) — второстепенное действие внутри уже раскрытого поля/строки (Header search
+// clear/close, CartItem remove — крестик рядом с контентом, которым он управляет, не самостоятельный
+// пункт навигации). `danger` — тот же neutral-700, что и default, но hover уходит в error, а не paw.
+export const ICON_ACTION_BUTTON_VARIANT_CLASSNAME = {
+  default: 'text-neutral-700 hover:text-paw',
+  trigger: 'text-neutral-900 hover:text-paw',
+  muted: 'text-neutral-500 hover:text-paw',
+  danger: 'text-neutral-700 hover:text-error',
 } as const;
 
-// Круглая icon-кнопка действия (close/edit/remove) — та же форма+hover+focus-ring были независимо
-// скопированы в Panel (close), ProductTable (edit/delete), VariantEditor (remove), OrderTable
-// (view) — отличаются только цветом hover (danger — для удаления) и позиционированием/доп.
-// классами, которые остаются на вызывающей стороне.
-export function iconActionButtonClassName(variant: 'default' | 'danger' = 'default'): string {
-  return `${ICON_ACTION_BUTTON_BASE_CLASSNAME} ${ICON_ACTION_BUTTON_HOVER_CLASSNAME[variant]} ${FOCUS_RING_CLASSNAME}`;
+export function iconActionButtonClassName(
+  variant: keyof typeof ICON_ACTION_BUTTON_VARIANT_CLASSNAME = 'default',
+): string {
+  return `${ICON_ACTION_BUTTON_BASE_CLASSNAME} ${ICON_ACTION_BUTTON_VARIANT_CLASSNAME[variant]} ${FOCUS_RING_CLASSNAME}`;
 }

@@ -52,6 +52,24 @@ export function Button({
   const classes = `${BASE_CLASSNAME} ${SIZE_CLASSNAME[size]} ${disabled ? DISABLED_CLASSNAME : VARIANT_CLASSNAME[variant]} ${className ?? ''}`;
 
   if (href) {
+    // disabled+href — тот же визуальный язык, что у disabled <button> (DISABLED_CLASSNAME), но
+    // <Link> сам по себе не поддерживает disabled: без явной блокировки клик/Enter/Space всё равно
+    // навигировали бы, несмотря на «выключенный» вид кнопки. aria-disabled — сигнал для AT,
+    // tabIndex={-1} убирает из Tab-порядка, onClick с preventDefault блокирует клик мышью.
+    if (disabled) {
+      return (
+        <span
+          role="link"
+          aria-disabled="true"
+          tabIndex={-1}
+          className={classes}
+          onClick={(e) => e.preventDefault()}
+        >
+          {children as ReactNode}
+        </span>
+      );
+    }
+
     return (
       <Link href={href} className={classes}>
         {children as ReactNode}
