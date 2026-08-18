@@ -79,53 +79,66 @@ export function ProductTable() {
             </tr>
           </thead>
           <tbody>
-            {products.map((product, index) => (
-              <tr key={product.id} className={adminTableRowClassName(index)}>
-                <td className="px-md py-sm">
-                  <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-sm bg-neutral-100">
-                    <Image
-                      src={product.images[0]!}
-                      alt=""
-                      fill
-                      sizes="40px"
-                      className="object-cover"
-                    />
-                  </div>
-                </td>
-                <td className={CELL_CLASSNAME}>{product.name}</td>
-                <td className={CELL_CLASSNAME}>{getCategoryName(product.categoryId)}</td>
-                <td className={CELL_CLASSNAME}>{formatPrice(product.price, ADMIN_LOCALE)}</td>
-                <td className={CELL_CLASSNAME}>
-                  {product.isNew && <Badge variant="new">New</Badge>}
-                </td>
-                <td className="px-md py-sm">
-                  <Toggle
-                    checked={product.isActive}
-                    onChange={(checked) => handleToggleActive(product.id, checked)}
-                    aria-label={`${product.isActive ? 'Deactivate' : 'Activate'} ${product.name}`}
-                  />
-                </td>
-                <td className="px-md py-sm">
-                  <div className="gap-xs flex items-center">
-                    <Link
-                      href={`/admin/dashboard/products/${product.id}/edit`}
-                      aria-label={`Edit ${product.name}`}
-                      className={iconActionButtonClassName()}
-                    >
-                      <Pencil className="h-4 w-4" aria-hidden="true" />
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={() => setProductToDelete(product)}
-                      aria-label={`Delete ${product.name}`}
-                      className={iconActionButtonClassName('danger')}
-                    >
-                      <Trash2 className="h-4 w-4" aria-hidden="true" />
-                    </button>
-                  </div>
+            {/* colSpan-строка, не замена таблицы текстом — заголовок остаётся виден. Недостижимо
+                на моках (MOCK_PRODUCTS непустой, и Delete здесь — soft-delete через Toggle, не
+                удаляет строку), но handleToggleActive деактивирует, не убирает из products — если
+                этот список когда-нибудь станет отфильтрованным (например по категории), пустой
+                результат должен быть читаемым, а не голой таблицей без строк. */}
+            {products.length === 0 ? (
+              <tr>
+                <td colSpan={7} className="px-md py-3xl text-body-md text-center text-neutral-500">
+                  No products yet.
                 </td>
               </tr>
-            ))}
+            ) : (
+              products.map((product, index) => (
+                <tr key={product.id} className={adminTableRowClassName(index)}>
+                  <td className="px-md py-sm">
+                    <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-sm bg-neutral-100">
+                      <Image
+                        src={product.images[0]!}
+                        alt=""
+                        fill
+                        sizes="40px"
+                        className="object-cover"
+                      />
+                    </div>
+                  </td>
+                  <td className={CELL_CLASSNAME}>{product.name}</td>
+                  <td className={CELL_CLASSNAME}>{getCategoryName(product.categoryId)}</td>
+                  <td className={CELL_CLASSNAME}>{formatPrice(product.price, ADMIN_LOCALE)}</td>
+                  <td className={CELL_CLASSNAME}>
+                    {product.isNew && <Badge variant="new">New</Badge>}
+                  </td>
+                  <td className="px-md py-sm">
+                    <Toggle
+                      checked={product.isActive}
+                      onChange={(checked) => handleToggleActive(product.id, checked)}
+                      aria-label={`${product.isActive ? 'Deactivate' : 'Activate'} ${product.name}`}
+                    />
+                  </td>
+                  <td className="px-md py-sm">
+                    <div className="gap-xs flex items-center">
+                      <Link
+                        href={`/admin/dashboard/products/${product.id}/edit`}
+                        aria-label={`Edit ${product.name}`}
+                        className={iconActionButtonClassName()}
+                      >
+                        <Pencil className="h-4 w-4" aria-hidden="true" />
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => setProductToDelete(product)}
+                        aria-label={`Delete ${product.name}`}
+                        className={iconActionButtonClassName('danger')}
+                      >
+                        <Trash2 className="h-4 w-4" aria-hidden="true" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

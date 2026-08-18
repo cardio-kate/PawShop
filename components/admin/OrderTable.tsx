@@ -45,32 +45,44 @@ export function OrderTable() {
           </tr>
         </thead>
         <tbody>
-          {MOCK_ORDERS.map((order, index) => (
-            <tr key={order.id} className={adminTableRowClassName(index)}>
-              <td className={CELL_CLASSNAME}>#{order.id}</td>
-              <td className={CELL_CLASSNAME}>{order.customerName}</td>
-              <td className={CELL_CLASSNAME}>
-                {ORDER_DATE_FORMATTER.format(new Date(order.createdAt))}
-              </td>
-              <td className={CELL_CLASSNAME}>
-                {formatPrice(getMockOrderTotal(order), ADMIN_LOCALE)}
-              </td>
-              <td className="px-md py-sm">
-                <Badge variant={ORDER_STATUS_BADGE_VARIANT[order.status]}>
-                  {ORDER_STATUS_LABEL[order.status]}
-                </Badge>
-              </td>
-              <td className="px-md py-sm">
-                <Link
-                  href={`/admin/dashboard/orders/${order.id}`}
-                  aria-label={`View order #${order.id}`}
-                  className={`flex items-center justify-center ${iconActionButtonClassName()}`}
-                >
-                  <ChevronRight className="h-4 w-4" aria-hidden="true" />
-                </Link>
+          {/* colSpan-строка, не замена всей таблицы на текст: заголовок таблицы (Order/Customer/…)
+              остаётся видимым и в пустом состоянии — так админ видит структуру, а не «пропавшую»
+              таблицу. Пока недостижимо на моках (MOCK_ORDERS всегда непустой) — готово к реальному
+              getOrders() с нулём заказов на старте. */}
+          {MOCK_ORDERS.length === 0 ? (
+            <tr>
+              <td colSpan={6} className="px-md py-3xl text-body-md text-center text-neutral-500">
+                No orders yet.
               </td>
             </tr>
-          ))}
+          ) : (
+            MOCK_ORDERS.map((order, index) => (
+              <tr key={order.id} className={adminTableRowClassName(index)}>
+                <td className={CELL_CLASSNAME}>#{order.id}</td>
+                <td className={CELL_CLASSNAME}>{order.customerName}</td>
+                <td className={CELL_CLASSNAME}>
+                  {ORDER_DATE_FORMATTER.format(new Date(order.createdAt))}
+                </td>
+                <td className={CELL_CLASSNAME}>
+                  {formatPrice(getMockOrderTotal(order), ADMIN_LOCALE)}
+                </td>
+                <td className="px-md py-sm">
+                  <Badge variant={ORDER_STATUS_BADGE_VARIANT[order.status]}>
+                    {ORDER_STATUS_LABEL[order.status]}
+                  </Badge>
+                </td>
+                <td className="px-md py-sm">
+                  <Link
+                    href={`/admin/dashboard/orders/${order.id}`}
+                    aria-label={`View order #${order.id}`}
+                    className={`flex items-center justify-center ${iconActionButtonClassName()}`}
+                  >
+                    <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </div>
