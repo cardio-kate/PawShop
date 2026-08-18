@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { MOCK_DELIVERY_COUNTRIES } from '@/components/product/mock-data';
+import { STOREFRONT_PAGE_CONTAINER_CLASSNAME } from '@/components/layout/page-styles';
 import { formatPrice } from '@/lib/utils';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
@@ -16,11 +17,18 @@ export default async function DeliveryPage({ params }: { params: Promise<{ local
   const t = await getTranslations('Delivery');
 
   return (
-    <div className="max-w-container px-lg mx-auto pt-[60px]">
+    <div className={STOREFRONT_PAGE_CONTAINER_CLASSNAME}>
       <h1 className="text-h1 text-center text-neutral-900 uppercase">{t('title')}</h1>
-      <p className="mt-md max-w-reading text-body-md text-neutral-700">{t('intro')}</p>
+      {/* bg-paw-tint/p-lg/rounded-2xl — тот же приём, что у demoNotice в Impressum (design.md →
+          «Privacy Policy — публичная страница», тот же bg-paw-tint card, что AboutSection/
+          Contact). pb-[20px] на обоих блоках страницы — по прямому запросу, не токен
+          spacing-шкалы (ближайший — md/16px, меньше нужного), тот же приём, что у Impressum/
+          Privacy Policy. */}
+      <div className="bg-paw-tint p-lg mt-md rounded-2xl pb-[20px]">
+        <p className="text-body-md text-neutral-700">{t('intro')}</p>
+      </div>
 
-      <div className="mt-xl overflow-x-auto">
+      <div className="mt-xl overflow-x-auto pb-[20px]">
         <table className="w-full min-w-[480px] text-left">
           <thead>
             <tr className="border-b border-neutral-200">

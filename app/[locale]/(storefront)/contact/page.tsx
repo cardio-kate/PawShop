@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Button } from '@/components/ui/Button';
+import { STOREFRONT_PAGE_CONTAINER_CLASSNAME } from '@/components/layout/page-styles';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -25,40 +26,48 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
   const t = await getTranslations('Contact');
 
   return (
-    <div className="max-w-container px-lg mx-auto pt-[60px]">
-      <div className="max-w-reading">
-        <h1 className="text-h1 text-neutral-900 uppercase">{t('title')}</h1>
-        <p className="mt-md text-body-md text-neutral-700">{t('intro')}</p>
+    <div className={STOREFRONT_PAGE_CONTAINER_CLASSNAME}>
+      {/* Тот же приём, что у About на главной (bg-paw-tint card) — верхние 40px до блока остаются
+          белым отступом страницы (как у About: pt-[40px] в page.tsx до самой bg-paw-tint секции),
+          серый начинается только с самого блока, не сразу под хедером. Скругление только сверху
+          (rounded-t-2xl, как у ValuePropsSection), а не со всех сторон. pb-[20px] (было pb-[5px],
+          вплотную к кнопке Send) — по прямому запросу, тот же приём, что у секций Impressum/
+          Privacy Policy/Delivery. */}
+      <div className="bg-paw-tint p-xl rounded-t-2xl pb-[20px]">
+        <div className="max-w-reading">
+          <h1 className="text-h1 text-neutral-900 uppercase">{t('title')}</h1>
+          <p className="mt-md text-body-md text-neutral-700">{t('intro')}</p>
 
-        <form className="mt-xl gap-md flex flex-col">
-          <label className="gap-xs flex flex-col">
-            <span className="text-label-md text-neutral-900">
-              {t('form.name')} <span aria-hidden="true">*</span>
-            </span>
-            <Input name="name" autoComplete="name" required />
-          </label>
+          <form className="mt-xl gap-md flex flex-col">
+            <label className="gap-xs flex flex-col">
+              <span className="text-label-md text-neutral-900">
+                {t('form.name')} <span aria-hidden="true">*</span>
+              </span>
+              <Input name="name" autoComplete="name" required />
+            </label>
 
-          <label className="gap-xs flex flex-col">
-            <span className="text-label-md text-neutral-900">
-              {t('form.email')} <span aria-hidden="true">*</span>
-            </span>
-            <Input type="email" name="email" autoComplete="email" required />
-          </label>
+            <label className="gap-xs flex flex-col">
+              <span className="text-label-md text-neutral-900">
+                {t('form.email')} <span aria-hidden="true">*</span>
+              </span>
+              <Input type="email" name="email" autoComplete="email" required />
+            </label>
 
-          <label className="gap-xs flex flex-col">
-            <span className="text-label-md text-neutral-900">{t('form.phone')}</span>
-            <Input type="tel" name="phone" autoComplete="tel" />
-          </label>
+            <label className="gap-xs flex flex-col">
+              <span className="text-label-md text-neutral-900">{t('form.phone')}</span>
+              <Input type="tel" name="phone" autoComplete="tel" />
+            </label>
 
-          <label className="gap-xs flex flex-col">
-            <span className="text-label-md text-neutral-900">{t('form.comment')}</span>
-            <Textarea name="comment" rows={4} />
-          </label>
+            <label className="gap-xs flex flex-col">
+              <span className="text-label-md text-neutral-900">{t('form.comment')}</span>
+              <Textarea name="comment" rows={4} />
+            </label>
 
-          <Button disabled className="mt-sm self-start">
-            {t('form.send')}
-          </Button>
-        </form>
+            <Button disabled className="mt-sm self-start">
+              {t('form.send')}
+            </Button>
+          </form>
+        </div>
       </div>
     </div>
   );
