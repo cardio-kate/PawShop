@@ -359,6 +359,10 @@ Category.nameDe: string           // категорий 4, заводятся с
 не в компоненте. `queries` возвращают обе колонки как есть, `services` отдают уже резолвленное под
 `locale` значение — компоненты не должны знать про существование fallback.
 
+Тот же принцип — на уровне статических UI-строк (`messages/*.json`): `i18n/request.ts` делает deep-merge
+`de.json` поверх `en.json` (en — база), а не отдаёт `de.json` как есть — непереведённый ключ иначе не
+подставляет английский текст, а рисует на странице `Namespace.key` (`next-intl` `MISSING_MESSAGE`).
+
 **Slug — один на обе локали, не переводится** (`/en/product/kitten-chicken-pouches` и
 `/de/product/kitten-chicken-pouches` совпадают, кроме префикса `[locale]`). Так проще: не нужен второй
 `slug`-столбец и вторая проверка уникальности на язык, `getProductBySlug(slug)` не меняет сигнатуру.
