@@ -6,6 +6,7 @@ import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 const FOOTER_LINKS = [
   { key: 'delivery', href: '/delivery' },
   { key: 'privacyPolicy', href: '/privacy-policy' },
+  { key: 'impressum', href: '/impressum' },
 ] as const;
 
 // docs/design.md → Iconography: лапка — единственная брендовая иконка проекта (растровая, не
@@ -70,7 +71,7 @@ export async function Footer() {
     // pb-[5px] намеренно не симметричен pt — низ страницы, а не отступ между секциями. pt —
     // единственный источник правды для отступа перед Footer (design.md → Typography, «Отступ
     // перед Footer»); страницы-обёртки свой pb-* снизу не добавляют.
-    <footer className="max-w-container px-lg mx-auto pt-[60px] pb-[5px]">
+    <footer className="max-w-container px-lg mx-auto pt-[80px] pb-[5px]">
       {/* Точечный брейкпоинт 800/801px вместо стандартного sm — причина и разбор в design.md
           → Footer → «Адаптив ниже bp-sm». Важно не забыть при правке: max-[Npx] в Tailwind v4
           компилируется как "< Npx", не "<= Npx" — пара обязана быть max-[801px]/min-[801px],
@@ -98,28 +99,43 @@ export async function Footer() {
         <div className="gap-sm rounded-footer-mobile bg-secondary text-on-secondary flex flex-col p-[30px] max-[801px]:p-[20px] min-[801px]:col-start-2 min-[801px]:row-start-1 min-[801px]:rounded-xl">
           <h2 className="text-label-md text-neutral-900">{t('supportTitle')}</h2>
           <p className="text-body-sm">{t('supportText')}</p>
+          {/* self-start — та же причина, что items-start у соседних блоков (Contact/Follow us):
+              без него flex-col растягивает ссылку на всю ширину карточки (align-items: stretch),
+              и клик правее e-mail тоже попадал бы по ссылке. items-start на самом div не подходит
+              — h2/p должны остаться на всю ширину карточки, иначе текст p перестанет переноситься
+              по словам. */}
           <a
             href={`mailto:${t('supportEmail')}`}
-            className={`text-label-md font-semibold text-neutral-900 underline ${FOCUS_RING_CLASSNAME}`}
+            className={`text-label-md self-start font-semibold text-neutral-900 underline ${FOCUS_RING_CLASSNAME}`}
           >
             {t('supportEmail')}
           </a>
         </div>
 
-        <div className="gap-xs rounded-footer-mobile bg-paw-tint flex flex-col p-[30px] text-neutral-900 max-[801px]:p-[20px] min-[801px]:col-start-2 min-[801px]:row-start-2 min-[801px]:rounded-xl">
-          {/* В отличие от заголовков соседних карточек (Support/Follow us — обычный текст),
-              этот h2 кликабельный: дублирует маршрут /contact из nav-list Header. Асимметрия
-              с соседними карточками осознанная, не забытая правка. */}
-          <h2>
-            <Link href="/contact" className={LINK_CLASSNAME}>
-              {t('contactTitle')}
-            </Link>
-          </h2>
-          {/* gap-xs (и здесь, и у родителя выше) + py-xs у каждой ссылки = единые 12px между
-              всеми строками (Contact/Delivery/Privacy Policy) — та же формула, что у списка
-              соцсетей ниже. gap-sm у родителя без gap-xs здесь давал 16px до первой ссылки
-              против 8px между Delivery/Privacy Policy — заметный на глаз разнобой. */}
-          <nav aria-label={t('linksNav')} className="gap-xs flex flex-col">
+        <div className="rounded-footer-mobile bg-paw-tint p-[30px] text-neutral-900 max-[801px]:p-[20px] min-[801px]:col-start-2 min-[801px]:row-start-2 min-[801px]:rounded-xl">
+          {/* Contact/Delivery/Privacy Policy/Impressum — все четыре ведут на реальные маршруты,
+              поэтому все четыре внутри одного <nav aria-label="Footer links">: раньше Contact
+              (h2-ссылка) стоял снаружи nav, а остальные три — внутри, и скринридер, идущий по
+              лендмаркам, не увидел бы Contact частью той же группы ссылок. В отличие от заголовков
+              соседних карточек (Support/Follow us — обычный текст, не ссылка), Contact кликабелен
+              и дублирует маршрут /contact из nav-list Header — эта асимметрия (h2-ссылка vs.
+              h2-текст) осознанная, не забытая правка, landmark-группировки она не касается.
+              text-label-md — на самом h2, не только на дочернем Link: без класса тег наследовал
+              дефолтные font-size/line-height браузера (16px/1.5 → 24px, Tailwind Preflight base),
+              а не токен — сам Link внутри был стилизован верно (14/16.8), но бокс h2 оставался на
+              7px выше соседних заголовков, и вся строка из трёх карточек визуально «плыла».
+              gap-xs на самом nav + py-xs у каждой ссылки = единые 12px между всеми строками
+              (Contact/Delivery/Privacy Policy) — та же формула, что у списка соцсетей ниже.
+              items-start обязателен: без него flex-col растягивает каждую ссылку (кроме Contact,
+              она внутри h2, а не прямой flex-item) по умолчанию (align-items: stretch) на всю
+              ширину карточки — сам текст остаётся слева, но кликабельным становится весь бокс
+              вплоть до правого края карточки, а не только видимый текст. */}
+          <nav aria-label={t('linksNav')} className="gap-xs flex flex-col items-start">
+            <h2 className="text-label-md">
+              <Link href="/contact" className={LINK_CLASSNAME}>
+                {t('contactTitle')}
+              </Link>
+            </h2>
             {FOOTER_LINKS.map((link) => (
               <Link key={link.key} href={link.href} className={LINK_CLASSNAME}>
                 {t(link.key)}
@@ -129,11 +145,18 @@ export async function Footer() {
         </div>
 
         <div className="gap-md rounded-footer-mobile bg-paw-tint min-[801px]:rounded-tl-card min-[801px]:rounded-bl-card flex flex-col p-[30px] text-neutral-900 max-[801px]:p-[20px] min-[801px]:col-start-3 min-[801px]:row-span-2 min-[801px]:row-start-1 min-[801px]:rounded-tr-2xl min-[801px]:rounded-br-2xl">
-          <h2 className="text-label-md">{t('socialTitle')}</h2>
+          {/* text-[15px] поверх text-label-md — точечное укрупнение кегля только «Follow us»
+              (15px вместо общих 14px), не общий токен text-label-md (используется у соседних
+              заголовков Support/Contact и по всему сайту). line-height/font-weight остаются
+              от label-md (1.2/600). */}
+          <h2 className="text-label-md text-[15px]">{t('socialTitle')}</h2>
           {/* gap-xs у списка + py-xs у ссылки = те же 12px между строками, что и раньше
               (4 + 4 + 4), но кликабельная область каждой ссылки выросла с 20px до 28px — иначе
-              не проходит минимум touch target 24×24px по WCAG 2.2 §2.5.8. */}
-          <ul className="gap-xs flex flex-col">
+              не проходит минимум touch target 24×24px по WCAG 2.2 §2.5.8. items-start — та же
+              причина, что у linksNav выше: без него li растягивается на всю ширину карточки
+              (align-items: stretch по умолчанию), и клик правее иконки+текста, по пустому месту
+              карточки, тоже срабатывал бы как клик по ссылке. */}
+          <ul className="gap-xs flex flex-col items-start">
             {FOOTER_SOCIALS.map(({ key, href, Icon }) => (
               <li key={key}>
                 <a

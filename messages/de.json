@@ -161,6 +161,31 @@
       "body": "Sie können jederzeit Auskunft über, Berichtigung oder Löschung Ihrer personenbezogenen Daten verlangen, indem Sie uns unter support@pawshop.example kontaktieren. Bei einem Löschantrag ist die Entfernung der entsprechenden Telegram-Nachricht ein manueller Schritt, den unser Mitarbeiter im Rahmen der Bearbeitung Ihrer Anfrage durchführt."
     }
   },
+  "Impressum": {
+    "title": "Impressum",
+    "intro": "Diese Seite enthält die gesetzlich vorgeschriebenen Angaben zum Betreiber dieser Website nach deutschem Recht (§ 5 DDG, vormals § 5 TMG).",
+    "demoNotice": "PawShop ist ein Demoprojekt für ein Entwickler-Portfolio. Firmenname, Adresse und Registerangaben auf dieser Seite sind vollständig fiktiv und entsprechen keinem realen Unternehmen — über diese Seite werden keine echten Transaktionen abgewickelt.",
+    "provider": {
+      "title": "Angaben zum Anbieter",
+      "body": "PawShop UG (haftungsbeschränkt), Musterstraße 12, 10115 Berlin, Deutschland. Vertreten durch die Geschäftsführerin: Lena Hartmann."
+    },
+    "contact": {
+      "title": "Kontakt",
+      "body": "Sie erreichen uns per E-Mail unter support@pawshop.example oder telefonisch unter +49 30 00000000."
+    },
+    "register": {
+      "title": "Handelsregister",
+      "body": "Eingetragen beim Amtsgericht Berlin (Charlottenburg), HRB 000000 B. Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz: DE000000000 (Platzhalter)."
+    },
+    "disputeResolution": {
+      "title": "Streitbeilegung",
+      "body": "Wir sind nicht verpflichtet und nicht bereit, an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen."
+    },
+    "responsibility": {
+      "title": "Verantwortlich für den Inhalt",
+      "body": "Verantwortlich für den Inhalt nach § 18 Abs. 2 Medienstaatsvertrag (MStV): Lena Hartmann, Anschrift wie oben."
+    }
+  },
   "Contact": {
     "title": "Kontakt",
     "intro": "Haben Sie eine Frage zu einem Produkt oder einer Bestellung? Füllen Sie das Formular aus oder schreiben Sie uns direkt an support@pawshop.example — da es keine Online-Zahlung gibt, meldet sich unser Mitarbeiter immer persönlich, um Ihre Bestellung und die Lieferdetails zu bestätigen.",
@@ -182,6 +207,7 @@
     "linksNav": "Footer-Links",
     "delivery": "Lieferung",
     "privacyPolicy": "Datenschutz",
+    "impressum": "Impressum",
     "socialTitle": "Folgen Sie uns",
     "facebook": "Facebook",
     "instagram": "Instagram",

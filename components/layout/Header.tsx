@@ -12,7 +12,10 @@ import { CartButton } from '@/components/cart/CartButton';
 import { CartDrawer } from '@/components/cart/CartDrawer';
 import { useResolvedCartItemCount } from '@/components/cart/useResolvedCartItems';
 import { FOCUSABLE_SELECTOR } from '@/components/ui/Panel';
-import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
+import {
+  FOCUS_RING_CLASSNAME,
+  iconActionButtonClassName,
+} from '@/components/ui/interaction-styles';
 import { useSyncedValue } from '@/lib/hooks/useSyncedValue';
 
 // Search/mobile-nav/cart и так были взаимоисключающими по построению (каждый opener сбрасывал
@@ -31,14 +34,27 @@ const ROUTE_NAV_ITEMS = [
   { key: 'contact', href: '/contact' },
 ] as const;
 
-const NAV_LINK_CLASSNAME = `text-label-md text-neutral-900 transition-colors duration-fast hover:text-paw motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`;
+// body-md (15px) + font-semibold override — токена «15px/600» в шкале нет (body-md всегда 400,
+// label-md жирный только на 14px), точечная комбинация вместо нового токена под одно место
+// использования. 600 — та же жирность, что уже проверялась на label-md и хорошо отделяла нав от
+// текста страницы, здесь просто на новом размере.
+const NAV_LINK_CLASSNAME = `text-body-md font-semibold text-neutral-900 transition-colors duration-fast hover:text-paw motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`;
 
 // -translate-y-px: чисто оптическая поправка — геометрически кнопка уже центрирована по высоте
 // шапки так же, как текст нав/EN-DE (проверено getBoundingClientRect, centerY совпадает), но
 // иконка внутри квадрата 20×20 визуально «тяжелее» в центре, чем текст, у которого масса букв
 // смещена к верху строки — без сдвига иконка читается ниже текста, хотя оба центрированы.
-const HEADER_TRIGGER_ICON_BUTTON_CLASSNAME = `cursor-pointer rounded-full p-1 -translate-y-px text-neutral-900 transition-colors duration-fast hover:text-paw motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`;
+// Форма/цвет/hover/focus-ring — общий iconActionButtonClassName('trigger'), поправка положения
+// остаётся здесь же, на вызывающей стороне (та же граница ответственности, что и в остальных
+// местах, использующих этот хелпер).
+const HEADER_TRIGGER_ICON_BUTTON_CLASSNAME = `${iconActionButtonClassName('trigger')} -translate-y-px`;
 
+// focus-visible:-outline-offset-2 (inset), не общий FOCUS_RING_CLASSNAME (outset offset-2): пункты
+// меню — edge-to-edge на всю ширину Header (px у самого <nav> нет, только у ссылки внутри), а Header
+// на этой ширине начинается ровно от края viewport (inset-x-0 без паддинга). Обычный внешний ring
+// на крайних пунктах уходил бы за 0/100vw и обрезался бы окном — inset-ring решает это, оставаясь
+// видимым. Не унифицировано с FOCUS_RING_CLASSNAME: единственное место в проекте с этим требованием
+// (edge-to-edge интерактивный элемент), заводить общий токен под один вызов — преждевременно.
 const MOBILE_NAV_LINK_CLASSNAME =
   'px-[15px] py-[12.5px] text-body-md text-neutral-900 transition-colors duration-fast hover:bg-paw-tint hover:text-paw motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-paw';
 
@@ -181,27 +197,39 @@ export function Header() {
     router.push(`/catalog?search=${encodeURIComponent(trimmed)}`);
   }
 
+  // Тот же принцип, что у Panel.tsx (корзина) и handleMobileNavKeyDown выше — любая раскрытая
+  // панель Header закрывается по Escape независимо от того, где внутри неё стоит фокус (инпут,
+  // clear-крестик, close-крестик). До этого фикса у поиска такого обработчика не было вообще —
+  // единственный способ свернуть его с клавиатуры был Tab до close-кнопки и Enter.
+  function handleSearchKeyDown(e: KeyboardEvent<HTMLFormElement>) {
+    if (e.key === 'Escape') closeSearch();
+  }
+
   const navHref = (id: string) => (pathname === '/' ? `#${id}` : `/#${id}`);
-  // Логотип и корзина сами по себе узкие — места на планшете/десктопе им хватает всегда, поэтому
-  // при поиске прячутся только на настоящем телефоне (< sm), где вообще нет запаса ширины.
-  const hiddenLogoWhenSearchOpen = isSearchOpen ? 'hidden sm:flex' : 'flex';
+  // Корзина узкая сама по себе — места на планшете/десктопе ей хватает всегда, поэтому при поиске
+  // прячется только на настоящем телефоне (< sm), где вообще нет запаса ширины (см. её className
+  // ниже). Десктопный логотип из этой логики не трогаем — у него уже есть своё правило видимости
+  // по брейкпоинту (hidden ... sm:flex), независимое от поиска.
+  //
   // А вот nav (4 пункта) — тот самый «тяжёлый» элемент: рядом с рабочим полем поиска (иконка +
   // инпут + до двух крестиков) он не помещается вплоть до 1024px (lg), даже когда логотип и
-  // корзина уже не мешают. Поэтому именно nav прячется в расширенном диапазоне "< lg", а не
-  // логотип/корзина.
+  // корзина уже не мешают. Поэтому именно nav прячется в расширенном диапазоне "< lg" — но тогда
+  // на 640–1024px не остаётся вообще никакого способа вернуться к навигации, кроме закрытия
+  // поиска (бургер там по умолчанию не существует, он `sm:hidden`). Поэтому у самой кнопки-бургера
+  // ниже (className) отдельное правило видимости на время поиска: `lg:hidden` вместо обычного
+  // `sm:hidden` — она берёт на себя роль резервного триггера навигации ровно в том диапазоне, где
+  // прячется desktop-nav, и мобильное выпадающее меню (тот же дропдаун, что и на телефоне) должно
+  // уметь показываться на этой же ширине — см. соответствующие классы у backdrop/`<nav>` ниже.
   const hiddenNavWhenSearchOpen = isSearchOpen ? 'hidden lg:flex' : 'flex';
 
   return (
-    <header className="bg-surface sticky top-0 z-50 border-b border-neutral-200">
+    <header className="bg-paw-tint sticky top-0 z-50 border-b border-neutral-200">
       <div
         className={`max-w-container gap-md sm:px-lg mx-auto h-20 items-center px-[10px] ${
           isSearchOpen ? 'flex' : 'grid grid-cols-[1fr_auto_1fr]'
         } sm:flex sm:justify-between`}
       >
-        <div
-          className={`shrink-0 items-center ${hiddenLogoWhenSearchOpen}`}
-          onKeyDown={handleMobileNavKeyDown}
-        >
+        <div className="flex shrink-0 items-center" onKeyDown={handleMobileNavKeyDown}>
           {/* Без aria-controls: mobile-nav-menu монтируется только при isMobileNavOpen, в закрытом
               состоянии ссылка указывала бы на несуществующий id. aria-expanded + aria-label уже
               полностью описывают состояние. */}
@@ -211,7 +239,7 @@ export function Header() {
             onClick={toggleMobileNav}
             aria-label={isMobileNavOpen ? t('closeMenu') : t('openMenu')}
             aria-expanded={isMobileNavOpen}
-            className={`${HEADER_TRIGGER_ICON_BUTTON_CLASSNAME} sm:hidden`}
+            className={`${HEADER_TRIGGER_ICON_BUTTON_CLASSNAME} ${isSearchOpen ? 'lg:hidden' : 'sm:hidden'}`}
           >
             {isMobileNavOpen ? (
               <X className="h-5 w-5" aria-hidden="true" />
@@ -232,8 +260,12 @@ export function Header() {
             // идёт в DOM раньше <nav>, поэтому на одном уровне стека (оба position, оба z-auto)
             // список рисуется поверх, а не наоборот. Клик по подложке закрывает меню — тот же UX,
             // что у Panel (корзина/admin-модалки).
+            //
+            // lg:hidden, не sm:hidden: сам триггер (кнопка выше) теперь тоже видим до lg на время
+            // поиска (см. комментарий у hiddenNavWhenSearchOpen) — если открыть меню оттуда, ему
+            // нужно уметь фактически отрисоваться на этой же ширине, а не только < sm.
             <div
-              className="fixed inset-0 bg-neutral-900/40 sm:hidden"
+              className="fixed inset-0 bg-neutral-900/40 lg:hidden"
               onClick={closeMobileNav}
               aria-hidden="true"
             />
@@ -244,7 +276,7 @@ export function Header() {
               ref={mobileNavRef}
               id="mobile-nav-menu"
               aria-label={t('mainNav')}
-              className="bg-surface py-sm absolute inset-x-0 top-full flex flex-col border-t border-neutral-200 sm:hidden"
+              className="bg-surface py-sm absolute inset-x-0 top-full flex flex-col border-t border-neutral-200 lg:hidden"
             >
               {ANCHOR_NAV_ITEMS.map((item) => (
                 <a
@@ -269,8 +301,12 @@ export function Header() {
               {/* LocaleSwitcher не входит в основной ряд иконок Header на мобильном — там и так
                   впритык места нет (design.md → Header, ширина 320–375px). Дублируется здесь же,
                   как Catalog/Contact выше, только по другой причине: не недостижимый маршрут, а
-                  нехватка горизонтального места в самой шапке. */}
-              <div className="flex items-center justify-between border-t border-neutral-200 px-[15px] py-[12.5px]">
+                  нехватка горизонтального места в самой шапке. sm:hidden — начиная с 640px в самой
+                  шапке уже есть независимый инлайн LocaleSwitcher (третья колонка, `hidden
+                  sm:block`), он не зависит от поиска и виден и тогда, когда это меню открыто
+                  резервным бургером на 640–1024px (см. hiddenNavWhenSearchOpen) — без sm:hidden
+                  здесь на этой ширине было бы два переключателя языка одновременно. */}
+              <div className="flex items-center justify-between border-t border-neutral-200 px-[15px] py-[12.5px] sm:hidden">
                 <span className="text-body-md text-neutral-700">{t('language')}</span>
                 <LocaleSwitcher onNavigate={() => setActivePanel(null)} />
               </div>
@@ -289,10 +325,14 @@ export function Header() {
             <Logo stacked />
           </Link>
 
-          {/* gap-[12px] не по шкале — осознанно: на sm..lg gap-lg (24px) визуально расползался. */}
+          {/* Ни gap-[12px], ни gap-[18px] не по шкале — осознанно: gap-lg (24px) на sm..lg
+              визуально расползался. По прямому запросу — три шага: gap-[12px] на sm..md
+              (640–767px), gap-[18px] на md..lg (768–1023px, ~1000px — заметно шире). lg:gap-xl
+              (40px), не lg:gap-lg (24px) — по прямому запросу, шире на просторном
+              desktop-разрешении. */}
           <nav
             aria-label={t('mainNav')}
-            className="lg:gap-lg hidden shrink-0 items-center gap-[12px] sm:flex"
+            className="lg:gap-xl hidden shrink-0 items-center gap-[12px] sm:flex md:gap-[18px]"
           >
             {ANCHOR_NAV_ITEMS.map((item) => (
               <a key={item.id} href={navHref(item.id)} className={NAV_LINK_CLASSNAME}>
@@ -315,6 +355,7 @@ export function Header() {
           {isSearchOpen ? (
             <form
               onSubmit={handleSearchSubmit}
+              onKeyDown={handleSearchKeyDown}
               role="search"
               className="gap-sm px-md py-sm focus-within:border-paw flex w-full min-w-0 items-center rounded-full border border-neutral-300 lg:w-56"
             >
@@ -337,7 +378,7 @@ export function Header() {
                   type="button"
                   onClick={clearSearchQuery}
                   aria-label={t('clearSearch')}
-                  className={`hover:text-paw shrink-0 cursor-pointer rounded-full p-1 text-neutral-500 ${FOCUS_RING_CLASSNAME}`}
+                  className={`shrink-0 ${iconActionButtonClassName('muted')}`}
                 >
                   <X className="h-4 w-4" aria-hidden="true" />
                 </button>
@@ -346,7 +387,7 @@ export function Header() {
                 type="button"
                 onClick={closeSearch}
                 aria-label={t('closeSearch')}
-                className={`hover:text-paw shrink-0 cursor-pointer rounded-full p-1 text-neutral-500 ${FOCUS_RING_CLASSNAME}`}
+                className={`shrink-0 ${iconActionButtonClassName('muted')}`}
               >
                 <X className="h-4 w-4" aria-hidden="true" />
               </button>
