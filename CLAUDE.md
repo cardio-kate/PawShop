@@ -3,13 +3,12 @@
 # PawShop — проектный контекст
 
 Полные доки: [`docs/tz-pawshop.md`](docs/tz-pawshop.md) (ТЗ), [`docs/architecture.md`](docs/architecture.md)
-(архитектура; раздел 9 — историческая справка про `proxy.ts`/рантайм в Next 16),
-[`docs/design.md`](docs/design.md) (дизайн-система). Этот раздел — не
-замена им, а выжимка решений, которые чаще всего ломают по незнанию или "улучшают" не спросив. При
-конфликте между этим файлом и `docs/*` — доки главнее, значит этот файл устарел и его надо поправить, а не
-молча следовать ему. Пути вроде `app/[locale]/(storefront)/**` ниже — целевая структура; на текущий момент
-проект — скелет, часть этих путей ещё не создана (см. README и `.claude/plans/`) — не считать файл
-существующим только потому, что путь упомянут здесь.
+(архитектура; §9 — про `proxy.ts`/рантайм в Next 16), [`docs/design.md`](docs/design.md) (дизайн-система).
+Этот файл — не замена им, а выжимка решений, которые чаще всего ломают по незнанию или «улучшают» не
+спросив. При конфликте с `docs/*` доки главнее: значит этот файл устарел, его нужно поправить, а не
+следовать ему. Пути вроде `app/[locale]/(storefront)/**` ниже — целевая структура; проект пока скелет,
+часть путей ещё не создана (см. README, `.claude/plans/`) — не считать файл существующим только из-за
+упоминания здесь.
 
 ## Что за проект
 
@@ -31,11 +30,12 @@ PostgreSQL на Neon · Drizzle ORM · Zod · собственный auth на b
 `UI (components) → Actions (тонкие, /actions) → Services (бизнес-правила, lib/services) → Queries
 (Drizzle, lib/db/queries) → Postgres`.
 
-Каждый Server Action делает ровно: 1) проверка сессии (для админских — `requireAdminSession()`) 2) Zod-валидация входа 3) вызов соответствующей функции `services` 4) `revalidateTag`/`revalidatePath`
-для затронутых страниц 5) типизированный ответ `{ success, data }` / `{ success: false, errors }`. SQL и
-бизнес-условия в actions не пишутся — это обязанность `services`, иначе логика расползается и её нельзя
-юнит-тестировать без поднятия Next.js. Исключение из шага 1 — публичные actions без сессии по конструкции
-(`createOrder`, `requestPasswordReset`): вместо проверки сессии у них IP rate-limit, см. «Заказ и корзина».
+Каждый Server Action делает ровно: 1) проверка сессии (для админских — `requireAdminSession()`) 2) Zod-валидация
+входа 3) вызов `services` 4) `revalidateTag`/`revalidatePath` для затронутых страниц 5) типизированный ответ
+`{ success, data }` / `{ success: false, errors }`. SQL и бизнес-условия — забота `services`, не actions:
+иначе логика расползается и не тестируется юнитами без поднятия Next.js. Исключение из шага 1 — публичные
+actions без сессии по конструкции (`createOrder`, `requestPasswordReset`): у них вместо сессии IP rate-limit,
+см. «Заказ и корзина».
 
 `import 'server-only'` — первая строка в любом файле `lib/db/**`, `lib/auth.ts`, `lib/telegram.ts`,
 `lib/storage/*.provider.ts`. Без этого секрет из такого модуля может тихо попасть в клиентский бандл при
@@ -44,13 +44,16 @@ PostgreSQL на Neon · Drizzle ORM · Zod · собственный auth на b
 Ручной CSRF-токен городить не нужно — Server Actions в Next.js по умолчанию сверяют `Origin`/`Host` для
 мутирующих запросов. Не отключать эту проверку явно в конфиге.
 
+CSP в `next.config.ts` держит `script-src 'unsafe-inline'` намеренно — App Router сам инжектит инлайн-скрипты
+для RSC-гидратации; без этого приложение не запустится, не просто станет менее защищённым. Не ужесточать
+без чтения комментария рядом с `cspHeader`.
+
 ## Формы и валидация (react-hook-form + Zod)
 
 Полная спецификация (aria-describedby, setError-паттерн, submit-состояния, zod v4) —
-`docs/architecture.md` §3.11. `react-hook-form` + `@hookform/resolvers` (`zodResolver`) — стандартный
-паттерн для любой формы в проекте. Сейчас это не зависимость — ставится в момент, когда пишется первая
-реальная форма, не раньше (тот же принцип, что с `cloudinary.provider.ts` в разделе «Загрузка
-изображений» — не заводить впрок).
+`docs/architecture.md` §3.11. `react-hook-form` + `@hookform/resolvers` (`zodResolver`) — стандарт для
+любой формы в проекте. Сейчас это не зависимость — ставится при первой реальной форме, не раньше (тот же
+принцип, что с `cloudinary.provider.ts` в «Загрузке изображений» — не заводить впрок).
 
 - Одна Zod-схема из `lib/validation/*.schema.ts` на клиент и сервер — не заводить вторую, «облегчённую»
   под форму. Клиентская валидация — ускорение UX, не замена `safeParse` в action (шаг 2 из «Слои»):
@@ -68,8 +71,8 @@ PostgreSQL на Neon · Drizzle ORM · Zod · собственный auth на b
 
 - Локализована только витрина (`app/[locale]/(storefront)/**`). Админка (`/admin/dashboard/**`) и
   `/staff-entry` живут без `[locale]` во втором корневом layout — route group `app/(admin)/**` не виден в
-  URL, реальные сегменты пути — внутри него: `app/(admin)/admin/dashboard/**`,
-  `app/(admin)/staff-entry`. Всегда на английском.
+  URL, сегменты пути — внутри него: `app/(admin)/admin/dashboard/**`, `app/(admin)/staff-entry`. Всегда
+  на английском.
 - `nameEn`/`descriptionEn` у `Product` обязательны; `nameDe`/`descriptionDe` — nullable. Резолюция fallback
   (`nameDe ?? nameEn`) — бизнес-правило в `products.service.ts`, не в `queries` и не в компоненте. `Category`
   — оба языка обязательны сразу (4 строки, заводятся сид-скриптом разработчиком, fallback не нужен).
@@ -113,11 +116,11 @@ PostgreSQL на Neon · Drizzle ORM · Zod · собственный auth на b
 
 - `proxy.ts` проверяет httpOnly JWT-cookie только для `/admin/dashboard/**`. `/staff-entry` — публичный
   маршрут верхнего уровня вне этой проверки, это осознанное решение, не дыра.
-- Верификация JWT — только через `jose` (edge-safe, работает и в Node), используется и в `proxy.ts`, и в
-  `requireAdminSession()`. `bcryptjs` — только в Server Actions/`services`, не в `proxy.ts` — это разделение
-  ответственности, а не обход технического ограничения: в Next 16 Proxy по умолчанию Node.js-рантайм, а не
-  Edge (см. `docs/architecture.md` §9, «Историческая справка»), так что `bcrypt` там технически заработает,
-  но остаётся в `services` ради единообразия с остальной auth-логикой.
+- Верификация JWT — только через `jose` (edge-safe, работает и в Node), в `proxy.ts` и в
+  `requireAdminSession()`. `bcryptjs` — только в Server Actions/`services`, не в `proxy.ts`: это разделение
+  ответственности, а не обход ограничения — в Next 16 Proxy по умолчанию Node.js-рантайм, не Edge (§9), так
+  что `bcrypt` там технически заработал бы, но остаётся в `services` ради единообразия с остальной
+  auth-логикой.
 - `proxy.ts` — не единственная линия защиты: каждый админский action сам вызывает
   `requireAdminSession()` в начале тела, не полагаясь на то, что до него не долетит неавторизованный вызов.
 - JWT payload несёт `Admin.sessionVersion`. `resetPassword` инкрементирует его в той же транзакции, где
@@ -197,26 +200,23 @@ SSR/SSG выбран ради SEO — это не опция, а обязате�
 `generateMetadata` (title, description, canonical, `og:image` из `images[0]`); `app/sitemap.ts`/`robots.ts`
 используют те же queries, что и страницы каталога.
 
-**Временное отклонение (известный, осознанный gap).** Сейчас страницы витрины рендерятся как SSR (`ƒ`,
-`npm run build`), не SSG (`○`) — `Header` читает `useSearchParams()` для поиска (обёрнуто в `Suspense`,
-но без `cacheComponents` этого недостаточно для частичной статики, только полный `Suspense`-фоллбэк на
-всю страницу целиком, что хуже). Включение `cacheComponents: true` проверено (2026-08-14) и упирается в
-несовместимость `next-intl` (`NextIntlClientProvider`/`getRequestConfig`) с валидацией Cache Components —
-падает пререндер уже в корневом `app/[locale]/layout.tsx`, до всех страниц. SEO при этом не страдает: HTML
-полностью серверный, `generateMetadata` отрабатывает как обычно, поисковики видят весь контент — теряется
-только CDN-кэш HTML (каждый визит — компьют на сервере, не мгновенная отдача). Возвращаться к SSG нужно,
-когда `next-intl` получит поддержку Cache Components — не переписывать `Header` в ущерб UX поиска
-(`?search=` в URL должен разворачивать поле сразу в SSR-HTML, а не доигрывать на клиенте) ради галочки
-`○` в билде.
+**Временное отклонение (известный gap).** Витрина рендерится как SSR (`ƒ`), не SSG (`○`) — `Header` читает
+`useSearchParams()` для поиска; без `cacheComponents` `Suspense` даёт только полный фоллбэк на всю
+страницу, а не частичную статику. `cacheComponents: true` проверялся (2026-08-14) и падает на
+несовместимости `next-intl` с валидацией Cache Components уже в корневом `app/[locale]/layout.tsx`. SEO
+не страдает: HTML полностью серверный, `generateMetadata` работает как обычно, поисковики видят весь
+контент — теряется только CDN-кэш HTML (каждый визит компьютится на сервере). Возвращаться к SSG — когда
+`next-intl` поддержит Cache Components, не раньше ценой UX поиска (`?search=` должен разворачивать поле
+сразу в SSR-HTML, не доигрывать на клиенте).
 
 `getProducts`/`getProductBySlug` кэшируются тегом
 `products`, `getDeliveryCountries` — тегом `delivery` (`unstable_cache`). Любой admin-action, меняющий эти
 данные (`updateProduct`, `updateDeliveryCountry` и т.д.), обязан звать соответствующий
 `revalidateTag` — иначе правки в админке не дойдут до публичной страницы до истечения TTL.
 Next 16 параллельно вводит `"use cache"`/`cacheLife`/`cacheTag` («Cache Components», опционально через
-`cacheComponents` в `next.config.ts`) как альтернативу `unstable_cache` — перед тем как писать кэш-слой,
-свериться с `node_modules/next/dist/docs/01-app/02-guides/migrating-to-cache-components.md`, а не
-переносить `unstable_cache`-план из этого раздела вслепую (тот же класс расхождения, что с `proxy.ts`).
+`cacheComponents`) как альтернативу `unstable_cache` — перед тем как писать кэш-слой, свериться с
+`node_modules/next/dist/docs/01-app/02-guides/migrating-to-cache-components.md`, не переносить этот план
+вслепую (тот же класс расхождения, что с `proxy.ts`).
 
 ## Доступность (WCAG 2.1 AA / European Accessibility Act)
 
