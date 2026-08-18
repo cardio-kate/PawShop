@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
-import { ChevronLeft, ChevronRight, SearchX } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { EmptyStateCat } from '@/components/ui/EmptyStateCat';
 import { Chip } from '@/components/ui/Chip';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -237,6 +238,7 @@ export function CatalogClient() {
                 locale={locale}
                 newLabel={tProduct('newBadge')}
                 addToCartLabel={tProduct('addToCart', { name: product.name })}
+                addedToCartLabel={tProduct('addedToCart', { name: product.name })}
                 unavailableLabel={tProduct('unavailable', { name: product.name })}
                 // CLAUDE.md → «Загрузка изображений»: первые 2–4 карточки каталога — в первом
                 // экране, остальные — обычный lazy (next/image по умолчанию).
@@ -247,7 +249,7 @@ export function CatalogClient() {
         </div>
       ) : (
         <div className="gap-sm py-3xl flex flex-col items-center text-center">
-          <SearchX className="h-10 w-10 text-neutral-300" aria-hidden="true" />
+          <EmptyStateCat />
           <p className="text-body-md text-neutral-900">{t('emptyTitle')}</p>
           <p className="text-body-sm text-neutral-500">{t('emptyDescription')}</p>
           {hasActiveFilters && (
@@ -270,7 +272,7 @@ export function CatalogClient() {
             disabled={currentPage === 1}
             onClick={() => goToPage(Math.max(1, currentPage - 1))}
             aria-label={t('pagination.previous')}
-            className={`duration-fast hover:text-paw flex h-9 w-9 items-center justify-center rounded-full text-neutral-700 transition-colors motion-reduce:transition-none ${FOCUS_RING_CLASSNAME} disabled:cursor-not-allowed disabled:text-neutral-300 disabled:hover:text-neutral-300`}
+            className={`duration-fast hover:text-paw flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-neutral-700 transition-colors motion-reduce:transition-none ${FOCUS_RING_CLASSNAME} disabled:cursor-not-allowed disabled:text-neutral-300 disabled:hover:text-neutral-300`}
           >
             <ChevronLeft className="h-4 w-4" aria-hidden="true" />
           </button>
@@ -282,7 +284,7 @@ export function CatalogClient() {
               onClick={() => goToPage(p)}
               aria-current={p === currentPage ? 'page' : undefined}
               aria-label={t('pagination.goToPage', { page: p })}
-              className={`text-label-md duration-fast flex h-9 w-9 items-center justify-center rounded-full transition-colors motion-reduce:transition-none ${FOCUS_RING_CLASSNAME} ${
+              className={`text-label-md duration-fast flex h-9 w-9 cursor-pointer items-center justify-center rounded-full transition-colors motion-reduce:transition-none ${FOCUS_RING_CLASSNAME} ${
                 p === currentPage ? 'bg-paw text-surface' : 'hover:text-paw text-neutral-700'
               }`}
             >
@@ -295,7 +297,7 @@ export function CatalogClient() {
             disabled={currentPage === pageCount}
             onClick={() => goToPage(Math.min(pageCount, currentPage + 1))}
             aria-label={t('pagination.next')}
-            className={`duration-fast hover:text-paw flex h-9 w-9 items-center justify-center rounded-full text-neutral-700 transition-colors motion-reduce:transition-none ${FOCUS_RING_CLASSNAME} disabled:cursor-not-allowed disabled:text-neutral-300 disabled:hover:text-neutral-300`}
+            className={`duration-fast hover:text-paw flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-neutral-700 transition-colors motion-reduce:transition-none ${FOCUS_RING_CLASSNAME} disabled:cursor-not-allowed disabled:text-neutral-300 disabled:hover:text-neutral-300`}
           >
             <ChevronRight className="h-4 w-4" aria-hidden="true" />
           </button>

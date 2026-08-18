@@ -2,11 +2,14 @@
 
 import { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { ChevronDown } from 'lucide-react';
+import { Check, ChevronDown } from 'lucide-react';
 import { Chip } from '@/components/ui/Chip';
 import { Button } from '@/components/ui/Button';
 import { useCartStore } from '@/lib/store/cart.store';
 import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
+import { LiveRegion } from '@/components/ui/LiveRegion';
+import { useAnnouncement } from '@/lib/hooks/useAnnouncement';
+import { useAddedFeedback } from '@/lib/hooks/useAddedFeedback';
 import { formatPrice } from '@/lib/utils';
 import type { MockProduct } from '@/types';
 
@@ -47,8 +50,11 @@ export function ProductDetailClient({
   ageGroupLabel: string;
 }) {
   const t = useTranslations('ProductPage');
+  const tProduct = useTranslations('Product');
   const locale = useLocale();
   const addItem = useCartStore((state) => state.addItem);
+  const [announcement, announce] = useAnnouncement();
+  const [added, triggerAdded] = useAddedFeedback();
 
   const firstActiveVariant =
     product.variants.find((variant) => variant.isActive) ?? product.variants[0]!;
@@ -56,6 +62,16 @@ export function ProductDetailClient({
   const selectedVariant =
     product.variants.find((variant) => variant.id === selectedVariantId) ?? firstActiveVariant;
   const price = formatPrice(selectedVariant.price, locale);
+
+  // a11y-review checklist п.6 «Динамический контент»: та же проблема, что у AddToCartButton
+  // карточки каталога — клик добавляет товар молча, единственный визуальный сигнал (счётчик
+  // Header) скринридером не озвучивается. Общий хук/разметка — lib/hooks/useAnnouncement.ts,
+  // components/ui/LiveRegion.tsx.
+  function handleAddToCart() {
+    addItem(product.id, selectedVariant.id);
+    announce(tProduct('addedToCart', { name: product.name }));
+    triggerAdded();
+  }
 
   // Composition/Analytical constituents — общий рендер вместо двух копий одной и той же разметки
   // <details>; порядок в массиве = порядок отрисовки (Composition раньше Analytical constituents,
@@ -132,11 +148,18 @@ export function ProductDetailClient({
         ))}
       </div>
 
-      {/* mt-lg — spacing.lg перед кнопкой (design.md); на 640–670px гасится (min-[640px]:max-[670px]:mt-0),
-          там хватает общего flex-gap. sm:w-[clamp(...)] держит кнопку в той же пропорции, что
+      {/* mt-lg — spacing.lg перед кнопкой (design.md), безусловно на всех ширинах: раньше на
+          640–670px гасился (min-[640px]:max-[670px]:mt-0) в расчёте на общий flex-gap родителя —
+          это было рассчитано под компактную кнопку (size="sm", 33px). После перехода на
+          полноразмерную md (a11y: 44×44 touch target) один только gap-sm (8px) родителя стал
+          выглядеть непропорционально тонким зазором перед резко более крупной кнопкой, поэтому
+          override убран. min-[641px]:w-[clamp(...)] держит кнопку в той же пропорции, что
           и clamp(40vw) у галереи (page.tsx) — иначе колонка с текстом не сжималась бы вместе
-          с фото на bp-sm..bp-lg; 294px — потолок (sm:w-auto на широких экранах, замерено
-          в браузере). */}
+          с фото на bp-sm..bp-lg; 294px — потолок (широкие экраны, замерено в браузере).
+          min-[641px], не sm: (=640px) — тот же граничный пиксель, что у грида в page.tsx: до
+          641px кнопка ещё в однoколоночном мобильном виде (w-full), переключение ширины должно
+          совпадать с переключением самого грида, иначе на 640px кнопка сжималась бы до ~250px
+          в разложенной на всю ширину мобильной колонке. */}
       {/* disabled={!selectedVariant.isActive} — чипы блокируют клик по конкретному неактивному
           варианту (disabled={!variant.isActive} выше), но не перепроверяют дефолтное/fallback-
           состояние: если у товара вообще нет активных вариантов, firstActiveVariant откатывается
@@ -144,13 +167,24 @@ export function ProductDetailClient({
           вариант. */}
       <Button
         variant="primary"
-        size="sm"
         disabled={!selectedVariant.isActive}
-        className="mt-lg w-full min-[640px]:max-[670px]:mt-0 sm:w-[clamp(200px,calc(40vw_-_60px),294px)]"
-        onClick={() => addItem(product.id, selectedVariant.id)}
+        className="mt-lg w-full min-[641px]:w-[clamp(200px,calc(40vw_-_60px),294px)]"
+        onClick={handleAddToCart}
       >
-        {selectedVariant.isActive ? t('addToCart') : t('outOfStock')}
+        {selectedVariant.isActive ? (
+          added ? (
+            <span className="animate-icon-in gap-xs inline-flex items-center motion-reduce:animate-none">
+              <Check className="h-4 w-4" aria-hidden="true" />
+              {t('addedShort')}
+            </span>
+          ) : (
+            t('addToCart')
+          )
+        ) : (
+          t('outOfStock')
+        )}
       </Button>
+      <LiveRegion message={announcement} />
 
       {/* Свёрнуто по умолчанию (design.md → Components «Product composition») — состав/анализ
           нужны не всем покупателям сразу, разворачивать их в открытом виде под каждой карточкой

@@ -18,8 +18,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const BASE_CLASSNAME = `inline-flex items-center justify-center whitespace-nowrap rounded-full border px-[28px] text-label-md transition-colors duration-fast motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`;
 
-// sm — вдвое ниже md (высота, не ширина): пока единственный случай — Add to Cart на странице
-// товара (ProductDetailClient.tsx), где кнопка встаёт в ряд с компактными chip-вариантами.
+// sm — вдвое ниже md (высота, не ширина): компактные админ-кнопки (VariantEditor «+ Add variant»,
+// список товаров «+ Add product»), где таргет не основной CTA страницы и высота md избыточна.
+// Не использовать для витринных primary-действий (Add to Cart и т.п.) — там кнопка единственная
+// на экране/секции, и md-высота (≈45px) ближе к 44×44 touch target, чем sm (~33px).
 const SIZE_CLASSNAME: Record<ButtonSize, string> = {
   md: 'py-[14px]',
   sm: 'py-[7px]',

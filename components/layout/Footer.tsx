@@ -78,7 +78,7 @@ export async function Footer() {
           иначе на границе 800px раскладка и паддинги/шрифт разъедутся. */}
       <div className="gap-md grid grid-cols-1 min-[801px]:grid-cols-[1.5fr_1fr_0.75fr] min-[801px]:grid-rows-2">
         <div className="gap-md rounded-footer-mobile bg-paw text-surface min-[801px]:rounded-tr-card min-[801px]:rounded-br-card flex flex-col justify-between p-[30px] max-[801px]:p-[20px] min-[801px]:col-start-1 min-[801px]:row-span-2 min-[801px]:row-start-1 min-[801px]:rounded-tl-2xl min-[801px]:rounded-bl-2xl">
-          <p className="text-[50px] leading-[1.15] font-semibold whitespace-pre-line max-[801px]:text-[40px]">
+          <p className="font-display text-[50px] leading-[1.15] font-semibold whitespace-pre-line max-[801px]:text-[40px]">
             {t('tagline')}
           </p>
           <div className="gap-sm flex items-center">

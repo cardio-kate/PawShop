@@ -4,4 +4,5 @@
 // правка отступа означала грепать и редактировать все страницы вручную, рискуя пропустить одну.
 // pb-[40px] симметричен pt — тот же зазор перед Footer, что и после Header (в частности, под
 // «You may also like» на странице товара).
-export const STOREFRONT_PAGE_CONTAINER_CLASSNAME = 'max-w-container px-lg mx-auto pt-[40px] pb-[40px]';
+export const STOREFRONT_PAGE_CONTAINER_CLASSNAME =
+  'max-w-container px-lg mx-auto pt-[40px] pb-[40px]';

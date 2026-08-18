@@ -6,9 +6,13 @@ interface LogoProps {
   // остальных — рядом. Раньше мобильный вариант просто копировал разметку Image+span заново
   // вместо этого компонента — один src/размер/priority теперь поддерживается в одном месте.
   stacked?: boolean;
+  // Header.tsx (витрина) — Fraunces, тот же display-шрифт, что у typography.section-heading.
+  // AdminSidebar/StaffLoginCard оставляют дефолт (Inter) — admin/staff-entry намеренно без
+  // флёра витрины (CLAUDE.md), и там даже не подключён --font-fraunces (app/(admin)/layout.tsx).
+  displayFont?: boolean;
 }
 
-export function Logo({ className, stacked }: LogoProps) {
+export function Logo({ className, stacked, displayFont }: LogoProps) {
   return (
     <span
       className={`inline-flex items-center ${stacked ? 'flex-col gap-1' : 'gap-2'} ${className ?? ''}`}
@@ -21,7 +25,9 @@ export function Logo({ className, stacked }: LogoProps) {
         className="h-[38px] w-[38px] shrink-0"
         priority
       />
-      <span className="text-h3 text-neutral-900">PawShop</span>
+      <span className={`text-h3 text-neutral-900 ${displayFont ? 'font-display' : ''}`}>
+        PawShop
+      </span>
     </span>
   );
 }

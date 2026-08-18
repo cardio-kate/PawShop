@@ -13,7 +13,11 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
   const selected = images[selectedIndex] ?? images[0]!;
 
   return (
-    <div className="gap-sm mx-auto flex w-full max-w-[360px] flex-col sm:mx-0">
+    // min-[641px]:, не sm: (=640px) — грид-родитель в page.tsx переключается на два столбца
+    // ровно на min-[641px], тем же граничным значением, что и мобильное центрирование в
+    // ProductDetailClient.tsx; sm:mx-0 снимал бы центрирование колонки на 640px, когда грид ещё
+    // однoколоночный — фото уезжало бы к левому краю вместо центра.
+    <div className="gap-sm mx-auto flex w-full max-w-[360px] flex-col min-[641px]:mx-0">
       {/* aspect-[4/5], не aspect-square — тот же прямоугольный кадр, что у product-card в каталоге
           (design.md → Components «Product card»), по прямому запросу. Высота остаётся 450px (та
           же, что раньше у квадрата 450×450) — ширина уменьшается до 360px (450 × 4/5), а не

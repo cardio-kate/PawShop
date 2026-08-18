@@ -314,7 +314,7 @@ export function Header() {
           )}
 
           <Link href="/" className={`hidden items-center gap-2 ${FOCUS_RING_CLASSNAME} sm:flex`}>
-            <Logo />
+            <Logo displayFont />
           </Link>
         </div>
 
@@ -322,7 +322,7 @@ export function Header() {
           className={`shrink-0 items-center justify-center ${hiddenNavWhenSearchOpen} sm:justify-start`}
         >
           <Link href="/" className={`${FOCUS_RING_CLASSNAME} sm:hidden`}>
-            <Logo stacked />
+            <Logo stacked displayFont />
           </Link>
 
           {/* Ни gap-[12px], ни gap-[18px] не по шкале — осознанно: gap-lg (24px) на sm..lg

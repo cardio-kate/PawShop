@@ -51,6 +51,9 @@ const config: Config = {
       },
       fontFamily: {
         sans: ['var(--font-inter)', 'Inter', 'sans-serif'],
+        // Только для typography.section-heading (design.md) — характерный display-шрифт для
+        // заголовков секций лендинга, не для остального текста (h1/h2/h3/body — по-прежнему sans).
+        display: ['var(--font-fraunces)', 'serif'],
       },
       fontSize: {
         display: ['40px', { lineHeight: '1.15', letterSpacing: '-0.01em', fontWeight: '700' }],
@@ -102,6 +105,20 @@ const config: Config = {
       },
       transitionTimingFunction: {
         DEFAULT: 'ease-out',
+      },
+      // icon-in — вход "added"-иконки (галочка) поверх Add to Cart (button-add-circle каталога +
+      // полнотекстовая кнопка страницы товара, lib/hooks/useAddedFeedback.ts). Только opacity+scale
+      // без overshoot за границу 1 — design.md → «Don't» (строка 596) запрещает пружинные/bounce-
+      // эффекты, ease-out и base-длительность (200ms) держат тот же сдержанный характер, что и
+      // остальные transition-* в проекте.
+      keyframes: {
+        'icon-in': {
+          '0%': { opacity: '0', transform: 'scale(0.7)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
+      },
+      animation: {
+        'icon-in': 'icon-in 200ms ease-out',
       },
     },
   },

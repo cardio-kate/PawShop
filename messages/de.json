@@ -33,9 +33,12 @@
   "Product": {
     "newBadge": "Neu",
     "addToCart": "{name} in den Warenkorb legen",
+    "addedToCart": "{name} wurde in den Warenkorb gelegt",
     "unavailable": "{name} ist nicht verfügbar"
   },
   "Home": {
+    "title": "Katzenfutter und Zubehör",
+    "metaDescription": "PawShop — Online-Shop für Katzenfutter, Leckerlis und Zubehör, Lieferung in die ganze EU.",
     "about": {
       "eyebrow": "Die Geschichte hinter PawShop.",
       "title": "Über uns",
@@ -105,9 +108,20 @@
   "ProductPage": {
     "outOfStock": "Ausverkauft",
     "addToCart": "In den Warenkorb",
+    "addedShort": "Hinzugefügt!",
     "composition": "Zusammensetzung",
     "analyticalConstituents": "Analytische Bestandteile",
     "relatedTitle": "Das könnte Ihnen auch gefallen"
+  },
+  "NotFound": {
+    "title": "Seite nicht gefunden",
+    "description": "Die gesuchte Seite existiert nicht oder wurde verschoben.",
+    "backHome": "Zurück zur Startseite"
+  },
+  "ErrorBoundary": {
+    "title": "Etwas ist schiefgelaufen",
+    "description": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    "retry": "Erneut versuchen"
   },
   "Checkout": {
     "title": "Kasse",

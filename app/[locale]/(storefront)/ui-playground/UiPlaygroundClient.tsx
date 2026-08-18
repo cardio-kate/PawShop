@@ -135,6 +135,7 @@ export function UiPlaygroundClient() {
               locale="en"
               newLabel="New"
               addToCartLabel={`Add ${product.name} to cart`}
+              addedToCartLabel={`${product.name} added to cart`}
               unavailableLabel={`${product.name} is unavailable`}
             />
           </div>

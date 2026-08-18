@@ -26,7 +26,7 @@ export async function NewArrivalsSection() {
     <section id="new-arrivals" className="pb-lg scroll-mt-20 pt-[40px]">
       <div className="gap-sm flex flex-col items-center text-center">
         <p className="text-label-caps text-neutral-500">{t('eyebrow')}</p>
-        <h2 className="text-section-heading text-neutral-900 uppercase">{t('title')}</h2>
+        <h2 className="text-section-heading font-display text-neutral-900 uppercase">{t('title')}</h2>
       </div>
 
       {/* Брейкпоинт 800/801 и ширина ряда 610px — design.md → Components «Сетка New Arrivals».
@@ -47,6 +47,7 @@ export async function NewArrivalsSection() {
               locale={locale}
               newLabel={tProduct('newBadge')}
               addToCartLabel={tProduct('addToCart', { name: product.name })}
+              addedToCartLabel={tProduct('addedToCart', { name: product.name })}
               unavailableLabel={tProduct('unavailable', { name: product.name })}
               priority={index < 4}
             />

@@ -70,7 +70,13 @@ export default async function ProductPage({
           чем фото. Gap — тем же приёмом: gap-xl (40px) только до bp-sm (вертикальный зазор между
           фото и текстом в один столбец), с bp-sm — clamp сжимается до 16px и восстанавливается до
           gap-xl к тому же ~1024px, где галерея достигает потолка. */}
-      <div className="gap-xl grid grid-cols-1 sm:grid-cols-[clamp(312px,calc(40vw_-_48px),360px)_1fr] sm:gap-[clamp(16px,calc(6vw_-_22px),40px)]">
+      {/* min-[641px]:, не sm: (=640px) — ProductDetailClient.tsx держит мобильный вид (центрирование,
+          крупный h1) до max-[641px] включительно (тот же Tailwind v4 гоча про max-[Npx] как "< Npx").
+          Грид должен переключаться на два столбца ровно там же, где текст перестаёт быть
+          мобильным, иначе на самом 640px получается двухколоночная раскладка с ещё центрированным
+          текстом — та же нестыковка, которую ProductDetailClient.tsx уже один раз чинил у себя
+          внутри (см. комментарий к MOBILE_TEXT_CENTER_CLASSNAME), здесь ей же противоположный конец. */}
+      <div className="gap-xl grid grid-cols-1 min-[641px]:grid-cols-[clamp(312px,calc(40vw_-_48px),360px)_1fr] min-[641px]:gap-[clamp(16px,calc(6vw_-_22px),40px)]">
         <ProductGallery images={product.images} alt={product.name} />
         <ProductDetailClient
           product={product}
@@ -87,7 +93,7 @@ export default async function ProductPage({
         // а не margin-top, потому что h2 и сетка — единственные два ребёнка одного flex-col.
         // RELATED_PRODUCTS_TOP_GAP_CLASSNAME (80px, было 60px) — по прямому запросу.
         <div className={`${RELATED_PRODUCTS_TOP_GAP_CLASSNAME} flex flex-col gap-[50px]`}>
-          <h2 className="text-section-heading text-center text-neutral-900 uppercase">
+          <h2 className="text-section-heading font-display text-center text-neutral-900 uppercase">
             {tProductPage('relatedTitle')}
           </h2>
           {/* Та же зафиксированная ширина карточки, что в CatalogClient.tsx — design.md → Layout.
@@ -115,6 +121,7 @@ export default async function ProductPage({
                   locale={locale}
                   newLabel={tProduct('newBadge')}
                   addToCartLabel={tProduct('addToCart', { name: relatedProduct.name })}
+                  addedToCartLabel={tProduct('addedToCart', { name: relatedProduct.name })}
                   unavailableLabel={tProduct('unavailable', { name: relatedProduct.name })}
                   priority={index < 4}
                 />

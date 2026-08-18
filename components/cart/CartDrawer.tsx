@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from 'next-intl';
 import { Panel } from '@/components/ui/Panel';
+import { EmptyStateCat } from '@/components/ui/EmptyStateCat';
 import { CartItem } from './CartItem';
 import { CartSummary } from './CartSummary';
 import {
@@ -53,9 +54,10 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
         )}
 
         {resolvedItems.length === 0 ? (
-          <p className="px-lg text-body-md flex flex-1 items-center justify-center text-center text-neutral-500">
-            {t('empty')}
-          </p>
+          <div className="px-lg gap-sm flex flex-1 flex-col items-center justify-center text-center">
+            <EmptyStateCat />
+            <p className="text-body-md text-neutral-500">{t('empty')}</p>
+          </div>
         ) : (
           <ul className="gap-lg px-lg py-lg flex flex-1 flex-col overflow-y-auto">
             {resolvedItems.map((item) => (

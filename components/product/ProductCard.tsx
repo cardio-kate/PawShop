@@ -11,6 +11,7 @@ interface ProductCardProps {
   locale: string;
   newLabel: string;
   addToCartLabel: string;
+  addedToCartLabel: string;
   unavailableLabel: string;
   // CLAUDE.md → «Загрузка изображений»: priority только для первых 2–4 карточек в первом экране,
   // не на всю сетку — по умолчанию false, вызывающая сторона (CatalogClient/NewArrivalsSection)
@@ -27,6 +28,7 @@ export function ProductCard({
   locale,
   newLabel,
   addToCartLabel,
+  addedToCartLabel,
   unavailableLabel,
   priority,
 }: ProductCardProps) {
@@ -88,6 +90,7 @@ export function ProductCard({
           productId={product.id}
           variantId={defaultVariant.id}
           label={isAvailable ? addToCartLabel : unavailableLabel}
+          announceLabel={addedToCartLabel}
           disabled={!isAvailable}
         />
       </div>

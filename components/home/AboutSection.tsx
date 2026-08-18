@@ -21,7 +21,7 @@ export async function AboutSection() {
     <section id="about" className="px-lg pb-lg scroll-mt-20 rounded-2xl">
       <div className="gap-sm flex flex-col items-center text-center">
         <p className="text-label-caps text-neutral-500">{t('eyebrow')}</p>
-        <h2 className="text-section-heading text-neutral-900 uppercase">{t('title')}</h2>
+        <h2 className="text-section-heading font-display text-neutral-900 uppercase">{t('title')}</h2>
       </div>
 
       <div
@@ -45,7 +45,7 @@ export async function AboutSection() {
             ним), с lg — ряд; lg:self-start на самой картинке — доп. страховка от того же
             растяжения и на широких экранах, если текст всё же окажется длиннее фото. */}
         <Image
-          src="/mock/products/about.jpg"
+          src="/home/about.jpg"
           alt=""
           width={1264}
           height={842}

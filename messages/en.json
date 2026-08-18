@@ -33,9 +33,12 @@
   "Product": {
     "newBadge": "New",
     "addToCart": "Add {name} to cart",
+    "addedToCart": "{name} added to cart",
     "unavailable": "{name} is unavailable"
   },
   "Home": {
+    "title": "Cat food and accessories",
+    "metaDescription": "PawShop — online store for cat food, treats and accessories, shipping across the EU.",
     "about": {
       "eyebrow": "The story behind PawShop.",
       "title": "About Us",
@@ -105,9 +108,20 @@
   "ProductPage": {
     "outOfStock": "Out of stock",
     "addToCart": "Add to Cart",
+    "addedShort": "Added!",
     "composition": "Composition",
     "analyticalConstituents": "Analytical constituents",
     "relatedTitle": "You may also like"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "description": "The page you're looking for doesn't exist or may have been moved.",
+    "backHome": "Back to homepage"
+  },
+  "ErrorBoundary": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. Please try again.",
+    "retry": "Try again"
   },
   "Checkout": {
     "title": "Checkout",

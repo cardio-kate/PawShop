@@ -54,11 +54,11 @@ export async function ValuePropsSection() {
     <section id="value-props" className="bg-paw-tint px-lg py-xl rounded-t-2xl sm:px-[40px]">
       <div className="gap-sm flex flex-col items-center text-center">
         <p className="text-label-caps text-neutral-500">{t('eyebrow')}</p>
-        <h2 className="text-section-heading text-neutral-900 uppercase">{t('title')}</h2>
+        <h2 className="text-section-heading font-display text-neutral-900 uppercase">{t('title')}</h2>
       </div>
 
       <div
-        className={`${SECTION_HEADING_GAP_CLASSNAME} flex flex-col items-center gap-[35px] md:flex-row md:items-start md:justify-center`}
+        className={`${SECTION_HEADING_GAP_CLASSNAME} flex flex-col items-center gap-[20px] lg:flex-row lg:items-start lg:justify-center xl:gap-[35px]`}
       >
         <div className={`${VALUE_ITEM_LIST_GAP_CLASSNAME} flex w-full flex-col sm:w-[280px]`}>
           {LEFT_ITEMS.map(({ key, Icon }) => (
@@ -74,20 +74,21 @@ export async function ValuePropsSection() {
         {/* value-props-illustration (design.md, 150×190px) — место зарезервировано под конкретный
             арт заказчика, не токен дизайн-системы. cat.png — вырезанный по фону силуэт (реальная
             альфа-прозрачность, не имитация цветом), ложится прямо на фон секции без рамки/бокса.
-            Intrinsic 1120×957. До md — как раньше, ширина сужается по брейкпоинтам (190px → 220px
-            на sm), высота пересчитывается сама (h-auto) по фактическим пропорциям файла, без
-            искажения. С md — по запросу иллюстрация крупнее и держится через высоту, не ширину:
-            h-[300px] md:w-auto (обратная пара к h-auto/w-[…] ниже md) — 300px в высоту даёт
-            ширину ≈351px по той же intrinsic-пропорции 1120:957, без искажения кадра. sizes
+            Intrinsic 1120×957, высота везде h-auto (без искажения). Ряд переключается на lg
+            (1024px) — от lg до xl (1279px) картинке зажат потолок в w-[300px]: на lg доступной
+            ширины впритык хватает под 280+280-колонки только с этим уменьшенным размером и
+            gap-[20px] (см. gap выше), полноразмерная (h-[300px] → ~351px) не помещалась. С xl
+            (1280px+) места достаточно — возвращаем исходный крупный размер (h-[300px] xl:w-auto)
+            и исходный gap-[35px], большие экраны не должны отличаться от того, как было. sizes
             обновлён под реальную отображаемую ширину на каждом брейкпоинте (иначе next/image
             отдаёт картинку меньшего разрешения, чем фактически показывается). */}
         <Image
-          src="/mock/products/cat.png"
+          src="/home/cat.png"
           alt=""
           width={1120}
           height={957}
-          sizes="(min-width: 768px) 352px, (min-width: 640px) 220px, 190px"
-          className="h-auto w-[190px] shrink-0 sm:w-[220px] md:h-[300px] md:w-auto"
+          sizes="(min-width: 1280px) 351px, (min-width: 1024px) 300px, (min-width: 640px) 220px, 190px"
+          className="h-auto w-[190px] shrink-0 sm:w-[220px] lg:w-[300px] xl:h-[300px] xl:w-auto"
           aria-hidden="true"
         />
 
