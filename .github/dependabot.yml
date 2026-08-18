@@ -1,0 +1,10 @@
+version: 2
+updates:
+  # npm-lockfile (package-lock.json) — npm audit нашёл 4 moderate (esbuild через devDependency
+  # drizzle-kit) на момент настройки; еженедельно, не daily — соло-проект без других
+  # контрибьюторов, ежедневный шум PR тут не читал бы никто вовремя.
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    open-pull-requests-limit: 5
