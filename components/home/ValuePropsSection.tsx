@@ -37,11 +37,7 @@ function ValueItem({
       <Icon className="text-paw h-[30px] w-[30px] shrink-0" aria-hidden="true" />
       <div className="gap-xs flex flex-col">
         <h3 className="text-label-md text-neutral-900">{title}</h3>
-        {/* text-[14px] поверх text-body-sm — точечное укрупнение кегля только этих подписей
-            (14px вместо общих 13px), не общий токен text-body-sm (используется по всему сайту —
-            корзина, чекаут, админка). line-height/font-weight остаются от body-sm (1.5/400),
-            тот же приём, что text-[14px] в AboutSection. */}
-        <p className="text-body-sm text-[14px] text-neutral-700">{description}</p>
+        <p className="text-body-sm text-neutral-700">{description}</p>
       </div>
     </div>
   );

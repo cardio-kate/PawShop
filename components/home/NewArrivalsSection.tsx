@@ -25,7 +25,9 @@ export async function NewArrivalsSection() {
     // pb-lg (24px) — по прямому запросу, отступ под View All перед Footer.
     <section id="new-arrivals" className="pb-lg scroll-mt-20 pt-[40px]">
       <div className="gap-sm flex flex-col items-center text-center">
-        <p className="text-label-caps text-neutral-500">{t('eyebrow')}</p>
+        {/* text-[14px] поверх text-label-caps (12px) — по прямому запросу, точечное укрупнение
+            только этой подписи; letter-spacing/font-weight/line-height остаются от label-caps. */}
+        <p className="text-label-caps text-[14px] text-neutral-500">{t('eyebrow')}</p>
         <h2 className="text-section-heading font-display text-neutral-900 uppercase">{t('title')}</h2>
       </div>
 

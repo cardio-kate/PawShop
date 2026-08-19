@@ -92,7 +92,10 @@ export async function Footer() {
               height={32}
               className="h-5 w-5 shrink-0"
             />
-            <p className="text-label-caps text-surface">{t('copyright', { year })}</p>
+            {/* text-[14px] поверх text-label-caps (12px) — по прямому запросу, точечное
+                укрупнение только copyright-строки; letter-spacing/font-weight/line-height
+                остаются от label-caps. */}
+            <p className="text-label-caps text-[14px] text-surface">{t('copyright', { year })}</p>
           </div>
         </div>
 

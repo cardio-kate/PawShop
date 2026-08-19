@@ -58,16 +58,11 @@ export async function AboutSection() {
           priority
         />
 
-        {/* text-[14px] вместо общего text-body-md (15px, тот же токен, что и остальной прозы
-            сайта — глобально не трогаем) — точечный оверрайд размера для мобильного/стек-диапазона
-            (<lg), где узкая колонка даёт много переносов строк; leading не переопределяем отдельно
-            — body-md и так 1.5 (tailwind.config.ts), тот же ratio, что и у этого 14px-варианта.
-            lg:text-body-md возвращает обычный токен там, где рядом уже широкая колонка (ряд с
-            картинкой). justify-start — без lg-исключения: текст прижат к верху блока на любой
-            ширине, не только в стеке. max-w-[600px] — комфортная длина строки для сплошного
-            абзаца (тот же принцип, что max-w-reading/680px у Privacy Policy), не даёт колонке
-            растягиваться на всю ширину ряда при большом зазоре с картинкой на широких экранах. */}
-        <div className="gap-md lg:text-body-md flex w-full max-w-[600px] flex-1 flex-col justify-start text-[14px] text-neutral-900">
+        {/* max-w-[600px] — комфортная длина строки для сплошного абзаца (тот же принцип, что
+            max-w-reading/680px у Privacy Policy), не даёт колонке растягиваться на всю ширину
+            ряда при большом зазоре с картинкой на широких экранах. justify-start — без
+            lg-исключения: текст прижат к верху блока на любой ширине, не только в стеке. */}
+        <div className="gap-md text-body-md flex w-full max-w-[600px] flex-1 flex-col justify-start text-neutral-900">
           <p>{t('paragraph1')}</p>
           <p>{t('paragraph2')}</p>
         </div>

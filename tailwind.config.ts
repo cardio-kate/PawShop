@@ -62,7 +62,7 @@ const config: Config = {
         h3: ['20px', { lineHeight: '1.3', fontWeight: '600' }],
         'body-lg': ['18px', { lineHeight: '1.5', fontWeight: '400' }],
         'body-md': ['15px', { lineHeight: '1.5', fontWeight: '400' }],
-        'body-sm': ['13px', { lineHeight: '1.5', fontWeight: '400' }],
+        'body-sm': ['14px', { lineHeight: '1.5', fontWeight: '400' }],
         'label-md': ['14px', { lineHeight: '1.2', fontWeight: '600' }],
         'label-caps': ['12px', { lineHeight: '1', letterSpacing: '0.06em', fontWeight: '600' }],
         'section-heading': [
