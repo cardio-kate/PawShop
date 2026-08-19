@@ -34,7 +34,57 @@ export function VariantEditor({ variants, onChange }: VariantEditorProps) {
   return (
     <div className="gap-sm flex flex-col">
       <span className="text-label-md text-neutral-900">Variants</span>
-      <div className="overflow-x-auto rounded-md border border-neutral-300">
+
+      {/* < sm: ProductForm сам ограничен max-w-[560px], а на телефоне доступная ширина ещё меньше
+          (минус p-lg страницы-обёртки) — 4-колоночная таблица (min-w-[420px]) там же скроллилась
+          бы вбок, как и остальные admin-таблицы. По прямому запросу — карточка на вариант вместо
+          горизонтального скролла, тот же приём и брейкпоинт, что у ProductTable/OrderTable/
+          DeliveryTable. ≥ sm — обычная таблица без изменений. */}
+      <div className="gap-sm flex flex-col sm:hidden">
+        {variants.map((variant, index) => (
+          <div
+            key={variant.id}
+            className="gap-sm rounded-md border border-neutral-300 p-sm flex flex-col"
+          >
+            <Input
+              value={variant.label}
+              onChange={(e) => updateVariant(variant.id, { label: e.target.value })}
+              placeholder="e.g. 300 g"
+              aria-label={`Variant ${index + 1} label`}
+            />
+            <div className="flex items-center justify-between">
+              <Input
+                type="number"
+                step="0.01"
+                min="0"
+                value={variant.price}
+                onChange={(e) => updateVariant(variant.id, { price: Number(e.target.value) })}
+                aria-label={`Variant ${index + 1} price`}
+                className="w-24"
+              />
+              <div className="gap-sm flex items-center">
+                <Toggle
+                  checked={variant.isActive}
+                  onChange={(checked) => updateVariant(variant.id, { isActive: checked })}
+                  aria-label={`${variant.isActive ? 'Deactivate' : 'Activate'} variant ${variant.label || index + 1}`}
+                />
+                {variants.length > PRODUCT_MIN_ITEMS && (
+                  <button
+                    type="button"
+                    onClick={() => removeVariant(variant.id)}
+                    aria-label={`Remove variant ${variant.label || index + 1}`}
+                    className={iconActionButtonClassName('danger')}
+                  >
+                    <Trash2 className="h-4 w-4" aria-hidden="true" />
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="hidden overflow-x-auto rounded-md border border-neutral-300 sm:block">
         <table className="w-full min-w-[420px] border-collapse text-left">
           <thead>
             <tr className="border-b border-neutral-300">
@@ -99,6 +149,7 @@ export function VariantEditor({ variants, onChange }: VariantEditorProps) {
           </tbody>
         </table>
       </div>
+
       <Button
         type="button"
         variant="secondary"

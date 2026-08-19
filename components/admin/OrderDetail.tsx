@@ -36,7 +36,31 @@ export function OrderDetail({ order }: OrderDetailProps) {
     <div className="gap-lg grid grid-cols-1 lg:grid-cols-[1fr_340px]">
       <div className="gap-md flex flex-col">
         <h2 className="text-h3 text-neutral-900">Items</h2>
-        <div className="overflow-x-auto rounded-md border border-neutral-300">
+
+        {/* < sm: 4-колоночная таблица (min-w-[480px]) не помещается на телефоне без
+            горизонтального скролла — по прямому запросу карточка на позицию вместо этого, тот же
+            приём и брейкпоинт, что у ProductTable/OrderTable/DeliveryTable/VariantEditor. ≥ sm —
+            обычная таблица без изменений. */}
+        <div className="gap-sm flex flex-col sm:hidden">
+          {order.items.map((item) => (
+            <div key={item.id} className="gap-xs rounded-md border border-neutral-300 p-sm flex flex-col">
+              <div>
+                <p className="text-body-sm text-neutral-900">{item.productNameAtOrder}</p>
+                <p className="text-body-sm text-neutral-500">{item.variantLabelAtOrder}</p>
+              </div>
+              <div className="text-body-sm flex items-center justify-between text-neutral-700">
+                <span>
+                  {item.quantity} × {formatPrice(item.priceAtOrder, ADMIN_LOCALE)}
+                </span>
+                <span className="text-neutral-900">
+                  {formatPrice(item.priceAtOrder * item.quantity, ADMIN_LOCALE)}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="hidden overflow-x-auto rounded-md border border-neutral-300 sm:block">
           <table className="w-full min-w-[480px] border-collapse text-left">
             <thead>
               <tr className="border-b border-neutral-300">

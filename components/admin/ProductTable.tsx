@@ -51,7 +51,74 @@ export function ProductTable() {
 
   return (
     <>
-      <div className="overflow-x-auto rounded-md border border-neutral-300">
+      {/* < sm: 7-колоночная таблица (min-w-[720px]) не помещается на телефоне без горизонтального
+          скролла — по прямому запросу карточка на строку вместо этого, тот же брейкпоинт, что у
+          DeliveryTable/OrderTable и у переключения AdminSidebar между мобильной панелью и боковой
+          колонкой. ≥ sm — обычная таблица без изменений. */}
+      <div className="gap-sm flex flex-col sm:hidden">
+        {products.length === 0 ? (
+          <p className="px-md py-3xl text-body-md text-center text-neutral-500">No products yet.</p>
+        ) : (
+          products.map((product) => (
+            <div
+              key={product.id}
+              className="gap-sm rounded-md border border-neutral-300 p-md flex flex-col"
+            >
+              <div className="gap-sm flex items-start justify-between">
+                <div className="gap-sm flex min-w-0 items-center">
+                  <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-sm bg-neutral-100">
+                    <Image
+                      src={product.images[0]!}
+                      alt=""
+                      fill
+                      sizes="40px"
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-label-md truncate text-neutral-900">{product.name}</p>
+                    <p className="text-body-sm truncate text-neutral-500">
+                      {getCategoryName(product.categoryId)}
+                    </p>
+                  </div>
+                </div>
+                <div className="gap-xs flex shrink-0 items-center">
+                  <Link
+                    href={`/admin/dashboard/products/${product.id}/edit`}
+                    aria-label={`Edit ${product.name}`}
+                    className={iconActionButtonClassName()}
+                  >
+                    <Pencil className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setProductToDelete(product)}
+                    aria-label={`Delete ${product.name}`}
+                    className={iconActionButtonClassName('danger')}
+                  >
+                    <Trash2 className="h-4 w-4" aria-hidden="true" />
+                  </button>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="gap-sm flex items-center">
+                  <span className="text-label-md text-neutral-900">
+                    {formatPrice(product.price, ADMIN_LOCALE)}
+                  </span>
+                  {product.isNew && <Badge variant="new">New</Badge>}
+                </div>
+                <Toggle
+                  checked={product.isActive}
+                  onChange={(checked) => handleToggleActive(product.id, checked)}
+                  aria-label={`${product.isActive ? 'Deactivate' : 'Activate'} ${product.name}`}
+                />
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      <div className="hidden overflow-x-auto rounded-md border border-neutral-300 sm:block">
         <table className="w-full min-w-[720px] border-collapse text-left">
           <thead>
             <tr className="border-b border-neutral-300">
@@ -145,7 +212,7 @@ export function ProductTable() {
 
       {/* §10 ТЗ: удаление товара — с подтверждением. Тот же Panel, что и корзина (design.md →
           «Модальные окна admin используют тот же компонент panel, что и корзина»), не отдельная
-          центрированная модалка. */}
+          центрированная модалка. Общий и для карточек, и для таблицы — рендерится один раз. */}
       <Panel
         open={productToDelete !== null}
         onClose={() => setProductToDelete(null)}
