@@ -1,7 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+// usePathname берём locale-aware версией (i18n/navigation.ts, не next/navigation) — она отдаёт
+// путь без префикса локали ("/", а не "/en"/"/de"). Обычный usePathname из next/navigation ломал
+// navHref ниже: pathname==='/' никогда не совпадало, ANCHOR_NAV_ITEMS всегда получали абсолютный
+// "/#id" через голый <a>, что на любой странице, кроме "/", давало полный reload + редирект
+// proxy.ts обратно на дефолтную локаль (see git history/2026-08-19 fix).
+import { Link as AnchorLink, usePathname } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import { Menu, Search, X } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
@@ -279,14 +285,14 @@ export function Header() {
               className="bg-surface py-sm absolute inset-x-0 top-full flex flex-col border-t border-neutral-200 lg:hidden"
             >
               {ANCHOR_NAV_ITEMS.map((item) => (
-                <a
+                <AnchorLink
                   key={item.id}
                   href={navHref(item.id)}
                   onClick={() => setActivePanel(null)}
                   className={MOBILE_NAV_LINK_CLASSNAME}
                 >
                   {t(item.key)}
-                </a>
+                </AnchorLink>
               ))}
               {ROUTE_NAV_ITEMS.map((item) => (
                 <Link
@@ -335,9 +341,9 @@ export function Header() {
             className="lg:gap-xl hidden shrink-0 items-center gap-[12px] sm:flex md:gap-[18px]"
           >
             {ANCHOR_NAV_ITEMS.map((item) => (
-              <a key={item.id} href={navHref(item.id)} className={NAV_LINK_CLASSNAME}>
+              <AnchorLink key={item.id} href={navHref(item.id)} className={NAV_LINK_CLASSNAME}>
                 {t(item.key)}
-              </a>
+              </AnchorLink>
             ))}
             {ROUTE_NAV_ITEMS.map((item) => (
               <Link key={item.href} href={item.href} className={NAV_LINK_CLASSNAME}>
