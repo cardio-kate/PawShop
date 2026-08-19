@@ -55,6 +55,11 @@ export interface MockDeliveryCountry {
   countryName: string;
   price: number;
   estimatedDays: string;
+  // Soft delete по стране доставки (CLAUDE.md → «База данных», тот же паттерн, что у
+  // Product/ProductVariant): переключается в DeliveryTable, только в локальном useState — как и
+  // isActive у MockProduct выше, реального createDeliveryCountry/удаления набора стран из UI нет
+  // (tz-pawshop.md §11, только updateDeliveryCountry для уже существующей записи).
+  isActive: boolean;
 }
 
 export type OrderStatus = 'new' | 'processing' | 'done' | 'cancelled';

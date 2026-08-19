@@ -222,18 +222,18 @@ export const MOCK_PRODUCTS: MockProduct[] = MOCK_PRODUCT_INPUTS.map(withComputed
 // Мок для §7.6 ТЗ (Delivery) — реальный набор заводится один раз через
 // scripts/seed-delivery-countries.ts (architecture.md §3.4, п.7), здесь только для витрины на моках.
 export const MOCK_DELIVERY_COUNTRIES: MockDeliveryCountry[] = [
-  { id: 'de', countryName: 'Germany', price: 4.9, estimatedDays: '2–4' },
-  { id: 'at', countryName: 'Austria', price: 5.9, estimatedDays: '3–5' },
-  { id: 'fr', countryName: 'France', price: 7.9, estimatedDays: '3–5' },
-  { id: 'nl', countryName: 'Netherlands', price: 6.9, estimatedDays: '2–4' },
-  { id: 'be', countryName: 'Belgium', price: 6.9, estimatedDays: '2–4' },
-  { id: 'it', countryName: 'Italy', price: 8.9, estimatedDays: '4–6' },
-  { id: 'es', countryName: 'Spain', price: 9.9, estimatedDays: '4–6' },
-  { id: 'pl', countryName: 'Poland', price: 6.9, estimatedDays: '3–5' },
-  { id: 'cz', countryName: 'Czech Republic', price: 7.9, estimatedDays: '3–5' },
-  { id: 'ie', countryName: 'Ireland', price: 10.9, estimatedDays: '4–7' },
-  { id: 'se', countryName: 'Sweden', price: 11.9, estimatedDays: '4–7' },
-  { id: 'dk', countryName: 'Denmark', price: 9.9, estimatedDays: '3–6' },
+  { id: 'de', countryName: 'Germany', price: 4.9, estimatedDays: '2–4', isActive: true },
+  { id: 'at', countryName: 'Austria', price: 5.9, estimatedDays: '3–5', isActive: true },
+  { id: 'fr', countryName: 'France', price: 7.9, estimatedDays: '3–5', isActive: true },
+  { id: 'nl', countryName: 'Netherlands', price: 6.9, estimatedDays: '2–4', isActive: true },
+  { id: 'be', countryName: 'Belgium', price: 6.9, estimatedDays: '2–4', isActive: true },
+  { id: 'it', countryName: 'Italy', price: 8.9, estimatedDays: '4–6', isActive: true },
+  { id: 'es', countryName: 'Spain', price: 9.9, estimatedDays: '4–6', isActive: true },
+  { id: 'pl', countryName: 'Poland', price: 6.9, estimatedDays: '3–5', isActive: true },
+  { id: 'cz', countryName: 'Czech Republic', price: 7.9, estimatedDays: '3–5', isActive: true },
+  { id: 'ie', countryName: 'Ireland', price: 10.9, estimatedDays: '4–7', isActive: true },
+  { id: 'se', countryName: 'Sweden', price: 11.9, estimatedDays: '4–7', isActive: true },
+  { id: 'dk', countryName: 'Denmark', price: 9.9, estimatedDays: '3–6', isActive: true },
 ];
 
 // Мок §7.3 ТЗ (getRelatedProducts) — до 4 товаров той же ageGroup, исключая сам товар; сервер
