@@ -37,6 +37,9 @@ const cspHeader = `
 // загруженные во внешнее хранилище (Vercel Blob), см. docs/architecture.md, раздел 3.5
 const nextConfig: NextConfig = {
   output: 'standalone',
+  // jose (lib/auth.ts) — чистый ESM без CJS-сборки (node_modules/jose/package.json) — без этого и
+  // бандлер next build, и next/jest (читает ту же опцию) спотыкаются об `export` внутри node_modules.
+  transpilePackages: ['jose'],
   // Индикатор статуса роута в dev-режиме (кружок в углу экрана) — мешает при визуальных
   // скриншотах/проверках; ошибки компиляции/рантайма он всё равно продолжает показывать.
   devIndicators: false,

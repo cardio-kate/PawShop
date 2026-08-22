@@ -22,3 +22,8 @@ export const CATALOG_PAGE_SIZE = 8;
 // значение, что уже захардкожено на клиенте в components/admin/constants.ts → PRODUCT_MIN_ITEMS —
 // если минимум когда-нибудь изменится, обе константы правятся вместе, не по отдельности.
 export const PRODUCT_MIN_ITEMS = 1;
+
+// Имя httpOnly-cookie с JWT-сессией администратора — общий источник и для lib/auth.ts (чтение в
+// requireAdminSession()/proxy.ts), и для auth.actions.ts (установка в adminLogin, очистка в
+// adminLogout), чтобы имя не разъехалось между местом записи и местом чтения (architecture.md §3.4).
+export const ADMIN_SESSION_COOKIE = 'pawshop_admin_session';

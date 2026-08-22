@@ -8,6 +8,8 @@ const config = {
   testEnvironment: 'node',
   testMatch: ['<rootDir>/tests/integration/**/*.test.ts'],
   testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/.next/'],
+  // Та же Haste-коллизия, что в jest.unit.config.js (output: 'standalone' → .next/standalone/package.json).
+  modulePathIgnorePatterns: ['<rootDir>/.next/'],
   // Только этот проект грузит .env.test — unit-проект про него не знает вообще (docs/architecture.md §7.1).
   setupFiles: ['<rootDir>/tests/helpers/setup-integration.ts'],
 };
