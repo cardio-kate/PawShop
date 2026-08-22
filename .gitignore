@@ -35,6 +35,12 @@ yarn-error.log*
 # personal Claude Code planning notes — not part of the project artifact
 /.claude/plans/
 
+# Neon CLI: project/branch link (local machine state, not project config)
+/.neon
+# Neon agent-skills onboarding scaffolding — reference docs for AI tools, not project code
+/.agents/
+/skills-lock.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

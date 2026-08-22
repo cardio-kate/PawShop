@@ -13,15 +13,15 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio",
+    "db:generate": "NODE_OPTIONS=--conditions=react-server drizzle-kit generate",
+    "db:migrate": "NODE_OPTIONS=--conditions=react-server drizzle-kit migrate",
+    "db:studio": "NODE_OPTIONS=--conditions=react-server drizzle-kit studio",
     "create-admin": "tsx scripts/create-admin.ts",
     "seed:categories": "tsx scripts/seed-categories.ts",
     "seed:delivery-countries": "tsx scripts/seed-delivery-countries.ts",
     "test": "jest",
-    "test:unit": "jest tests/unit",
-    "test:integration": "jest tests/integration"
+    "test:unit": "jest --selectProjects unit",
+    "test:integration": "jest --selectProjects integration"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

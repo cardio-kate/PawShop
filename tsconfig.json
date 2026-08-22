@@ -8,6 +8,10 @@
     "noUncheckedIndexedAccess": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
+    // TypeScript 6 (см. AGENTS.md — версии в этом проекте новее того, что известно по обучающим
+    // данным) больше не подключает node_modules/@types/* автоматически без явного списка — без
+    // этого describe/it/expect в тестах не типизируются, даже когда @types/jest установлен.
+    "types": ["jest", "node"],
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
