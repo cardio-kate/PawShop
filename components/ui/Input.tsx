@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes } from 'react';
+import type { InputHTMLAttributes, Ref } from 'react';
 import {
   TEXT_FIELD_BASE_CLASSNAME,
   TEXT_FIELD_SIZE_CLASSNAME,
@@ -10,6 +10,9 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   // Не называть `size` — HTMLInputElement уже несёт нативный `size` (ширина в символах),
   // переобъявление с несовместимым типом не скомпилируется.
   compact?: boolean;
+  // React 19 передаёт ref обычным пропом функциональным компонентам — forwardRef не нужен, но тип
+  // нужно объявить явно, иначе `<Input ref={...} />` (react-hook-form → register()) не скомпилируется.
+  ref?: Ref<HTMLInputElement>;
 }
 
 export function Input({ error, compact, className, ...props }: InputProps) {

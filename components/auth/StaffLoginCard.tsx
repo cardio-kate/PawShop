@@ -1,31 +1,35 @@
 'use client';
 
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { unstable_rethrow } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Check } from 'lucide-react';
 import { Logo } from '@/components/layout/Logo';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
+import { adminLogin, requestPasswordReset, resetPassword } from '@/actions/auth.actions';
+import {
+  loginSchema,
+  requestPasswordResetSchema,
+  resetPasswordSchema,
+  type LoginInput,
+  type RequestPasswordResetInput,
+  type ResetPasswordInput,
+} from '@/lib/validation/auth.schema';
 
 type Step = 'login' | 'forgot' | 'reset' | 'reset-success';
 
-// ТЗ §12: 5 неудачных попыток → временная блокировка на 15 минут. Реального adminLogin ещё нет
-// (Фаза 7 — только UI на моках), поэтому здесь нечему "проверять" пароль — каждый сабмит формы
-// считается неудачной попыткой, чтобы баннер блокировки из design.md → Staff login card оставалось
-// чем визуально проверить, а не только описать.
-const MAX_LOGIN_ATTEMPTS = 5;
-
 const LINK_CLASSNAME = `cursor-pointer self-center text-body-sm text-neutral-900 transition-colors duration-fast hover:text-paw motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`;
+
+// Action кинул исключение (не аккуратный {success:false, errors}) — обрыв соединения и т.п.,
+// architecture.md §3.11 «UI-состояния запроса». Admin-формы без i18n-ключей (CLAUDE.md → «Что не
+// локализуется»), поэтому здесь просто строка, не 'errors.generic'.
+const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please try again.';
 
 export function StaffLoginCard() {
   const [step, setStep] = useState<Step>('login');
-  const [failedAttempts, setFailedAttempts] = useState(0);
-  const locked = failedAttempts >= MAX_LOGIN_ATTEMPTS;
-
-  function handleBackToSignIn() {
-    setStep('login');
-    setFailedAttempts(0);
-  }
 
   return (
     <div className="gap-lg bg-surface p-xl flex w-[380px] max-w-full flex-col rounded-lg shadow-[0_4px_16px_rgba(14,14,18,0.08)]">
@@ -36,60 +40,86 @@ export function StaffLoginCard() {
       <h1 className="sr-only">Staff sign in</h1>
       <Logo className="justify-center" />
 
-      {step === 'login' && (
-        <LoginStep
-          locked={locked}
-          onSubmit={() => setFailedAttempts((count) => count + 1)}
-          onForgotPassword={() => setStep('forgot')}
-        />
-      )}
+      {step === 'login' && <LoginStep onForgotPassword={() => setStep('forgot')} />}
       {step === 'forgot' && <ForgotStep onCodeSent={() => setStep('reset')} />}
       {step === 'reset' && <ResetStep onReset={() => setStep('reset-success')} />}
-      {step === 'reset-success' && <ResetSuccessStep onBackToSignIn={handleBackToSignIn} />}
+      {step === 'reset-success' && (
+        <ResetSuccessStep onBackToSignIn={() => setStep('login')} />
+      )}
     </div>
   );
 }
 
-function LoginStep({
-  locked,
-  onSubmit,
-  onForgotPassword,
-}: {
-  locked: boolean;
-  onSubmit: () => void;
-  onForgotPassword: () => void;
-}) {
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!locked) onSubmit();
+function LoginStep({ onForgotPassword }: { onForgotPassword: () => void }) {
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginInput>({ resolver: zodResolver(loginSchema) });
+
+  async function onSubmit(data: LoginInput) {
+    try {
+      // adminLogin() сама делает redirect() на сервере при успехе — сюда управление в этом случае
+      // не возвращается вообще (см. actions/auth.actions.ts). Ветка ниже — только на реальный
+      // {success:false}.
+      const result = await adminLogin(data);
+      if (!result.success) {
+        for (const [field, message] of Object.entries(result.errors)) {
+          setError(field as 'root' | keyof LoginInput, { message });
+        }
+      }
+    } catch (error) {
+      // redirect() внутри adminLogin() бросает специальную ошибку, которую должен поймать сам
+      // Next.js, а не этот catch — иначе успешный вход показал бы "Something went wrong" вместо
+      // перехода в дашборд.
+      unstable_rethrow(error);
+      setError('root', { message: GENERIC_ERROR_MESSAGE });
+    }
   }
 
   return (
-    <form className="gap-md flex flex-col" onSubmit={handleSubmit}>
-      {locked && (
+    <form className="gap-md flex flex-col" onSubmit={handleSubmit(onSubmit)} noValidate>
+      {errors.root && (
         <p
           role="alert"
           className="bg-error-tint px-md py-sm text-body-sm text-error-on-tint rounded-md"
         >
-          Too many failed attempts. Try again in 15 minutes.
+          {errors.root.message}
         </p>
       )}
       <label className="gap-xs flex flex-col">
         <span className="text-label-md text-neutral-900">Username</span>
-        <Input name="username" autoComplete="username" disabled={locked} required autoFocus />
+        <Input
+          {...register('username')}
+          autoComplete="username"
+          autoFocus
+          error={!!errors.username}
+          aria-describedby={errors.username ? 'username-error' : undefined}
+        />
+        {errors.username && (
+          <span id="username-error" role="alert" className="text-body-sm text-error">
+            {errors.username.message}
+          </span>
+        )}
       </label>
       <label className="gap-xs flex flex-col">
         <span className="text-label-md text-neutral-900">Password</span>
         <Input
-          name="password"
+          {...register('password')}
           type="password"
           autoComplete="current-password"
-          disabled={locked}
-          required
+          error={!!errors.password}
+          aria-describedby={errors.password ? 'password-error' : undefined}
         />
+        {errors.password && (
+          <span id="password-error" role="alert" className="text-body-sm text-error">
+            {errors.password.message}
+          </span>
+        )}
       </label>
-      <Button type="submit" variant="primary" disabled={locked} className="w-full">
-        Sign in
+      <Button type="submit" variant="primary" disabled={isSubmitting} className="w-full">
+        {isSubmitting ? 'Signing in…' : 'Sign in'}
       </Button>
       <button type="button" onClick={onForgotPassword} className={LINK_CLASSNAME}>
         Forgot password?
@@ -99,43 +129,129 @@ function LoginStep({
 }
 
 function ForgotStep({ onCodeSent }: { onCodeSent: () => void }) {
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    onCodeSent();
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<RequestPasswordResetInput>({ resolver: zodResolver(requestPasswordResetSchema) });
+
+  async function onSubmit(data: RequestPasswordResetInput) {
+    try {
+      const result = await requestPasswordReset(data);
+      if (!result.success) {
+        for (const [field, message] of Object.entries(result.errors)) {
+          setError(field as 'root' | keyof RequestPasswordResetInput, { message });
+        }
+        return;
+      }
+      onCodeSent();
+    } catch {
+      setError('root', { message: GENERIC_ERROR_MESSAGE });
+    }
   }
 
   return (
-    <form className="gap-md flex flex-col" onSubmit={handleSubmit}>
+    <form className="gap-md flex flex-col" onSubmit={handleSubmit(onSubmit)} noValidate>
+      {errors.root && (
+        <p
+          role="alert"
+          className="bg-error-tint px-md py-sm text-body-sm text-error-on-tint rounded-md"
+        >
+          {errors.root.message}
+        </p>
+      )}
       <label className="gap-xs flex flex-col">
         <span className="text-label-md text-neutral-900">Username</span>
-        <Input name="username" autoComplete="username" required autoFocus />
+        <Input
+          {...register('username')}
+          autoComplete="username"
+          autoFocus
+          error={!!errors.username}
+          aria-describedby={errors.username ? 'forgot-username-error' : undefined}
+        />
+        {errors.username && (
+          <span id="forgot-username-error" role="alert" className="text-body-sm text-error">
+            {errors.username.message}
+          </span>
+        )}
       </label>
-      <Button type="submit" variant="primary" className="w-full">
-        Send code
+      <Button type="submit" variant="primary" disabled={isSubmitting} className="w-full">
+        {isSubmitting ? 'Sending…' : 'Send code'}
       </Button>
     </form>
   );
 }
 
 function ResetStep({ onReset }: { onReset: () => void }) {
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    onReset();
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<ResetPasswordInput>({ resolver: zodResolver(resetPasswordSchema) });
+
+  async function onSubmit(data: ResetPasswordInput) {
+    try {
+      const result = await resetPassword(data);
+      if (!result.success) {
+        for (const [field, message] of Object.entries(result.errors)) {
+          setError(field as 'root' | keyof ResetPasswordInput, { message });
+        }
+        return;
+      }
+      onReset();
+    } catch {
+      setError('root', { message: GENERIC_ERROR_MESSAGE });
+    }
   }
 
   return (
-    <form className="gap-md flex flex-col" onSubmit={handleSubmit}>
+    <form className="gap-md flex flex-col" onSubmit={handleSubmit(onSubmit)} noValidate>
       <p className="text-body-sm text-neutral-500">Code sent to your Telegram</p>
+      {errors.root && (
+        <p
+          role="alert"
+          className="bg-error-tint px-md py-sm text-body-sm text-error-on-tint rounded-md"
+        >
+          {errors.root.message}
+        </p>
+      )}
       <label className="gap-xs flex flex-col">
         <span className="text-label-md text-neutral-900">Code</span>
-        <Input name="code" inputMode="numeric" autoComplete="one-time-code" required autoFocus />
+        {/* Реальный код — длинная hex-строка (crypto.randomBytes(32).toString('hex'), см.
+            architecture.md §3.4), не короткий числовой PIN — inputMode="numeric" из мока показывал
+            бы цифровую клавиатуру на телефоне для значения с буквами a-f, отсюда убран. */}
+        <Input
+          {...register('code')}
+          autoComplete="one-time-code"
+          autoFocus
+          error={!!errors.code}
+          aria-describedby={errors.code ? 'code-error' : undefined}
+        />
+        {errors.code && (
+          <span id="code-error" role="alert" className="text-body-sm text-error">
+            {errors.code.message}
+          </span>
+        )}
       </label>
       <label className="gap-xs flex flex-col">
         <span className="text-label-md text-neutral-900">New password</span>
-        <Input name="newPassword" type="password" autoComplete="new-password" required />
+        <Input
+          {...register('newPassword')}
+          type="password"
+          autoComplete="new-password"
+          error={!!errors.newPassword}
+          aria-describedby={errors.newPassword ? 'new-password-error' : undefined}
+        />
+        {errors.newPassword && (
+          <span id="new-password-error" role="alert" className="text-body-sm text-error">
+            {errors.newPassword.message}
+          </span>
+        )}
       </label>
-      <Button type="submit" variant="primary" className="w-full">
-        Reset password
+      <Button type="submit" variant="primary" disabled={isSubmitting} className="w-full">
+        {isSubmitting ? 'Resetting…' : 'Reset password'}
       </Button>
     </form>
   );

@@ -1,5 +1,5 @@
 import 'server-only';
-import { eq, sql } from 'drizzle-orm';
+import { count, eq, sql } from 'drizzle-orm';
 import { dbHttp } from '@/lib/db';
 import { admin } from '@/lib/db/schema';
 
@@ -12,6 +12,16 @@ export async function getAdminSessionVersion(id: number): Promise<number | null>
     .where(eq(admin.id, id))
     .limit(1);
   return row?.sessionVersion ?? null;
+}
+
+// scripts/create-admin.ts — единственный источник вставки Admin (architecture.md §3.4, п.5).
+export async function countAdmins(): Promise<number> {
+  const [row] = await dbHttp.select({ count: count() }).from(admin);
+  return row?.count ?? 0;
+}
+
+export async function createAdmin(data: { username: string; passwordHash: string }): Promise<void> {
+  await dbHttp.insert(admin).values(data);
 }
 
 export async function getAdminByUsername(username: string) {
@@ -28,11 +38,11 @@ export async function getAdminByResetTokenHash(resetTokenHash: string) {
   return row ?? null;
 }
 
-// Атомарный инкремент + условная установка lockedUntil в ОДНОМ UPDATE (не read-then-write в JS —
-// см. .claude/plans/backend-realization-pawshop.md, Фаза 0): наивное «прочитать счётчик → сравнить
-// → записать» позволяет двум параллельным неудачным попыткам с одного клиента синхронно пройти
-// проверку и не увеличить счётчик. Единственный статичный UPDATE атомарен на уровне строки в
-// Postgres сам по себе — отдельная транзакция/dbPool не нужны, здесь ровно один связанный запрос.
+// Атомарный инкремент + условная установка lockedUntil в ОДНОМ UPDATE, не read-then-write в JS
+// (CLAUDE.md → «Auth и сессии»): наивное «прочитать счётчик → сравнить → записать» позволяет двум
+// параллельным неудачным попыткам с одного клиента синхронно пройти проверку и не увеличить счётчик.
+// Единственный статичный UPDATE атомарен на уровне строки в Postgres сам по себе — отдельная
+// транзакция/dbPool не нужны, здесь ровно один связанный запрос.
 export async function recordFailedLoginAttempt(
   id: number,
   maxAttempts: number,
@@ -72,6 +82,10 @@ export async function setResetToken(
 // passwordHash + sessionVersion-инкремент + сброс resetToken — один атомарный UPDATE (architecture.md
 // §3.4: "в той же транзакции, где обновляется passwordHash" — для одной строки/одного statement это
 // гарантировано атомарностью самого UPDATE, отдельный dbPool/BEGIN не нужен).
+// failedLoginAttempts/lockedUntil сбрасываются здесь же: сброс пароля через Telegram-код — это и есть
+// путь восстановления доступа для единственного админа, в том числе после lockout; без этого сброса
+// админ с только что установленным верным паролем всё ещё получал бы "Too many failed attempts" до
+// истечения LOGIN_LOCKOUT_MINUTES.
 export async function resetPasswordAndInvalidateSessions(
   id: number,
   passwordHash: string,
@@ -83,6 +97,8 @@ export async function resetPasswordAndInvalidateSessions(
       sessionVersion: sql`${admin.sessionVersion} + 1`,
       resetTokenHash: null,
       resetTokenExpiresAt: null,
+      failedLoginAttempts: 0,
+      lockedUntil: null,
     })
     .where(eq(admin.id, id));
 }

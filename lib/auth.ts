@@ -64,6 +64,25 @@ export async function comparePassword(password: string, hash: string): Promise<b
   return bcrypt.compare(password, hash);
 }
 
+// Полная проверка сессии: JWT (подпись/срок) + sessionVersion из токена сверяется с текущим
+// значением в БД (architecture.md §3.4) — без второй половины resetPassword не инвалидирует уже
+// выданные токены до истечения JWT_EXPIRES_IN. Общий код для requireAdminSession() (Server Actions,
+// токен из next/headers cookies()) и proxy.ts (токен из NextRequest.cookies — другой API, но та же
+// проверка), чтобы правило "sessionVersion сверяется с БД" не разъехалось между двумя местами.
+export async function verifyAdminSession(token: string): Promise<SessionPayload | null> {
+  const session = await verifySession(token);
+  if (!session) {
+    return null;
+  }
+
+  const currentSessionVersion = await getAdminSessionVersion(session.adminId);
+  if (currentSessionVersion === null || currentSessionVersion !== session.sessionVersion) {
+    return null;
+  }
+
+  return session;
+}
+
 // Дешёвая защита в глубину (architecture.md §3.4, п.2) — вызывается в начале КАЖДОГО админского
 // Server Action, не полагается на то, что proxy.ts уже отсеял неавторизованный вызов на уровне
 // рендера страницы. Бросает при отсутствии/невалидности/просроченности сессии — это ожидаемо
@@ -75,16 +94,9 @@ export async function requireAdminSession(): Promise<SessionPayload> {
     throw new Error('requireAdminSession: no session cookie');
   }
 
-  const session = await verifySession(token);
+  const session = await verifyAdminSession(token);
   if (!session) {
-    throw new Error('requireAdminSession: invalid or expired session');
-  }
-
-  // sessionVersion из токена сверяется с текущим значением в БД (architecture.md §3.4) — без этого
-  // resetPassword не инвалидирует уже выданные токены до истечения JWT_EXPIRES_IN.
-  const currentSessionVersion = await getAdminSessionVersion(session.adminId);
-  if (currentSessionVersion === null || currentSessionVersion !== session.sessionVersion) {
-    throw new Error('requireAdminSession: session version mismatch');
+    throw new Error('requireAdminSession: invalid, expired, or superseded session');
   }
 
   return session;

@@ -116,8 +116,7 @@ export const admin = pgTable('admins', {
 });
 
 // Служебная таблица для lib/rate-limit.ts (architecture.md §3.8) — не часть модели данных ТЗ §4.
-// Фиксированное окно: одна строка на (ip, windowStart), атомарный upsert-инкремент count
-// (см. .claude/plans/backend-realization-pawshop.md, Фаза 0 — дизайн зафиксирован явно).
+// Фиксированное окно: одна строка на (ip, windowStart), атомарный upsert-инкремент count.
 export const rateLimit = pgTable(
   'rate_limit',
   {
