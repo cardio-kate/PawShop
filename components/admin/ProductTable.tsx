@@ -84,7 +84,7 @@ export function ProductTable() {
                 </div>
                 <div className="gap-xs flex shrink-0 items-center">
                   <Link
-                    href={`/admin/dashboard/products/${product.id}/edit`}
+                    href={`/nine-lives/dashboard/products/${product.id}/edit`}
                     aria-label={`Edit ${product.name}`}
                     className={iconActionButtonClassName()}
                   >
@@ -187,7 +187,7 @@ export function ProductTable() {
                   <td className="px-md py-sm">
                     <div className="gap-xs flex items-center">
                       <Link
-                        href={`/admin/dashboard/products/${product.id}/edit`}
+                        href={`/nine-lives/dashboard/products/${product.id}/edit`}
                         aria-label={`Edit ${product.name}`}
                         className={iconActionButtonClassName()}
                       >

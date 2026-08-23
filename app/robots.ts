@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
       // витрины), не должна индексироваться ни на /en/, ни на /de/. Реальный путь — /en/ui-playground
       // или /de/ui-playground (locale-префикс из [locale]-сегмента), поэтому нужен wildcard перед
       // сегментом — без него Disallow: /ui-playground матчит только корневой путь.
-      disallow: ['/admin', '/staff-entry', '/*/ui-playground'],
+      disallow: ['/nine-lives', '/staff-entry', '/*/ui-playground'],
     },
   };
 }

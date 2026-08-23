@@ -95,7 +95,7 @@ await db.execute(sql.raw(`SELECT * FROM products WHERE slug = '${slug}'`));
 Схема сессии зафиксирована в architecture.md §3.4 — при любых правках `proxy.ts`/`lib/auth.ts`
 сверяйся с ней, а не изобретай заново.
 
-- [ ] `proxy.ts` проверяет httpOnly JWT-cookie только для `/admin/dashboard/**`. `/staff-entry`
+- [ ] `proxy.ts` проверяет httpOnly JWT-cookie только для `/nine-lives/dashboard/**`. `/staff-entry`
       (страница логина) остаётся вне этой проверки — так и должно быть, это не дыра
 - [ ] Верификация JWT в `proxy.ts` — только через `jose` (Node runtime по умолчанию с Next 16,
       но `jose` остаётся безопасным выбором и там, и в Edge). `bcryptjs`/сравнение пароля —

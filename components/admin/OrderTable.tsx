@@ -33,7 +33,7 @@ export function OrderTable() {
           MOCK_ORDERS.map((order) => (
             <Link
               key={order.id}
-              href={`/admin/dashboard/orders/${order.id}`}
+              href={`/nine-lives/dashboard/orders/${order.id}`}
               // border-l-4 (не общий border-l-* из border-shorthand) + прозрачный/paw цвет по
               // условию — левая полоса всегда занимает одну и ту же ширину, меняется только её
               // цвет, поэтому карточки new/остальные не «прыгают» по горизонтали относительно
@@ -142,7 +142,7 @@ export function OrderTable() {
                     </td>
                     <td className="px-md py-sm">
                       <Link
-                        href={`/admin/dashboard/orders/${order.id}`}
+                        href={`/nine-lives/dashboard/orders/${order.id}`}
                         aria-label={`View order #${order.id}`}
                         className={`flex items-center justify-center ${iconActionButtonClassName()}`}
                       >

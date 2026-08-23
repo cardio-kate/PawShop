@@ -69,9 +69,9 @@ CSP в `next.config.ts` держит `script-src 'unsafe-inline'` намерен
 
 ## Мультиязычность EN/DE (`docs/architecture.md` §3.10)
 
-- Локализована только витрина (`app/[locale]/(storefront)/**`). Админка (`/admin/dashboard/**`) и
+- Локализована только витрина (`app/[locale]/(storefront)/**`). Админка (`/nine-lives/dashboard/**`) и
   `/staff-entry` живут без `[locale]` во втором корневом layout — route group `app/(admin)/**` не виден в
-  URL, сегменты пути — внутри него: `app/(admin)/admin/dashboard/**`, `app/(admin)/staff-entry`. Всегда
+  URL, сегменты пути — внутри него: `app/(admin)/nine-lives/dashboard/**`, `app/(admin)/staff-entry`. Всегда
   на английском.
 - `nameEn`/`descriptionEn` у `Product` обязательны; `nameDe`/`descriptionDe` — nullable. Резолюция fallback
   (`nameDe ?? nameEn`) — бизнес-правило в `products.service.ts`, не в `queries` и не в компоненте. `Category`
@@ -79,7 +79,7 @@ CSP в `next.config.ts` держит `script-src 'unsafe-inline'` намерен
 - `slug` один на обе локали, не переводится — не заводить второй slug-столбец.
 - Поиск (`getProducts({ search, locale })`) — `ILIKE` по имени **текущей** локали с fallback на английский
   для непереведённых, не по обеим колонкам сразу (иначе скоуп поиска молча расширится за пределы ТЗ §11).
-- `proxy.ts` — один файл на locale-negotiation (вне `/admin`) и JWT-проверку (`/admin/dashboard/**`), не
+- `proxy.ts` — один файл на locale-negotiation (вне `/nine-lives`) и JWT-проверку (`/nine-lives/dashboard/**`), не
   два файла.
 - Telegram-уведомления и `DeliveryCountry.countryName` — не локализуются (см. architecture.md §3.10, «Что
   не локализуется»).
@@ -114,8 +114,10 @@ CSP в `next.config.ts` держит `script-src 'unsafe-inline'` намерен
 
 ## Auth и сессии (`docs/architecture.md` §3.4, ТЗ §8)
 
-- `proxy.ts` проверяет httpOnly JWT-cookie только для `/admin/dashboard/**`. `/staff-entry` — публичный
-  маршрут верхнего уровня вне этой проверки, это осознанное решение, не дыра.
+- `proxy.ts` проверяет httpOnly JWT-cookie только для `/nine-lives/dashboard/**`. `/staff-entry` — публичный
+  маршрут верхнего уровня вне этой проверки, это осознанное решение, не дыра. `/nine-lives` — намеренно
+  непредсказуемый префикс вместо `/admin` (снижает шум от ботов-сканеров типовых путей), сам по себе
+  не замена проверке сессии, только дополнение к ней.
 - Верификация JWT — только через `jose` (edge-safe, работает и в Node), в `proxy.ts` и в
   `requireAdminSession()`. `bcryptjs` — только в Server Actions/`services`, не в `proxy.ts`: это разделение
   ответственности, а не обход ограничения — в Next 16 Proxy по умолчанию Node.js-рантайм, не Edge (§9), так

@@ -25,9 +25,9 @@ interface ProductFormProps {
 }
 
 // design.md → ProductForm (§10 ТЗ): одна колонка, поля сверху вниз, Save/Cancel на всю ширину
-// внизу. createProduct/updateProduct не подключены (Фаза 7 — только UI на моках, см. план,
-// «Что за пределами этого плана»): Save мокает успех тем же способом, что StaffLoginCard мокает
-// сабмит — переходом в следующее состояние (здесь — редирект к списку), без реальной записи.
+// внизу. createProduct/updateProduct пока не подключены — этот компонент ещё целиком на моках.
+// Save мокает успех тем же способом, что StaffLoginCard мокает сабмит — переходом в следующее
+// состояние (здесь — редирект к списку), без реальной записи.
 export function ProductForm({ product }: ProductFormProps) {
   const router = useRouter();
   const [name, setName] = useState(product?.name ?? '');
@@ -52,7 +52,7 @@ export function ProductForm({ product }: ProductFormProps) {
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!canSave) return;
-    router.push('/admin/dashboard/products');
+    router.push('/nine-lives/dashboard/products');
   }
 
   return (
@@ -113,7 +113,7 @@ export function ProductForm({ product }: ProductFormProps) {
         <Button
           type="button"
           variant="secondary"
-          onClick={() => router.push('/admin/dashboard/products')}
+          onClick={() => router.push('/nine-lives/dashboard/products')}
           className="w-full"
         >
           Cancel
