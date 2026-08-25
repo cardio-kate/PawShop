@@ -141,7 +141,40 @@
     "subtotal": "Sub Total",
     "shipping": "Shipping",
     "total": "Total",
-    "placeOrder": "Place Order"
+    "placeOrder": "Place Order",
+    "placingOrder": "Placing order…",
+    "errors": {
+      "fullName": {
+        "required": "Full name is required."
+      },
+      "phone": {
+        "invalid": "Enter a valid phone number."
+      },
+      "street": {
+        "required": "Street address is required."
+      },
+      "city": {
+        "required": "City is required."
+      },
+      "postalCode": {
+        "invalid": "Enter a valid postal code for the selected country."
+      },
+      "country": {
+        "required": "Select a delivery country.",
+        "invalid": "The selected delivery country is no longer available. Please choose another one."
+      },
+      "items": {
+        "empty": "Your cart is empty."
+      },
+      "rateLimited": "Too many attempts. Please try again in a few minutes.",
+      "noAvailableItems": "The items in your cart are no longer available. Please return to the catalog.",
+      "generic": "Something went wrong while placing your order. Please try again."
+    },
+    "confirmation": {
+      "title": "Thank you for your order!",
+      "message": "Order #{id} has been received. Our manager will contact you shortly to confirm payment and delivery details.",
+      "continueShopping": "Continue shopping"
+    }
   },
   "Delivery": {
     "title": "Delivery",

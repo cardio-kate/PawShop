@@ -141,7 +141,40 @@
     "subtotal": "Zwischensumme",
     "shipping": "Versand",
     "total": "Gesamt",
-    "placeOrder": "Bestellung aufgeben"
+    "placeOrder": "Bestellung aufgeben",
+    "placingOrder": "Bestellung wird aufgegeben…",
+    "errors": {
+      "fullName": {
+        "required": "Vollständiger Name ist erforderlich."
+      },
+      "phone": {
+        "invalid": "Bitte geben Sie eine gültige Telefonnummer ein."
+      },
+      "street": {
+        "required": "Straße und Hausnummer sind erforderlich."
+      },
+      "city": {
+        "required": "Stadt ist erforderlich."
+      },
+      "postalCode": {
+        "invalid": "Bitte geben Sie eine gültige Postleitzahl für das gewählte Land ein."
+      },
+      "country": {
+        "required": "Bitte wählen Sie ein Lieferland aus.",
+        "invalid": "Das gewählte Lieferland ist nicht mehr verfügbar. Bitte wählen Sie ein anderes."
+      },
+      "items": {
+        "empty": "Ihr Warenkorb ist leer."
+      },
+      "rateLimited": "Zu viele Versuche. Bitte versuchen Sie es in ein paar Minuten erneut.",
+      "noAvailableItems": "Die Artikel in Ihrem Warenkorb sind nicht mehr verfügbar. Bitte kehren Sie zum Katalog zurück.",
+      "generic": "Beim Aufgeben Ihrer Bestellung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
+    },
+    "confirmation": {
+      "title": "Vielen Dank für Ihre Bestellung!",
+      "message": "Bestellung #{id} ist eingegangen. Unser Manager wird sich in Kürze bei Ihnen melden, um Zahlung und Lieferdetails zu bestätigen.",
+      "continueShopping": "Weiter einkaufen"
+    }
   },
   "Delivery": {
     "title": "Lieferung",
