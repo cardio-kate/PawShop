@@ -34,6 +34,7 @@ interface CartState {
   addItem: (item: AddCartItemInput, quantity?: number) => void;
   removeItem: (productId: number, variantId: number) => void;
   updateQuantity: (productId: number, variantId: number, quantity: number) => void;
+  clearCart: () => void;
 }
 
 function isSameLine(item: CartItem, productId: number, variantId: number): boolean {
@@ -73,6 +74,10 @@ export const useCartStore = create<CartState>()(
                   isSameLine(item, productId, variantId) ? { ...item, quantity } : item,
                 ),
         })),
+      // Вызывается только после успешного ответа createOrder (CLAUDE.md → «Заказ и корзина»), не
+      // оптимистично по клику "Place Order" — CheckoutClient не должен опустошать корзину, если
+      // сервер ещё не подтвердил заказ.
+      clearCart: () => set({ items: [] }),
     }),
     // skipHydration: сервер не знает содержимое localStorage — без этого флага первый клиентский
     // рендер мог бы разойтись с серверным (hydration mismatch) + видимое моргание 0 → N на

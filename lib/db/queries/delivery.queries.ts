@@ -31,6 +31,19 @@ export async function getAdminDeliveryCountries(): Promise<DeliveryCountryRow[]>
   return dbHttp.select().from(deliveryCountry).orderBy(asc(deliveryCountry.countryName));
 }
 
+// orders.service.ts (createOrder) — пересчитывает shippingPriceAtOrder из этой строки, не из
+// клиентского значения (CLAUDE.md → «Заказ и корзина»), и читает countryName для country-specific
+// проверки индекса (order.schema.ts → EIRCODE_PATTERN). Независимо от isActive — сама проверка
+// "страна всё ещё активна" остаётся решением orders.service.ts, не этого запроса.
+export async function getDeliveryCountryById(id: number): Promise<DeliveryCountryRow | null> {
+  const [row] = await dbHttp
+    .select()
+    .from(deliveryCountry)
+    .where(eq(deliveryCountry.id, id))
+    .limit(1);
+  return row ?? null;
+}
+
 export interface DeliveryCountryWriteData {
   price: string;
   estimatedDays: string;

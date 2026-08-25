@@ -467,3 +467,37 @@ export async function updateProductWithVariants(
 export async function setProductActive(id: number, isActive: boolean): Promise<void> {
   await dbHttp.update(product).set({ isActive }).where(eq(product.id, id));
 }
+
+export interface OrderableVariantRow {
+  variantId: number;
+  productId: number;
+  // Telegram-уведомления и админка — фиксированно английские, не зависят от локали покупателя
+  // (CLAUDE.md → «Мультиязычность», «Что не локализуется»), поэтому здесь nameEn как есть, без
+  // резолва fallback через products.service.ts, в отличие от публичных getProducts/getProductBySlug.
+  productName: string;
+  variantLabel: string;
+  price: string;
+  productIsActive: boolean;
+  variantIsActive: boolean;
+}
+
+// orders.service.ts перепроверяет каждую позицию корзины по этой функции при createOrder (CLAUDE.md
+// → «Заказ и корзина»: клиентским ценам/доступности не доверять никогда) — isActive обеих таблиц
+// возвращается как есть, не фильтруется здесь, решение "включать ли в заказ" принимает сервис.
+export async function getVariantsForOrder(variantIds: number[]): Promise<OrderableVariantRow[]> {
+  if (variantIds.length === 0) return [];
+
+  return dbHttp
+    .select({
+      variantId: productVariant.id,
+      productId: productVariant.productId,
+      productName: product.nameEn,
+      variantLabel: productVariant.label,
+      price: productVariant.price,
+      productIsActive: product.isActive,
+      variantIsActive: productVariant.isActive,
+    })
+    .from(productVariant)
+    .innerJoin(product, eq(product.id, productVariant.productId))
+    .where(inArray(productVariant.id, variantIds));
+}

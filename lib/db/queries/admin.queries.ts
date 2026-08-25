@@ -29,6 +29,15 @@ export async function getAdminByUsername(username: string) {
   return row ?? null;
 }
 
+// Единственный админ по конструкции (CLAUDE.md → «Auth и сессии») — createOrder уведомляет именно
+// его, без выбора получателя (в проекте нет ролей/нескольких админ-аккаунтов). null, если ещё не
+// заполнено вручную после create-admin.ts (architecture.md §3.4, п.5) — вызывающая сторона обязана
+// логировать и продолжать, не падать (тот же путь, что и в auth.service.requestPasswordReset).
+export async function getAdminTelegramChatId(): Promise<string | null> {
+  const [row] = await dbHttp.select({ telegramChatId: admin.telegramChatId }).from(admin).limit(1);
+  return row?.telegramChatId ?? null;
+}
+
 export async function getAdminByResetTokenHash(resetTokenHash: string) {
   const [row] = await dbHttp
     .select()

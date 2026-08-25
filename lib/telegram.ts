@@ -47,3 +47,63 @@ export async function sendResetCode(chatId: string, resetToken: string): Promise
   ].join('\n');
   await sendTelegramMessage(chatId, text);
 }
+
+export interface OrderNotificationItem {
+  productNameAtOrder: string;
+  variantLabelAtOrder: string;
+  quantity: number;
+  priceAtOrder: string;
+}
+
+export interface OrderNotificationData {
+  orderId: number;
+  customerName: string;
+  phone: string;
+  street: string;
+  city: string;
+  postalCode: string;
+  countryName: string;
+  comment: string | null;
+  items: OrderNotificationItem[];
+  subtotal: string;
+  shippingPrice: string;
+  total: string;
+}
+
+// tz-pawshop.md §12: товары, сумма товаров, стоимость доставки, итоговая сумма, контакты клиента,
+// полный адрес доставки (страна/город/улица/индекс), комментарий (если заполнен). Каждая строка
+// экранируется целиком через escapeMarkdownV2, включая статический текст и денежные значения
+// (numeric(10,2)-строки содержат ".", зарезервированный символ MarkdownV2) — не только
+// пользовательский ввод, тот же принцип, что в sendResetCode выше.
+export async function sendOrderNotification(
+  chatId: string,
+  data: OrderNotificationData,
+): Promise<void> {
+  const lines = [
+    escapeMarkdownV2(`New order #${data.orderId}`),
+    '',
+    escapeMarkdownV2('Items:'),
+    ...data.items.map((item) =>
+      escapeMarkdownV2(
+        `- ${item.productNameAtOrder} (${item.variantLabelAtOrder}) x${item.quantity} — €${item.priceAtOrder}`,
+      ),
+    ),
+    '',
+    escapeMarkdownV2(`Subtotal: €${data.subtotal}`),
+    escapeMarkdownV2(`Shipping: €${data.shippingPrice}`),
+    escapeMarkdownV2(`Total: €${data.total}`),
+    '',
+    escapeMarkdownV2('Customer:'),
+    escapeMarkdownV2(data.customerName),
+    escapeMarkdownV2(data.phone),
+    '',
+    escapeMarkdownV2('Delivery address:'),
+    escapeMarkdownV2(`${data.street}, ${data.city}, ${data.postalCode}, ${data.countryName}`),
+  ];
+
+  if (data.comment) {
+    lines.push('', escapeMarkdownV2(`Comment: ${data.comment}`));
+  }
+
+  await sendTelegramMessage(chatId, lines.join('\n'));
+}
