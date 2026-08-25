@@ -1,6 +1,7 @@
 import 'server-only';
 import crypto from 'node:crypto';
 import { comparePassword, hashPassword, signSession } from '@/lib/auth';
+import { checkRateLimit } from '@/lib/rate-limit';
 import { sendResetCode } from '@/lib/telegram';
 import {
   getAdminByUsername,
@@ -43,11 +44,26 @@ export async function login(username: string, password: string): Promise<LoginRe
   return { success: true, token };
 }
 
-export type RequestPasswordResetResult = { success: true };
+export type RequestPasswordResetResult =
+  | { success: true }
+  | { success: false; error: 'rate_limited' };
 
-// Всегда { success: true }, даже если username не найден — не давать внешнему наблюдателю сигнал
-// по разнице в ответе, существует ли аккаунт (architecture.md §3.4).
+// Публичный action без сессии по конструкции (сессии на момент вызова ещё нет) — не покрывается
+// failedLoginAttempts/lockedUntil, тот считает только попытки adminLogin. Без отдельного лимита
+// эндпоинт можно долбить, заспамив Telegram единственного админа или исчерпав квоту Bot API
+// (architecture.md §3.8) — retrofit того же lib/rate-limit.ts, что и createOrder, ретроактивно к
+// уже существующему action из Фазы 1 (план Фазы 4, REV2).
+//
+// Проверка лимита — первым шагом, до чтения Admin по username: даже сигнал "существует ли аккаунт"
+// не должен зависеть от того, успел ли запрос дойти до поиска пользователя.
 export async function requestPasswordReset(username: string): Promise<RequestPasswordResetResult> {
+  const rateLimitResult = await checkRateLimit();
+  if (!rateLimitResult.allowed) {
+    return { success: false, error: 'rate_limited' };
+  }
+
+  // Всегда { success: true } дальше, даже если username не найден — не давать внешнему наблюдателю
+  // сигнал по разнице в ответе, существует ли аккаунт (architecture.md §3.4).
   const adminRow = await getAdminByUsername(username);
   if (!adminRow) {
     return { success: true };

@@ -79,17 +79,25 @@ export async function adminLogout(): Promise<never> {
   redirect('/staff-entry');
 }
 
-// Публичный action без сессии по конструкции — rate-limit по IP добавляется отдельным шагом вместе
-// с lib/rate-limit.ts/createOrder (CLAUDE.md → «Заказ и корзина»): до тех пор эту ветку нельзя
-// считать готовой к публичному деплою. Всегда success:true независимо от того, найден ли username —
-// auth.service.ts уже не даёт сигнала по разнице ответа, действие лишь пробрасывает это наружу.
+// Публичный action без сессии по конструкции — rate-limit по IP теперь проверяется внутри
+// authService.requestPasswordReset (lib/rate-limit.ts, retrofit вместе с Фазой 4/createOrder,
+// CLAUDE.md → «Заказ и корзина»). success:true при найденном/не найденном username одинаково —
+// auth.service.ts уже не даёт сигнала по разнице ответа, действие лишь пробрасывает это наружу;
+// rate_limited — единственная ветка, различимая для клиента (root-ошибка, не поле формы).
 export async function requestPasswordReset(input: unknown): Promise<ActionResult<null>> {
   const parsed = requestPasswordResetSchema.safeParse(input);
   if (!parsed.success) {
     return { success: false, errors: zodIssuesToFieldErrors(parsed.error) };
   }
 
-  await authService.requestPasswordReset(parsed.data.username);
+  const result = await authService.requestPasswordReset(parsed.data.username);
+  if (!result.success) {
+    return {
+      success: false,
+      errors: { root: 'Too many attempts. Please try again later.' },
+    };
+  }
+
   return { success: true, data: null };
 }
 
