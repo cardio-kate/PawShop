@@ -16,13 +16,19 @@ const isProd = process.env.NODE_ENV === 'production';
 // с next-intl-middleware — не тривиальная правка на fly.
 // img-src — тот же Vercel Blob домен, что в images.remotePatterns ниже, иначе фото товаров,
 // загруженные туда, молча заблокируются CSP на проде, хотя next/image их спокойно отдаёт.
+// connect-src — ImageUploader.tsx грузит файл напрямую с клиента через put() из '@vercel/blob/
+// client' (architecture.md §3.5), а не через Server Action; без этих двух хостов в connect-src
+// сам fetch падает по CSP ещё до сети (не ошибка Blob, ошибка браузера) — vercel.com/api/blob
+// это координационный вызов put() (выдача presigned-параметров, node_modules/@vercel/blob/dist/
+// chunk-YYMLUMXS.js: defaultVercelBlobApiUrl), а сам файл после этого летит на
+// {storeId}.public.blob.vercel-storage.com — тот же домен, что уже в img-src выше.
 const cspHeader = `
   default-src 'self';
   script-src 'self' 'unsafe-inline'${isProd ? '' : " 'unsafe-eval'"};
   style-src 'self' 'unsafe-inline';
   img-src 'self' blob: data: https://*.public.blob.vercel-storage.com;
   font-src 'self';
-  connect-src 'self';
+  connect-src 'self' https://vercel.com https://*.public.blob.vercel-storage.com;
   object-src 'none';
   base-uri 'self';
   form-action 'self';

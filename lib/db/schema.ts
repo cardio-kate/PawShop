@@ -35,6 +35,12 @@ export const product = pgTable('products', {
   nameDe: text('name_de'), // nullable — fallback на nameEn до перевода (architecture.md §3.10)
   descriptionEn: text('description_en').notNull(),
   descriptionDe: text('description_de'),
+  // Состав корма (ингредиенты) — обязательная секция этикетки корма в ЕС. Nullable — не у всех
+  // товаров категории есть состав в привычном смысле (accessories — не еда).
+  composition: text('composition'),
+  // "Гарантированный анализ" (% белка/жира/клетчатки/золы/влаги) — вторая обязательная секция
+  // этикетки корма ЕС, отдельная от composition. Тот же nullable-инвариант, что у composition.
+  analyticalConstituents: text('analytical_constituents'),
   flavor: text('flavor'), // не выводится отдельным элементом UI, входит в текст name (ТЗ §4)
   ageGroup: ageGroupEnum('age_group').notNull(),
   images: text('images').array().notNull(),

@@ -1,49 +1,76 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useRef, useState } from 'react';
 import Image from 'next/image';
+import { put } from '@vercel/blob/client';
 import { Plus, X } from 'lucide-react';
 import { PRODUCT_MIN_ITEMS } from '@/components/admin/constants';
+import {
+  PRODUCT_IMAGE_ALLOWED_CONTENT_TYPES,
+  PRODUCT_IMAGE_MAX_SIZE_BYTES,
+} from '@/lib/constants';
 import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
+import { getProductImageUploadToken } from '@/actions/products.actions';
 
 interface ImageUploaderProps {
   images: string[];
   onChange: (images: string[]) => void;
 }
 
-function isBlobUrl(src: string): boolean {
-  return src.startsWith('blob:');
+// architecture.md §3.5: файл не идёт через тело Server Action. Поток за один выбранный файл —
+// getProductImageUploadToken() (маленький action, только выдаёт токен) → put() из
+// '@vercel/blob/client' грузит файл напрямую в Blob, минуя Next.js-сервер → в форму попадает
+// только настоящий https-URL. MIME/размер проверяются здесь для мгновенного UX и ещё раз на
+// сервере при выдаче токена (клиенту не доверяем ни то, ни другое) — та же константа с обеих
+// сторон (lib/constants.ts), чтобы проверки не разошлись.
+async function uploadOne(file: File): Promise<{ url: string } | { error: string }> {
+  if (!(PRODUCT_IMAGE_ALLOWED_CONTENT_TYPES as readonly string[]).includes(file.type)) {
+    return { error: `${file.name}: unsupported file type` };
+  }
+  if (file.size > PRODUCT_IMAGE_MAX_SIZE_BYTES) {
+    return { error: `${file.name}: file is too large (max 5 MB)` };
+  }
+
+  const tokenResult = await getProductImageUploadToken({ contentType: file.type });
+  if (!tokenResult.success) {
+    return { error: `${file.name}: ${Object.values(tokenResult.errors)[0] ?? 'upload failed'}` };
+  }
+
+  const blob = await put(tokenResult.data.pathname, file, {
+    access: 'public',
+    token: tokenResult.data.token,
+    contentType: file.type,
+  });
+  return { url: blob.url };
 }
 
-// design.md → ImageUploader: реальный поток — signed client-upload напрямую в Vercel Blob
-// (architecture.md §3.5), но .claude/plans/velvety-kindling-planet.md (Фаза 7) явно ограничивает
-// этот шаг UI без реальной загрузки. Здесь превью через object URL в памяти вкладки — в отличие от
-// исходной версии, revoked не «никогда»: явно освобождается при удалении фото (handleRemove) и при
-// размонтировании формы (эффект ниже, через imagesRef — иначе замыкание держало бы только images
-// на момент монтирования, пустой массив).
 export function ImageUploader({ images, onChange }: ImageUploaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const imagesRef = useRef(images);
+  const [isUploading, setIsUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Ref обновляется эффектом (не присваиванием в теле рендера — react-hooks/refs это запрещает),
-  // но синхронно относительно commit'а, так что к моменту unmount-эффекта ниже ref уже указывает
-  // на актуальный images, а не на тот, что был при монтировании.
-  useEffect(() => {
-    imagesRef.current = images;
-  }, [images]);
-
-  useEffect(() => {
-    return () => {
-      imagesRef.current.forEach((src) => {
-        if (isBlobUrl(src)) URL.revokeObjectURL(src);
-      });
-    };
-  }, []);
-
-  function handleFilesSelected(files: FileList | null) {
+  async function handleFilesSelected(files: FileList | null) {
     if (!files || files.length === 0) return;
-    const newUrls = Array.from(files).map((file) => URL.createObjectURL(file));
-    onChange([...images, ...newUrls]);
+    setIsUploading(true);
+    setError(null);
+
+    const uploaded: string[] = [];
+    const errors: string[] = [];
+    // Последовательно, не Promise.all — каталог небольшой, за раз выбирают единицы файлов;
+    // так проще собрать частичный успех (часть файлов не подошла по типу/размеру) без гонки
+    // за общий uploaded/errors.
+    for (const file of Array.from(files)) {
+      const result = await uploadOne(file);
+      if ('error' in result) {
+        errors.push(result.error);
+      } else {
+        uploaded.push(result.url);
+      }
+    }
+
+    if (uploaded.length > 0) onChange([...images, ...uploaded]);
+    if (errors.length > 0) setError(errors.join('; '));
+    setIsUploading(false);
   }
 
   function handleSetCover(index: number) {
@@ -54,8 +81,6 @@ export function ImageUploader({ images, onChange }: ImageUploaderProps) {
   }
 
   function handleRemove(index: number) {
-    const removed = images[index];
-    if (removed && isBlobUrl(removed)) URL.revokeObjectURL(removed);
     onChange(images.filter((_, i) => i !== index));
   }
 
@@ -68,7 +93,7 @@ export function ImageUploader({ images, onChange }: ImageUploaderProps) {
             key={src}
             className="group relative h-24 w-24 shrink-0 overflow-hidden rounded-md bg-neutral-100"
           >
-            <Image src={src} alt="" fill sizes="96px" unoptimized className="object-cover" />
+            <Image src={src} alt="" fill sizes="96px" className="object-cover" />
             {index === 0 ? (
               <span className="text-label-caps text-surface absolute bottom-1 left-1 rounded-full bg-neutral-900/70 px-2 py-0.5">
                 Cover
@@ -101,23 +126,30 @@ export function ImageUploader({ images, onChange }: ImageUploaderProps) {
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          aria-label="Add photo"
-          className={`duration-fast hover:border-paw hover:text-paw flex h-24 w-24 shrink-0 cursor-pointer items-center justify-center rounded-md border border-dashed border-neutral-300 text-neutral-500 transition-colors motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`}
+          disabled={isUploading}
+          aria-label={isUploading ? 'Uploading…' : 'Add photo'}
+          aria-busy={isUploading}
+          className={`duration-fast hover:border-paw hover:text-paw flex h-24 w-24 shrink-0 cursor-pointer items-center justify-center rounded-md border border-dashed border-neutral-300 text-neutral-500 transition-colors motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-50 ${FOCUS_RING_CLASSNAME}`}
         >
           <Plus className="h-5 w-5" aria-hidden="true" />
         </button>
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/*"
+          accept={PRODUCT_IMAGE_ALLOWED_CONTENT_TYPES.join(',')}
           multiple
           onChange={(e) => {
-            handleFilesSelected(e.target.files);
+            void handleFilesSelected(e.target.files);
             e.target.value = '';
           }}
           className="sr-only"
         />
       </div>
+      {error && (
+        <span role="alert" className="text-body-sm text-error">
+          {error}
+        </span>
+      )}
     </div>
   );
 }

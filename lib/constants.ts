@@ -27,3 +27,9 @@ export const PRODUCT_MIN_ITEMS = 1;
 // requireAdminSession()/proxy.ts), и для auth.actions.ts (установка в adminLogin, очистка в
 // adminLogout), чтобы имя не разъехалось между местом записи и местом чтения (architecture.md §3.4).
 export const ADMIN_SESSION_COOKIE = 'pawshop_admin_session';
+
+// architecture.md §3.5: размер и MIME-тип фото товара проверяются дважды — на клиенте
+// (ImageUploader, для UX) и на сервере при выдаче upload-токена (клиенту не доверяем). Общая
+// константа, чтобы обе проверки не разъехались независимо друг от друга.
+export const PRODUCT_IMAGE_MAX_SIZE_BYTES = 5 * 1024 * 1024;
+export const PRODUCT_IMAGE_ALLOWED_CONTENT_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const;
