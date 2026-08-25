@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, useTransition } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -9,17 +9,27 @@ import { Chip } from '@/components/ui/Chip';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { ProductCard } from '@/components/product/ProductCard';
-import { MOCK_CATEGORIES, MOCK_PRODUCTS } from '@/components/product/mock-data';
+import { getProducts } from '@/actions/products.actions';
 import { getProductGridColumnsClassName } from '@/components/product/getProductGridColumnsClassName';
 import { PRODUCT_CARD_GRID_GAP_CLASSNAME } from '@/components/product/product-grid-styles';
 import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 import { useSyncedValue } from '@/lib/hooks/useSyncedValue';
+import { useDebouncedValue } from '@/lib/hooks/useDebouncedValue';
+import { CATALOG_PAGE_SIZE } from '@/lib/constants';
 import type { AgeGroup } from '@/types';
+import type { ResolvedProductListItem } from '@/lib/services/products.service';
 
 const AGE_GROUPS: AgeGroup[] = ['kitten', 'adult', 'senior'];
-// design.md → Layout «Пагинация»: 8 товаров на страницу (2 полных ряда по 4 колонки на десктопе),
-// то же значение зафиксировано и в architecture.md как дефолт limit для будущего getProducts().
-const PAGE_SIZE = 8;
+
+interface CatalogCategory {
+  id: number;
+  nameEn: string;
+  nameDe: string;
+}
+
+interface CatalogClientProps {
+  categories: CatalogCategory[];
+}
 
 function FilterRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -30,10 +40,13 @@ function FilterRow({ label, children }: { label: string; children: React.ReactNo
   );
 }
 
-// design.md → Layout «Фильтры каталога» / «Пагинация» — панель над сеткой (не сайдбар), UI-состояние
-// без реального запроса (getProducts() ещё не подключён, architecture.md §3.1) — фильтрация здесь
-// выполняется прямо над мок-массивом на клиенте, а не через сервер.
-export function CatalogClient() {
+// design.md → Layout «Фильтры каталога» / «Пагинация» — панель над сеткой (не сайдбар). Источник
+// данных — реальный getProducts() (architecture.md §3.1), не клиентский фильтр мок-массива:
+// каждое изменение фильтра/страницы шлёт Server Action и подставляет ответ. category/minPrice/
+// maxPrice идут через useDebouncedValue (~300мс, CLAUDE.md → «Заказ и корзина») — набор символов в
+// поле цены не должен бить по БД на каждую цифру; search уже приходит из URL только по сабмиту
+// формы поиска в Header.tsx (не на каждый keystroke), лишний debounce поверх не нужен.
+export function CatalogClient({ categories }: CatalogClientProps) {
   const t = useTranslations('Catalog');
   const tProduct = useTranslations('Product');
   const locale = useLocale();
@@ -41,25 +54,24 @@ export function CatalogClient() {
   const searchParams = useSearchParams();
   const search = searchParams.get('search') ?? '';
 
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [selectedAgeGroups, setSelectedAgeGroups] = useState<AgeGroup[]>([]);
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [page, setPage] = useState(1);
-  // Инкрементируется только явным переходом по пагинации (goToPage), не сбросом страницы из
-  // фильтров/поиска (те тоже дергают setPage(1), но пользователь и так уже наверху, скроллить
-  // незачем) — счётчик, а не boolean, чтобы клик на уже активную соседнюю страницу (edge-кейс
-  // currentPage=1 после clamp) тоже долетал до эффекта ниже.
   const [scrollToTopSignal, setScrollToTopSignal] = useState(0);
 
-  // Смена страницы саму по себе не подводит вьюпорт к новым карточкам — без этого пользователь
-  // остаётся проскроленным туда, где была пагинация внизу списка, и должен сам крутить вверх, чтобы
-  // увидеть новую страницу. Скролл — в useEffect, а не сразу в обработчике клика: вызванный
-  // синхронно с setPage, window.scrollTo({behavior:'smooth'}) стартовал анимацию до того, как
-  // React перерисовывал сетку под новую (обычно более короткую) страницу — высота документа
-  // менялась прямо под уже идущей анимацией, и браузер обрывал её на случайной промежуточной
-  // позиции вместо 0 (проверено — сам вызов уходил с правильными аргументами, но не долистывал).
-  // useEffect гарантированно выполняется после того, как DOM уже отражает новую страницу.
+  const [products, setProducts] = useState<ResolvedProductListItem[]>([]);
+  const [total, setTotal] = useState(0);
+  // useTransition, не ручной useState<boolean> — React Compiler отклоняет setState синхронно в
+  // теле эффекта (react-hooks/set-state-in-effect); startTransition(async () => {...}) в React 19
+  // — идиоматичный способ пометить асинхронное обновление как не-срочное и получить isPending
+  // без отдельного стейта на "загрузку".
+  const [isPending, startTransition] = useTransition();
+
+  const debouncedMinPrice = useDebouncedValue(minPrice);
+  const debouncedMaxPrice = useDebouncedValue(maxPrice);
+
   function goToPage(p: number) {
     setPage(p);
     setScrollToTopSignal((s) => s + 1);
@@ -71,27 +83,48 @@ export function CatalogClient() {
     window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
   }, [scrollToTopSignal]);
 
-  // Любое изменение условия фильтрации — поиска (приходит снаружи, Header → router.push
-  // ('/catalog?search=...')) или category/age/price (наши же обработчики ниже) — сбрасывает
-  // страницу на 1, а не оставляет пользователя на, например, третьей странице пустого результата.
-  // Раньше setPage(1) был продублирован в каждом обработчике по отдельности (риск забыть при
-  // добавлении шестого фильтра) — теперь один общий хук (useSyncedValue, тот же приём, что и в
-  // Header.tsx для своей синхронизации с ?search=) сравнивает составной ключ всех условий во время
-  // рендера и сбрасывает страницу ровно один раз на каждое реальное изменение, без лишнего кадра
-  // со старой страницей, который дал бы useEffect.
+  // Любое изменение условия фильтрации сбрасывает страницу на 1 — тот же общий хук, что и раньше
+  // (components/product/CatalogClient.tsx, до перехода на реальные данные), сравнение идёт уже по
+  // debounced-значениям цены, чтобы не сбрасывать страницу на каждую набранную цифру отдельно.
   const filtersKey = JSON.stringify([
     search,
     selectedCategories,
     selectedAgeGroups,
-    minPrice,
-    maxPrice,
+    debouncedMinPrice,
+    debouncedMaxPrice,
   ]);
   useSyncedValue(filtersKey, () => setPage(1));
 
-  function toggleCategory(id: string) {
-    setSelectedCategories((prev) =>
-      prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id],
-    );
+  // Гонка ответов: быстрое переключение фильтров может вернуть предыдущий (более медленный) запрос
+  // позже следующего — requestId игнорирует любой ответ, кроме самого последнего отправленного.
+  const requestIdRef = useRef(0);
+
+  useEffect(() => {
+    const requestId = ++requestIdRef.current;
+    const min = debouncedMinPrice === '' ? undefined : Number(debouncedMinPrice);
+    const max = debouncedMaxPrice === '' ? undefined : Number(debouncedMaxPrice);
+
+    startTransition(async () => {
+      const result = await getProducts({
+        locale,
+        category: selectedCategories.length > 0 ? selectedCategories : undefined,
+        ageGroup: selectedAgeGroups.length > 0 ? selectedAgeGroups : undefined,
+        priceFrom: min !== undefined && !Number.isNaN(min) ? min : undefined,
+        priceTo: max !== undefined && !Number.isNaN(max) ? max : undefined,
+        search: search || undefined,
+        limit: CATALOG_PAGE_SIZE,
+        offset: (page - 1) * CATALOG_PAGE_SIZE,
+      });
+      if (requestId !== requestIdRef.current) return; // устаревший ответ, проигнорирован
+      if (result.success) {
+        setProducts(result.data.products);
+        setTotal(result.data.total);
+      }
+    });
+  }, [locale, selectedCategories, selectedAgeGroups, debouncedMinPrice, debouncedMaxPrice, search, page]);
+
+  function toggleCategory(id: number) {
+    setSelectedCategories((prev) => (prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]));
   }
 
   function toggleAgeGroup(age: AgeGroup) {
@@ -100,34 +133,8 @@ export function CatalogClient() {
     );
   }
 
-  function handleMinPriceChange(value: string) {
-    setMinPrice(value);
-  }
-
-  function handleMaxPriceChange(value: string) {
-    setMaxPrice(value);
-  }
-
-  const filtered = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    const min = minPrice === '' ? null : Number(minPrice);
-    const max = maxPrice === '' ? null : Number(maxPrice);
-
-    return MOCK_PRODUCTS.filter((product) => {
-      if (query && !product.name.toLowerCase().includes(query)) return false;
-      if (selectedCategories.length > 0 && !selectedCategories.includes(product.categoryId))
-        return false;
-      if (selectedAgeGroups.length > 0 && !selectedAgeGroups.includes(product.ageGroup))
-        return false;
-      if (min !== null && !Number.isNaN(min) && product.price < min) return false;
-      if (max !== null && !Number.isNaN(max) && product.price > max) return false;
-      return true;
-    });
-  }, [search, selectedCategories, selectedAgeGroups, minPrice, maxPrice]);
-
-  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const pageCount = Math.max(1, Math.ceil(total / CATALOG_PAGE_SIZE));
   const currentPage = Math.min(page, pageCount);
-  const pageItems = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
   const hasActiveFilters =
     selectedCategories.length > 0 ||
     selectedAgeGroups.length > 0 ||
@@ -135,11 +142,7 @@ export function CatalogClient() {
     maxPrice !== '' ||
     search !== '';
 
-  // design.md → Components «Empty state»: сбрасывает и фильтры, и поисковый запрос разом — состояние
-  // «ничего не найдено» может быть вызвано любым из них по отдельности или всеми сразу. search
-  // приходит из URL, поэтому чистим его через router.replace (тот же next/navigation router, что
-  // Header использует для перехода в обратную сторону, /catalog?search=...) — простой
-  // history.replaceState не обновил бы значение, которое здесь читает useSearchParams().
+  // design.md → Components «Empty state»: сбрасывает и фильтры, и поисковый запрос разом.
   function clearFilters() {
     setSelectedCategories([]);
     setSelectedAgeGroups([]);
@@ -151,17 +154,22 @@ export function CatalogClient() {
     }
   }
 
+  const categoryLabel = useMemo(
+    () => (category: CatalogCategory) => (locale === 'de' ? category.nameDe : category.nameEn),
+    [locale],
+  );
+
   return (
     <div className="gap-lg flex flex-col">
       <div className="gap-md pb-lg flex flex-col border-b border-neutral-200">
         <FilterRow label={t('filters.category')}>
-          {MOCK_CATEGORIES.map((category) => (
+          {categories.map((category) => (
             <Chip
               key={category.id}
               selected={selectedCategories.includes(category.id)}
               onClick={() => toggleCategory(category.id)}
             >
-              {locale === 'de' ? category.nameDe : category.nameEn}
+              {categoryLabel(category)}
             </Chip>
           ))}
         </FilterRow>
@@ -179,17 +187,13 @@ export function CatalogClient() {
         </FilterRow>
 
         <FilterRow label={t('filters.price')}>
-          {/* w-20 на обёртке, не на Input — TEXT_FIELD_BASE_CLASSNAME несёт w-full, и в
-              скомпилированном Tailwind-CSS правило .w-full идёт после .w-20, так что при
-              одинаковой специфичности побеждает w-full независимо от порядка классов в JSX.
-              Фиксированная ширина обёртки даёт w-full внутри посчитаться от неё. */}
           <div className="w-20">
             <Input
               type="number"
               inputMode="decimal"
               min={0}
               value={minPrice}
-              onChange={(e) => handleMinPriceChange(e.target.value)}
+              onChange={(e) => setMinPrice(e.target.value)}
               placeholder={t('filters.priceFrom')}
               aria-label={t('filters.priceFrom')}
               compact
@@ -204,7 +208,7 @@ export function CatalogClient() {
               inputMode="decimal"
               min={0}
               value={maxPrice}
-              onChange={(e) => handleMaxPriceChange(e.target.value)}
+              onChange={(e) => setMaxPrice(e.target.value)}
               placeholder={t('filters.priceTo')}
               aria-label={t('filters.priceTo')}
               compact
@@ -214,24 +218,14 @@ export function CatalogClient() {
       </div>
 
       <p className="text-body-sm text-neutral-500" aria-live="polite">
-        {t('resultsCount', { count: filtered.length })}
+        {t('resultsCount', { count: total })}
       </p>
 
-      {pageItems.length > 0 ? (
-        // Карточка не растягивается вместе с ячейкой грида — design.md → Layout, «Ширина самой
-        // карточки при этом зафиксирована». Число колонок ограничено числом реальных карточек на
-        // странице (getProductGridColumnsClassName) — при узких фильтрах/последней неполной странице
-        // пустые track'и без карточки внутри всё равно растягивались бы до 290px (Maximize Tracks
-        // не смотрит на контент), и результат висел бы у левого края вместо центрирования.
-        // PRODUCT_CARD_GRID_GAP_CLASSNAME (30px), не gap-gutter (24px, design.md → Layout
-        // «Сетка каталога») — по прямому запросу, единое значение для всех сеток карточек товара
-        // на сайте (components/product/product-grid-styles.ts). Колонки — minmax(0, 290px), не
-        // фикс. ширина ряда (в отличие от New Arrivals), поэтому увеличение gap не требует
-        // пересчёта контейнера — грид просто шире раздвигает карточки внутри max-w-container.
+      {products.length > 0 ? (
         <div
-          className={`grid justify-center justify-items-center ${PRODUCT_CARD_GRID_GAP_CLASSNAME} ${getProductGridColumnsClassName(pageItems.length)}`}
+          className={`grid justify-center justify-items-center ${PRODUCT_CARD_GRID_GAP_CLASSNAME} ${getProductGridColumnsClassName(products.length)}`}
         >
-          {pageItems.map((product, index) => (
+          {products.map((product, index) => (
             <div key={product.id} className="w-full max-w-[290px]">
               <ProductCard
                 product={product}
@@ -240,14 +234,12 @@ export function CatalogClient() {
                 addToCartLabel={tProduct('addToCart', { name: product.name })}
                 addedToCartLabel={tProduct('addedToCart', { name: product.name })}
                 unavailableLabel={tProduct('unavailable', { name: product.name })}
-                // CLAUDE.md → «Загрузка изображений»: первые 2–4 карточки каталога — в первом
-                // экране, остальные — обычный lazy (next/image по умолчанию).
                 priority={index < 4}
               />
             </div>
           ))}
         </div>
-      ) : (
+      ) : !isPending ? (
         <div className="gap-sm py-3xl flex flex-col items-center text-center">
           <EmptyStateCat />
           <p className="text-body-md text-neutral-900">{t('emptyTitle')}</p>
@@ -258,11 +250,9 @@ export function CatalogClient() {
             </Button>
           )}
         </div>
-      )}
+      ) : null}
 
       {pageCount > 1 && (
-        // pt-[30px]/pb-[20px], не pt-md (16px) — по прямому запросу, не токен spacing-шкалы
-        // (ближайшие — lg/24px и md/16px, оба не совпадают ни с одним из двух значений).
         <nav
           aria-label={t('pagination.ariaLabel')}
           className="gap-xs flex items-center justify-center pt-[30px] pb-[20px]"

@@ -4,10 +4,31 @@ import { Badge } from '@/components/ui/Badge';
 import { AddToCartButton } from '@/components/product/AddToCartButton';
 import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 import { formatPrice } from '@/lib/utils';
-import type { MockProduct } from '@/types';
+
+interface ProductCardVariant {
+  id: number;
+  label: string;
+  price: string;
+  isActive: boolean;
+}
+
+// Презентационная форма товара — минимум полей, которые реально использует эта карточка, не полный
+// ResolvedProductListItem целиком (products.service.ts): карточка не должна знать про composition/
+// flavor/ageGroup/etc, чтобы оставаться пригодной и для Server Component каталога, и для клиентского
+// ui-playground с произвольными фикстурами. price/variant.price — string (numeric(10,2) из БД, не
+// number из старых моков).
+export interface ProductCardProduct {
+  id: number;
+  slug: string;
+  name: string;
+  images: string[];
+  isNew: boolean;
+  price: string;
+  variants: ProductCardVariant[];
+}
 
 interface ProductCardProps {
-  product: MockProduct;
+  product: ProductCardProduct;
   locale: string;
   newLabel: string;
   addToCartLabel: string;
@@ -40,10 +61,12 @@ export function ProductCard({
   // activeVariants может быть пустым (все варианты деактивированы, но сам товар ещё isActive) —
   // тогда defaultVariant откатывается на product.variants[0] (неактивный), и кнопка ниже
   // блокируется через isAvailable, а не молча добавляет недоступный вариант в корзину.
+  // Number(...) только для сравнения порядка (не сумма денег) — сравнивать сами строки "9.90" </>
+  // "10.90" лексикографически дало бы неверный порядок.
   const activeVariants = product.variants.filter((variant) => variant.isActive);
   const isAvailable = activeVariants.length > 0;
   const defaultVariant = activeVariants.reduce(
-    (cheapest, variant) => (variant.price < cheapest.price ? variant : cheapest),
+    (cheapest, variant) => (Number(variant.price) < Number(cheapest.price) ? variant : cheapest),
     activeVariants[0] ?? product.variants[0]!,
   );
 
@@ -87,8 +110,15 @@ export function ProductCard({
       <div className="gap-sm mt-auto flex items-center justify-between">
         <span className="text-price text-neutral-900">{price}</span>
         <AddToCartButton
-          productId={product.id}
-          variantId={defaultVariant.id}
+          item={{
+            productId: product.id,
+            variantId: defaultVariant.id,
+            productName: product.name,
+            productSlug: product.slug,
+            productImage: product.images[0]!,
+            variantLabel: defaultVariant.label,
+            price: defaultVariant.price,
+          }}
           label={isAvailable ? addToCartLabel : unavailableLabel}
           announceLabel={addedToCartLabel}
           disabled={!isAvailable}

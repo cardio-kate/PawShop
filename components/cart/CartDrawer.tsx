@@ -5,11 +5,7 @@ import { Panel } from '@/components/ui/Panel';
 import { EmptyStateCat } from '@/components/ui/EmptyStateCat';
 import { CartItem } from './CartItem';
 import { CartSummary } from './CartSummary';
-import {
-  getCartSubtotal,
-  useResolvedCartItems,
-  useUnavailableCartItemCount,
-} from './useResolvedCartItems';
+import { getCartSubtotal, useResolvedCartItems } from './useResolvedCartItems';
 import { useRouter } from '@/i18n/navigation';
 import { formatPrice } from '@/lib/utils';
 
@@ -23,10 +19,8 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
   const locale = useLocale();
   const router = useRouter();
   const resolvedItems = useResolvedCartItems();
-  const unavailableCount = useUnavailableCartItemCount(resolvedItems);
 
-  const subtotalValue = getCartSubtotal(resolvedItems);
-  const subtotal = formatPrice(subtotalValue, locale);
+  const subtotal = formatPrice(getCartSubtotal(resolvedItems), locale);
 
   function handleCheckout() {
     onClose();
@@ -40,19 +34,6 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
             а не проваливаться далеко вниз под ней. */}
         <h2 className="px-lg text-h3 pt-[30px] text-neutral-900">{t('title')}</h2>
 
-        {/* CLAUDE.md → «Заказ и корзина»: недоступные позиции исключаются с предупреждением, не
-            молча — useResolvedCartItems уже отфильтровал их из resolvedItems ниже, это единственное
-            место, где пользователь узнаёт, что что-то пропало. role="status": не требует фокуса,
-            но озвучивается скринридером при открытии панели. */}
-        {unavailableCount > 0 && (
-          <p
-            role="status"
-            className="mx-lg mt-md bg-error-tint px-md py-sm text-body-sm text-error-on-tint rounded-md"
-          >
-            {t('unavailableWarning', { count: unavailableCount })}
-          </p>
-        )}
-
         {resolvedItems.length === 0 ? (
           <div className="px-lg gap-sm flex flex-1 flex-col items-center justify-center text-center">
             <EmptyStateCat />
@@ -65,6 +46,8 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                 key={`${item.productId}-${item.variantId}`}
                 product={item.product}
                 variant={item.variant}
+                productId={item.productId}
+                variantId={item.variantId}
                 quantity={item.quantity}
                 locale={locale}
               />

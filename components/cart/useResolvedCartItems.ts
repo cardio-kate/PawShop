@@ -2,67 +2,49 @@
 
 import { useMemo } from 'react';
 import { useCartStore } from '@/lib/store/cart.store';
-import { MOCK_PRODUCTS } from '@/components/product/mock-data';
-import type { MockProduct, MockVariant } from '@/types';
+import { sum, multiplyByQuantity } from '@/lib/money';
 
+// Строка корзины строится прямо из снапшота, сохранённого в сторе при добавлении (lib/store/
+// cart.store.ts) — никакого повторного поиска товара по id: в ТЗ §5 нет action под "получить
+// товары по списку id", а искать заново через getProductBySlug/getProducts на каждую строку было
+// бы N лишних запросов ради данных, которые уже есть. Актуальность (удалён/деактивирован ли товар
+// с тех пор) сервер всё равно перепроверяет заново при createOrder (CLAUDE.md → «Заказ и
+// корзина») — эта проверка сознательно не дублируется здесь.
 export interface ResolvedCartItem {
-  productId: string;
-  variantId: string;
+  productId: number;
+  variantId: number;
   quantity: number;
-  product: MockProduct;
-  variant: MockVariant;
+  product: { name: string; slug: string; images: string[] };
+  variant: { label: string; price: string };
 }
 
-// Общий резолв для CartDrawer и /checkout: стор хранит только { productId, variantId, quantity }
-// (контракт, который останется верным и с реальным backend), а название/фото/цена сейчас
-// подтягиваются из MOCK_PRODUCTS. Это единственное место со знанием об этом источнике — когда
-// появится getProducts(), достаточно поменять резолв здесь, а не в каждом потребителе.
-// variant.isActive проверяется здесь же, наравне с самим наличием product/variant — вариант,
-// деактивированный уже после того, как лёг в корзину, для пользователя такая же «недоступная
-// позиция», как удалённый товар (CLAUDE.md → «Заказ и корзина»), и не должен молча показываться
-// по полной цене как обычная строка. Обе ветки считает useUnavailableCartItemCount ниже.
-// items — прямая ссылка на срез стора (Zustand отдаёт тот же массив, пока он не заменён
-// иммутабельно), значит useMemo реально пропускает пересчёт на ре-рендерах, не вызванных
-// изменением корзины (например, каждую букву в поиске Header — Header тоже вызывает этот
-// резолв через useResolvedCartItemCount ниже).
 export function useResolvedCartItems(): ResolvedCartItem[] {
   const items = useCartStore((state) => state.items);
 
   return useMemo(
     () =>
-      items.flatMap((item) => {
-        const product = MOCK_PRODUCTS.find((p) => p.id === item.productId);
-        const variant = product?.variants.find((v) => v.id === item.variantId);
-        return product && variant && variant.isActive ? [{ ...item, product, variant }] : [];
-      }),
+      items.map((item) => ({
+        productId: item.productId,
+        variantId: item.variantId,
+        quantity: item.quantity,
+        product: { name: item.productName, slug: item.productSlug, images: [item.productImage] },
+        variant: { label: item.variantLabel, price: item.price },
+      })),
     [items],
   );
 }
 
 // CartDrawer и /checkout считали одну и ту же сумму каждый у себя — вынесено сюда, чтобы
 // будущее изменение прайсинга (скидки, округление) не пришлось синхронизировать в двух местах.
-export function getCartSubtotal(items: ResolvedCartItem[]): number {
-  return items.reduce((sum, item) => sum + item.variant.price * item.quantity, 0);
+// numeric(10,2)-строки, не JS-числа (CLAUDE.md → «Тесты», «Денежная арифметика») — сложение через
+// lib/money.ts на каждом шаге, не Number()/parseFloat.
+export function getCartSubtotal(items: ResolvedCartItem[]): string {
+  return sum(items.map((item) => multiplyByQuantity(item.variant.price, item.quantity)));
 }
 
 // Бейдж корзины в Header обязан считать количество по тому же резолву, что CartDrawer/checkout,
-// а не сырые quantity прямо из стора — иначе строка, которая не резолвится в MOCK_PRODUCTS
-// (удалённый/деактивированный товар), даёт бейджу одну цифру, а списку — другую, без предупреждения.
+// а не сырые quantity прямо из стора — оставлено на случай будущего расхождения источников, хотя
+// сейчас (после перехода на снапшот) resolvedItems всегда совпадает по длине с сырыми items.
 export function useResolvedCartItemCount(): number {
   return useResolvedCartItems().reduce((sum, item) => sum + item.quantity, 0);
-}
-
-// Строки, исключённые в useResolvedCartItems (удалённый товар или деактивированный вариант), не
-// должны пропадать бесследно — CartDrawer/CheckoutClient показывают это число как предупреждение,
-// а не оставляют пользователя гадать, почему сумма и localStorage разошлись. Число — разница
-// длин сырых items и уже отфильтрованных resolvedItems (flatMap выше отображает каждую строку
-// стора либо в одну резолвленную запись, либо ни в одну), а не отдельный проход с тем же
-// MOCK_PRODUCTS.find()/variants.find(). resolvedItems приходит параметром, а не вторым вызовом
-// useResolvedCartItems() здесь же: оба потребителя (CartDrawer, CheckoutClient) уже резолвят
-// корзину для своего списка карточек, второй независимый resolve на каждый рендер был бы тем же
-// MOCK_PRODUCTS-проходом впустую.
-export function useUnavailableCartItemCount(resolvedItems: ResolvedCartItem[]): number {
-  const items = useCartStore((state) => state.items);
-
-  return items.length - resolvedItems.length;
 }

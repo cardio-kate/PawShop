@@ -61,6 +61,7 @@ const getProductsFiltersSchema = z.object({
   priceFrom: z.number().nonnegative().optional(),
   priceTo: z.number().nonnegative().optional(),
   search: z.string().optional(),
+  isNew: z.boolean().optional(),
   limit: z.number().int().positive().optional(),
   offset: z.number().int().nonnegative().optional(),
 });

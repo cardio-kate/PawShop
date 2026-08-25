@@ -1,21 +1,24 @@
 import { getLocale, getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { ProductCard } from '@/components/product/ProductCard';
-import { MOCK_PRODUCTS } from '@/components/product/mock-data';
+import { getProducts } from '@/actions/products.actions';
 import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 import { SECTION_HEADING_GAP_CLASSNAME } from '@/components/home/section-styles';
 import { PRODUCT_CARD_GRID_GAP_CLASSNAME } from '@/components/product/product-grid-styles';
+import type { routing } from '@/i18n/routing';
 
 // design.md → Layout «View All — только в New Arrivals»: превью показывает только 2 товара из
 // isNew, "View All →" ведёт на /catalog (весь ассортимент с фильтрами уже там, разворачивать
 // на месте незачем). Кнопка не рендерится вовсе, если новинок ≤ 2 — вести на каталог ради того
-// же самого превью не имеет смысла.
+// же самого превью не имеет смысла. limit: 2 — превью и есть весь нужный список, total из того же
+// ответа решает, показывать ли "View All" (не отдельный запрос ради total).
 export async function NewArrivalsSection() {
   const t = await getTranslations('Home.newArrivals');
   const tProduct = await getTranslations('Product');
-  const locale = await getLocale();
-  const newProducts = MOCK_PRODUCTS.filter((product) => product.isNew);
-  const preview = newProducts.slice(0, 2);
+  const locale = (await getLocale()) as (typeof routing.locales)[number];
+  const result = await getProducts({ locale, isNew: true, limit: 2 });
+  const preview = result.success ? result.data.products : [];
+  const totalNewCount = result.success ? result.data.total : 0;
 
   return (
     // pt-[40px] — по прямому запросу: в отличие от About (p-lg/24px) и Value Props (py-xl/40px),
@@ -59,7 +62,7 @@ export async function NewArrivalsSection() {
 
       {/* mt-[45px] — по прямому запросу, не токен: ни один из spacing.lg (24px)/spacing.xl (40px)
           не даёт ровно 45px. */}
-      {newProducts.length > 2 && (
+      {totalNewCount > 2 && (
         <div className="mt-[45px] flex justify-center">
           <Link
             href="/catalog"

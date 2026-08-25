@@ -1,15 +1,14 @@
 'use client';
 
 import { Check, Plus } from 'lucide-react';
-import { useCartStore } from '@/lib/store/cart.store';
+import { useCartStore, type AddCartItemInput } from '@/lib/store/cart.store';
 import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 import { LiveRegion } from '@/components/ui/LiveRegion';
 import { useAnnouncement } from '@/lib/hooks/useAnnouncement';
 import { useAddedFeedback } from '@/lib/hooks/useAddedFeedback';
 
 interface AddToCartButtonProps {
-  productId: string;
-  variantId: string;
+  item: AddCartItemInput;
   label: string;
   // Текст подтверждения для aria-live (a11y-review checklist п.6 «Динамический контент»):
   // клик по кнопке — единственный визуальный сигнал успеха бейдж-счётчик в Header, скринридер
@@ -24,23 +23,17 @@ interface AddToCartButtonProps {
 // серверного ProductCard — так карточка сама остаётся Server Component (SSR/SEO, CLAUDE.md
 // «Кэш и SEO»), а к Zustand-стору обращается только эта кнопка.
 // disabled — тот же неактивный-вариант-по-умолчанию случай, что и на странице товара
-// (ProductDetailClient.tsx): если у товара нет ни одного активного варианта, variantId,
+// (ProductDetailClient.tsx): если у товара нет ни одного активного варианта, вариант,
 // переданный сюда, — недоступный, добавлять его в корзину нельзя. Цвет — тот же
 // DISABLED_CLASSNAME-язык, что у Button.tsx (neutral-300/500), но локально: это button-add-circle,
 // не Button.tsx, общего компонента для этой формы нет.
-export function AddToCartButton({
-  productId,
-  variantId,
-  label,
-  announceLabel,
-  disabled,
-}: AddToCartButtonProps) {
+export function AddToCartButton({ item, label, announceLabel, disabled }: AddToCartButtonProps) {
   const addItem = useCartStore((state) => state.addItem);
   const [announcement, announce] = useAnnouncement();
   const [added, triggerAdded] = useAddedFeedback();
 
   function handleClick() {
-    addItem(productId, variantId);
+    addItem(item);
     announce(announceLabel);
     triggerAdded();
   }

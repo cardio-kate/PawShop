@@ -124,6 +124,10 @@ export interface GetProductsFilters {
   priceFrom?: number;
   priceTo?: number;
   search?: string;
+  // Home «New Arrivals» (tz-pawshop.md §3.1: «отдельная выборка по флагу isNew») — расширение
+  // существующего getProducts(filters), не новый action: тот же фильтр-объект, что category/
+  // ageGroup выше, не отдельная функция.
+  isNew?: boolean;
   limit?: number;
   offset?: number;
 }
@@ -141,6 +145,9 @@ function buildProductConditions(
   }
   if (filters.ageGroup && filters.ageGroup.length > 0) {
     conditions.push(inArray(product.ageGroup, filters.ageGroup));
+  }
+  if (filters.isNew !== undefined) {
+    conditions.push(eq(product.isNew, filters.isNew));
   }
 
   const search = filters.search?.trim();

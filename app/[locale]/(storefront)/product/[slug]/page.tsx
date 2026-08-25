@@ -3,27 +3,25 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ProductGallery } from '@/components/product/ProductGallery';
 import { ProductDetailClient } from '@/components/product/ProductDetailClient';
 import { ProductCard } from '@/components/product/ProductCard';
-import {
-  MOCK_CATEGORIES,
-  MOCK_PRODUCTS,
-  getMockRelatedProducts,
-} from '@/components/product/mock-data';
+import { getProductBySlug, getRelatedProducts } from '@/actions/products.actions';
+import { getCategories } from '@/lib/db/queries/products.queries';
 import { getProductGridColumnsClassName } from '@/components/product/getProductGridColumnsClassName';
 import { RELATED_PRODUCTS_TOP_GAP_CLASSNAME } from '@/components/product/related-products-styles';
 import { PRODUCT_CARD_GRID_GAP_CLASSNAME } from '@/components/product/product-grid-styles';
 import { STOREFRONT_PAGE_CONTAINER_CLASSNAME } from '@/components/layout/page-styles';
+import type { routing } from '@/i18n/routing';
 
-export function generateStaticParams() {
-  return MOCK_PRODUCTS.map((product) => ({ slug: product.slug }));
-}
+// generateStaticParams — намеренно не заведён: витрина уже рендерится SSR (`ƒ`), не SSG (CLAUDE.md
+// → «Кэш и SEO», известный gap с next-intl/Cache Components из-за Header'а), список слагов для
+// пререндера в этом режиме ничего не даёт.
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }) {
-  const { slug } = await params;
-  const product = MOCK_PRODUCTS.find((p) => p.slug === slug);
+  const { locale, slug } = await params;
+  const product = await getProductBySlug(slug, locale as (typeof routing.locales)[number]);
   if (!product) return {};
 
   return {
@@ -41,17 +39,19 @@ export default async function ProductPage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const product = MOCK_PRODUCTS.find((p) => p.slug === slug);
+  const typedLocale = locale as (typeof routing.locales)[number];
+  const product = await getProductBySlug(slug, typedLocale);
   if (!product) notFound();
 
-  const category = MOCK_CATEGORIES.find((c) => c.id === product.categoryId);
+  const categories = await getCategories();
+  const category = categories.find((c) => c.id === product.categoryId);
   const categoryLabel = category ? (locale === 'de' ? category.nameDe : category.nameEn) : '';
 
   const tCatalog = await getTranslations('Catalog');
   const tProduct = await getTranslations('Product');
   const tProductPage = await getTranslations('ProductPage');
   const ageGroupLabel = tCatalog(`ageGroups.${product.ageGroup}`);
-  const related = getMockRelatedProducts(product);
+  const related = await getRelatedProducts(product.id, typedLocale);
 
   return (
     <div className={STOREFRONT_PAGE_CONTAINER_CLASSNAME}>

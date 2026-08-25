@@ -11,7 +11,30 @@ import { LiveRegion } from '@/components/ui/LiveRegion';
 import { useAnnouncement } from '@/lib/hooks/useAnnouncement';
 import { useAddedFeedback } from '@/lib/hooks/useAddedFeedback';
 import { formatPrice } from '@/lib/utils';
-import type { MockProduct } from '@/types';
+
+interface ProductDetailVariant {
+  id: number;
+  label: string;
+  price: string;
+  isActive: boolean;
+}
+
+// Та же презентационная форма, что ProductCardProduct (components/product/ProductCard.tsx) — оба
+// компонента показывают один и тот же реальный товар, только на разной глубине детализации;
+// отдельный интерфейс, не общий тип, потому что странице товара дополнительно нужны composition/
+// analyticalConstituents/description/images, которых нет на карточке каталога. categoryLabel/
+// ageGroupLabel приходят отдельными пропсами уже зарезолвленными (см. ниже) — сам ageGroup/
+// categoryId этому компоненту не нужны.
+export interface ProductDetailProduct {
+  id: number;
+  slug: string;
+  name: string;
+  description: string;
+  composition: string | null;
+  analyticalConstituents: string | null;
+  images: string[];
+  variants: ProductDetailVariant[];
+}
 
 // max-[641px], не sm:/max-[640px] — Tailwind v4 max-[Npx] компилируется как "< Npx", не "<= Npx"
 // (тот же гоча, что у Footer.tsx) — 641 нужен, чтобы включить сам 640px в мобильный диапазон.
@@ -45,7 +68,7 @@ export function ProductDetailClient({
   categoryLabel,
   ageGroupLabel,
 }: {
-  product: MockProduct;
+  product: ProductDetailProduct;
   categoryLabel: string;
   ageGroupLabel: string;
 }) {
@@ -68,7 +91,15 @@ export function ProductDetailClient({
   // Header) скринридером не озвучивается. Общий хук/разметка — lib/hooks/useAnnouncement.ts,
   // components/ui/LiveRegion.tsx.
   function handleAddToCart() {
-    addItem(product.id, selectedVariant.id);
+    addItem({
+      productId: product.id,
+      variantId: selectedVariant.id,
+      productName: product.name,
+      productSlug: product.slug,
+      productImage: product.images[0]!,
+      variantLabel: selectedVariant.label,
+      price: selectedVariant.price,
+    });
     announce(tProduct('addedToCart', { name: product.name }));
     triggerAdded();
   }

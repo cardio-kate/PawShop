@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { CatalogClient } from '@/components/product/CatalogClient';
+import { getCategories } from '@/lib/db/queries/products.queries';
 import { STOREFRONT_PAGE_CONTAINER_CLASSNAME } from '@/components/layout/page-styles';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
@@ -13,6 +14,7 @@ export default async function CatalogPage({ params }: { params: Promise<{ locale
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('Catalog');
+  const categories = await getCategories();
 
   return (
     <div className={STOREFRONT_PAGE_CONTAINER_CLASSNAME}>
@@ -24,7 +26,7 @@ export default async function CatalogPage({ params }: { params: Promise<{ locale
       {/* useSearchParams в CatalogClient требует Suspense-границу — тот же паттерн, что у Header
           в app/[locale]/(storefront)/layout.tsx. */}
       <Suspense fallback={<div className="h-[60vh]" />}>
-        <CatalogClient />
+        <CatalogClient categories={categories} />
       </Suspense>
     </div>
   );

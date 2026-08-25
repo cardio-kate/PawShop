@@ -7,12 +7,9 @@ import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
-import {
-  getCartSubtotal,
-  useResolvedCartItems,
-  useUnavailableCartItemCount,
-} from '@/components/cart/useResolvedCartItems';
+import { getCartSubtotal, useResolvedCartItems } from '@/components/cart/useResolvedCartItems';
 import { formatPrice } from '@/lib/utils';
+import { add, multiplyByQuantity } from '@/lib/money';
 import type { DeliveryCountryRow } from '@/lib/db/queries/delivery.queries';
 
 interface CheckoutClientProps {
@@ -28,10 +25,8 @@ interface CheckoutClientProps {
 // (.claude/plans/velvety-kindling-planet.md, Фаза 5 — форма и сабмит нужны backend, вне этого плана).
 export function CheckoutClient({ countries }: CheckoutClientProps) {
   const t = useTranslations('Checkout');
-  const tCart = useTranslations('Cart');
   const locale = useLocale();
   const resolvedItems = useResolvedCartItems();
-  const unavailableCount = useUnavailableCartItemCount(resolvedItems);
   const [countryId, setCountryId] = useState(countries[0]?.id);
 
   if (resolvedItems.length === 0) {
@@ -50,8 +45,8 @@ export function CheckoutClient({ countries }: CheckoutClientProps) {
   // (без валидации/сабмита, Фаза 4) это просто означает нулевую доставку в предпросмотре, не
   // блокирует рендер формы.
   const selectedCountry = countries.find((country) => country.id === countryId) ?? countries[0];
-  const shippingPrice = selectedCountry ? Number(selectedCountry.price) : 0;
-  const total = subtotal + shippingPrice;
+  const shippingPrice = selectedCountry?.price ?? '0.00';
+  const total = add(subtotal, shippingPrice);
 
   return (
     <div className="gap-xl grid grid-cols-1 sm:grid-cols-2">
@@ -105,18 +100,6 @@ export function CheckoutClient({ countries }: CheckoutClientProps) {
       <div className="gap-md flex flex-col">
         <h2 className="text-h3 text-neutral-900">{t('summaryTitle')}</h2>
 
-        {/* Тот же предупреждающий баннер, что в CartDrawer.tsx — тут особенно важен: total ниже
-            считается уже без недоступных позиций, пользователь должен понимать, почему сумма
-            меньше ожидаемой, а не молча видеть заниженный итог. */}
-        {unavailableCount > 0 && (
-          <p
-            role="status"
-            className="bg-error-tint px-md py-sm text-body-sm text-error-on-tint rounded-md"
-          >
-            {tCart('unavailableWarning', { count: unavailableCount })}
-          </p>
-        )}
-
         <ul className="gap-sm flex flex-col">
           {resolvedItems.map((item) => (
             <li
@@ -127,7 +110,7 @@ export function CheckoutClient({ countries }: CheckoutClientProps) {
                 {item.product.name} · {item.variant.label} × {item.quantity}
               </span>
               <span className="shrink-0 text-neutral-900">
-                {formatPrice(item.variant.price * item.quantity, locale)}
+                {formatPrice(multiplyByQuantity(item.variant.price, item.quantity), locale)}
               </span>
             </li>
           ))}

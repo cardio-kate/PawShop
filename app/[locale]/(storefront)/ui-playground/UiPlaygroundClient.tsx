@@ -8,8 +8,40 @@ import { Input } from '@/components/ui/Input';
 import { Panel } from '@/components/ui/Panel';
 import { Select } from '@/components/ui/Select';
 import { Toggle } from '@/components/ui/Toggle';
-import { ProductCard } from '@/components/product/ProductCard';
-import { MOCK_PRODUCTS } from '@/components/product/mock-data';
+import { ProductCard, type ProductCardProduct } from '@/components/product/ProductCard';
+
+// Фикстуры для визуальной проверки — не MOCK_PRODUCTS (тот всё ещё в старой строковой id-форме,
+// components/product/mock-data.ts): ProductCard теперь принимает реальную форму товара (числовые
+// id, price/variant.price — numeric(10,2)-строки), playground использует ту же форму напрямую.
+const PLAYGROUND_PRODUCTS: ProductCardProduct[] = [
+  {
+    id: 1,
+    slug: 'kitten-chicken-pouches-in-jelly',
+    name: 'Kitten chicken pouches in jelly',
+    images: ['/mock/products/kitten-chicken-pouches-in-jelly.jpg'],
+    isNew: true,
+    price: '1.40',
+    variants: [{ id: 1, label: '85 g', price: '1.40', isActive: true }],
+  },
+  {
+    id: 2,
+    slug: 'salmon-rice-kibble',
+    name: 'Salmon & rice kibble',
+    images: ['/mock/products/salmon-rice-kibble.jpg'],
+    isNew: false,
+    price: '3.90',
+    variants: [{ id: 2, label: '300 g', price: '3.90', isActive: true }],
+  },
+  {
+    id: 3,
+    slug: 'turkey-indoor-kibble',
+    name: 'Turkey indoor kibble',
+    images: ['/mock/products/turkey-indoor-kibble.jpg'],
+    isNew: false,
+    price: '4.30',
+    variants: [{ id: 3, label: '300 g', price: '4.30', isActive: false }],
+  },
+];
 
 // Внутренний playground для визуальной проверки Фазы 1 (components/ui) — не бизнес-страница,
 // удаляется или остаётся служебным маршрутом по решению из .claude/plans/velvety-kindling-planet.md.
@@ -128,7 +160,7 @@ export function UiPlaygroundClient() {
       </Section>
 
       <Section title="Product card" rowClassName="flex flex-wrap items-stretch gap-gutter">
-        {MOCK_PRODUCTS.slice(0, 3).map((product) => (
+        {PLAYGROUND_PRODUCTS.map((product) => (
           <div key={product.id} className="w-64">
             <ProductCard
               product={product}

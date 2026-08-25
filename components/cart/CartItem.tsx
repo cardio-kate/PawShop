@@ -9,11 +9,14 @@ import {
   iconActionButtonClassName,
 } from '@/components/ui/interaction-styles';
 import { formatPrice } from '@/lib/utils';
-import type { MockProduct, MockVariant } from '@/types';
+import { multiplyByQuantity } from '@/lib/money';
+import type { ResolvedCartItem } from '@/components/cart/useResolvedCartItems';
 
 interface CartItemProps {
-  product: MockProduct;
-  variant: MockVariant;
+  product: ResolvedCartItem['product'];
+  variant: ResolvedCartItem['variant'];
+  productId: number;
+  variantId: number;
   quantity: number;
   locale: string;
 }
@@ -21,12 +24,13 @@ interface CartItemProps {
 // design.md → Components «Cart item»: миниатюра, название (label-md, не body-md — на двух строках
 // у более просторного line-height остаётся лишний зазор под короткий жирный лейбл), вариант,
 // степпер количества, цена строки (variant.price * quantity, не цена за штуку — так сумма в строке
-// сразу читается без арифметики в уме), удаление.
-export function CartItem({ product, variant, quantity, locale }: CartItemProps) {
+// сразу читается без арифметики в уме), удаление. price — numeric(10,2)-строка, умножение на
+// quantity идёт через lib/money.ts (CLAUDE.md → «Тесты»), не через JS `*` в обход строкового типа.
+export function CartItem({ product, variant, productId, variantId, quantity, locale }: CartItemProps) {
   const t = useTranslations('Cart');
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
-  const lineTotal = formatPrice(variant.price * quantity, locale);
+  const lineTotal = formatPrice(multiplyByQuantity(variant.price, quantity), locale);
 
   return (
     <li className="gap-md flex">
@@ -45,7 +49,7 @@ export function CartItem({ product, variant, quantity, locale }: CartItemProps) 
           <span className="text-label-md leading-[1.2] text-neutral-900">{product.name}</span>
           <button
             type="button"
-            onClick={() => removeItem(product.id, variant.id)}
+            onClick={() => removeItem(productId, variantId)}
             aria-label={t('remove', { name: product.name })}
             className={`shrink-0 ${iconActionButtonClassName('muted')}`}
           >
@@ -59,7 +63,7 @@ export function CartItem({ product, variant, quantity, locale }: CartItemProps) 
           <div className="gap-xs flex items-center rounded-full border border-neutral-300">
             <button
               type="button"
-              onClick={() => updateQuantity(product.id, variant.id, quantity - 1)}
+              onClick={() => updateQuantity(productId, variantId, quantity - 1)}
               aria-label={t('decreaseQuantity')}
               className={`duration-fast hover:text-paw flex h-7 w-7 cursor-pointer items-center justify-center text-neutral-700 transition-colors motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`}
             >
@@ -68,7 +72,7 @@ export function CartItem({ product, variant, quantity, locale }: CartItemProps) 
             <span className="text-body-sm min-w-4 text-center text-neutral-900">{quantity}</span>
             <button
               type="button"
-              onClick={() => updateQuantity(product.id, variant.id, quantity + 1)}
+              onClick={() => updateQuantity(productId, variantId, quantity + 1)}
               aria-label={t('increaseQuantity')}
               className={`duration-fast hover:text-paw flex h-7 w-7 cursor-pointer items-center justify-center text-neutral-700 transition-colors motion-reduce:transition-none ${FOCUS_RING_CLASSNAME}`}
             >
