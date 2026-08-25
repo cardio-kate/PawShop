@@ -12,20 +12,27 @@ import {
   useResolvedCartItems,
   useUnavailableCartItemCount,
 } from '@/components/cart/useResolvedCartItems';
-import { MOCK_DELIVERY_COUNTRIES } from '@/components/product/mock-data';
 import { formatPrice } from '@/lib/utils';
+import type { DeliveryCountryRow } from '@/lib/db/queries/delivery.queries';
+
+interface CheckoutClientProps {
+  // Фаза 3: только источник данных для country-select становится реальным (getDeliveryCountries()
+  // на сервере, проброшено пропом — тот же паттерн, что categories у ProductForm). Сама форма и
+  // createOrder — Фаза 4 (.claude/plans/backend-realization-pawshop.md), здесь не трогаются.
+  countries: DeliveryCountryRow[];
+}
 
 // design.md → Layout «Оформление заказа» (ТЗ §7.5): двухколоночная раскладка от bp-sm — поля
 // адреса слева, сводка заказа справа; не помещается в панель корзины (400px), поэтому отдельная
 // широкая страница. Шаблон: поля/список товаров/суммы — без react-hook-form/Zod и без createOrder
 // (.claude/plans/velvety-kindling-planet.md, Фаза 5 — форма и сабмит нужны backend, вне этого плана).
-export function CheckoutClient() {
+export function CheckoutClient({ countries }: CheckoutClientProps) {
   const t = useTranslations('Checkout');
   const tCart = useTranslations('Cart');
   const locale = useLocale();
   const resolvedItems = useResolvedCartItems();
   const unavailableCount = useUnavailableCartItemCount(resolvedItems);
-  const [countryId, setCountryId] = useState(MOCK_DELIVERY_COUNTRIES[0]!.id);
+  const [countryId, setCountryId] = useState(countries[0]?.id);
 
   if (resolvedItems.length === 0) {
     return (
@@ -39,10 +46,12 @@ export function CheckoutClient() {
   }
 
   const subtotal = getCartSubtotal(resolvedItems);
-  const selectedCountry =
-    MOCK_DELIVERY_COUNTRIES.find((country) => country.id === countryId) ??
-    MOCK_DELIVERY_COUNTRIES[0]!;
-  const total = subtotal + selectedCountry.price;
+  // countries может быть пустым, если админ деактивировал все страны разом — на этом шаблоне
+  // (без валидации/сабмита, Фаза 4) это просто означает нулевую доставку в предпросмотре, не
+  // блокирует рендер формы.
+  const selectedCountry = countries.find((country) => country.id === countryId) ?? countries[0];
+  const shippingPrice = selectedCountry ? Number(selectedCountry.price) : 0;
+  const total = subtotal + shippingPrice;
 
   return (
     <div className="gap-xl grid grid-cols-1 sm:grid-cols-2">
@@ -75,8 +84,12 @@ export function CheckoutClient() {
           <span className="text-label-md text-neutral-900">{t('fields.country')}</span>
           {/* Выбор страны меняет Shipping в сводке справа — единственный кусок реальной логики
               в этом шаблоне, остальные поля ни на что не влияют (нет ни валидации, ни сабмита). */}
-          <Select name="country" value={countryId} onChange={(e) => setCountryId(e.target.value)}>
-            {MOCK_DELIVERY_COUNTRIES.map((country) => (
+          <Select
+            name="country"
+            value={countryId ?? ''}
+            onChange={(e) => setCountryId(Number(e.target.value))}
+          >
+            {countries.map((country) => (
               <option key={country.id} value={country.id}>
                 {country.countryName}
               </option>
@@ -128,7 +141,7 @@ export function CheckoutClient() {
             </div>
             <div className="text-body-sm flex items-center justify-between text-neutral-700">
               <span>{t('shipping')}</span>
-              <span>{formatPrice(selectedCountry.price, locale)}</span>
+              <span>{formatPrice(shippingPrice, locale)}</span>
             </div>
             <div className="text-label-md flex items-center justify-between text-neutral-900">
               <span>{t('total')}</span>

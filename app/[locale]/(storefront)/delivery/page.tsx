@@ -1,5 +1,5 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { MOCK_DELIVERY_COUNTRIES } from '@/components/product/mock-data';
+import { getDeliveryCountries } from '@/actions/delivery.actions';
 import { STOREFRONT_PAGE_CONTAINER_CLASSNAME } from '@/components/layout/page-styles';
 import { formatPrice } from '@/lib/utils';
 
@@ -15,6 +15,7 @@ export default async function DeliveryPage({ params }: { params: Promise<{ local
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('Delivery');
+  const countries = await getDeliveryCountries();
 
   return (
     <div className={STOREFRONT_PAGE_CONTAINER_CLASSNAME}>
@@ -44,7 +45,7 @@ export default async function DeliveryPage({ params }: { params: Promise<{ local
             </tr>
           </thead>
           <tbody>
-            {MOCK_DELIVERY_COUNTRIES.map((country) => (
+            {countries.map((country) => (
               <tr key={country.id} className="border-b border-neutral-200">
                 <td className="py-sm pr-md text-body-md text-neutral-900">{country.countryName}</td>
                 <td className="py-sm pr-md text-body-md text-neutral-900">
