@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import { getSiteUrl } from '@/lib/utils';
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -11,5 +12,6 @@ export default function robots(): MetadataRoute.Robots {
       // сегментом — без него Disallow: /ui-playground матчит только корневой путь.
       disallow: ['/nine-lives', '/staff-entry', '/*/ui-playground'],
     },
+    sitemap: `${getSiteUrl()}/sitemap.xml`,
   };
 }
