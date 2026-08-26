@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { OrderDetail } from '@/components/admin/OrderDetail';
-import { MOCK_ORDERS } from '@/components/admin/mock-data';
+import { getOrder } from '@/actions/orders.actions';
 
 export default async function AdminOrderDetailPage({
   params,
@@ -8,7 +8,8 @@ export default async function AdminOrderDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const order = MOCK_ORDERS.find((o) => o.id === id);
+  const orderId = Number(id);
+  const order = Number.isInteger(orderId) ? await getOrder(orderId) : null;
   if (!order) notFound();
 
   return (

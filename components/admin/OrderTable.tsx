@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
-import { MOCK_ORDERS, getMockOrderTotal } from '@/components/admin/mock-data';
 import {
   ADMIN_LOCALE,
   ADMIN_TABLE_CELL_CLASSNAME,
@@ -12,13 +11,19 @@ import {
 } from '@/components/admin/constants';
 import { FOCUS_RING_CLASSNAME, iconActionButtonClassName } from '@/components/ui/interaction-styles';
 import { formatPrice } from '@/lib/utils';
+import type { OrderListItem } from '@/lib/db/queries/orders.queries';
 
 const CELL_CLASSNAME = ADMIN_TABLE_CELL_CLASSNAME;
+
+interface OrderTableProps {
+  orders: OrderListItem[];
+}
 
 // design.md → Admin table: тот же паттерн (table-row-even/odd, table-border), что и в ProductTable —
 // список без интерактивных мутаций (в отличие от ProductTable), поэтому Server Component, без
 // 'use client'. Переход к деталям — через ссылку в последней колонке, не JS onClick на строке.
-export function OrderTable() {
+// orders — getOrders() из actions/orders.actions.ts, вызывается страницей (Server Component).
+export function OrderTable({ orders }: OrderTableProps) {
   return (
     <>
       {/* < sm: 6-колоночная таблица (min-w-[720px]) не помещается на телефоне без горизонтального
@@ -27,10 +32,10 @@ export function OrderTable() {
           как в десктопной таблице): на телефоне это одна touch-цель на всю ширину строки, а не
           маленькая иконка в углу. ≥ sm — обычная таблица без изменений. */}
       <div className="gap-sm flex flex-col sm:hidden">
-        {MOCK_ORDERS.length === 0 ? (
+        {orders.length === 0 ? (
           <p className="px-md py-3xl text-body-md text-center text-neutral-500">No orders yet.</p>
         ) : (
-          MOCK_ORDERS.map((order) => (
+          orders.map((order) => (
             <Link
               key={order.id}
               href={`/nine-lives/dashboard/orders/${order.id}`}
@@ -68,7 +73,7 @@ export function OrderTable() {
                   {ORDER_DATE_FORMATTER.format(new Date(order.createdAt))}
                 </span>
                 <span className="text-label-md text-neutral-900">
-                  {formatPrice(getMockOrderTotal(order), ADMIN_LOCALE)}
+                  {formatPrice(order.total, ADMIN_LOCALE)}
                 </span>
               </div>
             </Link>
@@ -103,16 +108,15 @@ export function OrderTable() {
           <tbody>
             {/* colSpan-строка, не замена всей таблицы на текст: заголовок таблицы (Order/Customer/…)
                 остаётся видимым и в пустом состоянии — так админ видит структуру, а не «пропавшую»
-                таблицу. Пока недостижимо на моках (MOCK_ORDERS всегда непустой) — готово к реальному
-                getOrders() с нулём заказов на старте. */}
-            {MOCK_ORDERS.length === 0 ? (
+                таблицу. Реально достижимо теперь на пустой БД (getOrders() без заказов). */}
+            {orders.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-md py-3xl text-body-md text-center text-neutral-500">
                   No orders yet.
                 </td>
               </tr>
             ) : (
-              MOCK_ORDERS.map((order, index) => {
+              orders.map((order, index) => {
                 // Тот же приём, что и в мобильной карточке выше (см. её комментарий) — вес
                 // текста + полоса слева, не только Badge, отмечают заказы со статусом new.
                 const isNew = order.status === 'new';
@@ -133,7 +137,7 @@ export function OrderTable() {
                       {ORDER_DATE_FORMATTER.format(new Date(order.createdAt))}
                     </td>
                     <td className={`${CELL_CLASSNAME} ${newRowClassName}`}>
-                      {formatPrice(getMockOrderTotal(order), ADMIN_LOCALE)}
+                      {formatPrice(order.total, ADMIN_LOCALE)}
                     </td>
                     <td className="px-md py-sm">
                       <Badge variant={ORDER_STATUS_BADGE_VARIANT[order.status]}>

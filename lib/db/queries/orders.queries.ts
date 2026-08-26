@@ -1,8 +1,9 @@
 import 'server-only';
 import { and, desc, eq, sql } from 'drizzle-orm';
 import { dbHttp, dbPool } from '@/lib/db';
-import { order, orderItem } from '@/lib/db/schema';
+import { deliveryCountry, order, orderItem } from '@/lib/db/schema';
 import { CATALOG_PAGE_SIZE } from '@/lib/constants';
+import { add } from '@/lib/money';
 import type { OrderStatus } from '@/types';
 
 // Только SQL, без бизнес-условий (CLAUDE.md → «Слои») — пересчёт суммы, исключение недоступных
@@ -64,6 +65,10 @@ export interface OrderListItem {
   phone: string;
   status: OrderStatus;
   shippingPriceAtOrder: string;
+  // items-сумма + shippingPriceAtOrder, агрегатом в SQL (CLAUDE.md → «База данных», тот же принцип,
+  // что MIN(price) у каталога) — OrderListItem не тащит items[] целиком только ради колонки Total
+  // в OrderTable, OrderDetail считает то же самое из полного items[] через lib/money.ts.
+  total: string;
   createdAt: Date;
 }
 
@@ -82,10 +87,18 @@ export async function getOrders(
       status: order.status,
       shippingPriceAtOrder: order.shippingPriceAtOrder,
       createdAt: order.createdAt,
-      total: sql<number>`count(*) over()`.mapWith(Number),
+      // coalesce — заказ без единого OrderItem недостижим (orders.service.createOrder отклоняет
+      // такой запрос до вставки), но leftJoin всё равно формально допускает NULL от sum() без строк.
+      itemsTotal: sql<string>`coalesce(sum(${orderItem.priceAtOrder} * ${orderItem.quantity}), 0)`,
+      // group by order.id (primary key) — Postgres допускает выбирать остальные колонки order.*
+      // без них в GROUP BY по функциональной зависимости от PK, count(*) over() считает уже поверх
+      // сгруппированных строк (по одной на заказ), не по строкам до join с orderItem.
+      matchCount: sql<number>`count(*) over()`.mapWith(Number),
     })
     .from(order)
+    .leftJoin(orderItem, eq(orderItem.orderId, order.id))
     .where(conditions.length > 0 ? and(...conditions) : undefined)
+    .groupBy(order.id)
     .orderBy(desc(order.createdAt))
     .limit(limit)
     .offset(offset);
@@ -93,7 +106,7 @@ export async function getOrders(
   // count(*) over() приходит только вместе со строками — на странице за пределами total
   // (устаревший offset после смены фильтра) rows пуст, total нужно достать отдельным COUNT(*),
   // тот же паттерн, что getProducts/getAdminProducts в products.queries.ts.
-  let total = rows[0]?.total;
+  let total = rows[0]?.matchCount;
   if (total === undefined && offset > 0) {
     const [countRow] = await dbHttp
       .select({ count: sql<number>`count(*)`.mapWith(Number) })
@@ -103,12 +116,15 @@ export async function getOrders(
   }
 
   return {
-    orders: rows.map((row) => {
-      // total дропается намеренно из элементов списка, уже прочитан отдельно выше.
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { total, ...listItem } = row;
-      return listItem;
-    }),
+    orders: rows.map((row) => ({
+      id: row.id,
+      customerName: row.customerName,
+      phone: row.phone,
+      status: row.status,
+      shippingPriceAtOrder: row.shippingPriceAtOrder,
+      total: add(row.shippingPriceAtOrder, row.itemsTotal),
+      createdAt: row.createdAt,
+    })),
     total: total ?? 0,
   };
 }
@@ -131,6 +147,10 @@ export interface OrderDetail {
   city: string;
   postalCode: string;
   deliveryCountryId: number | null;
+  // Order.deliveryCountryId — onDelete: 'set null' (CLAUDE.md → «База данных»); countryName не входит
+  // в снапшот-поля заказа (в отличие от priceAtOrder/productNameAtOrder и т.п.) — резолвится через
+  // leftJoin к текущей DeliveryCountry, поэтому null, если страна с тех пор удалена/деактивирована.
+  countryName: string | null;
   shippingPriceAtOrder: string;
   comment: string | null;
   status: OrderStatus;
@@ -139,7 +159,25 @@ export interface OrderDetail {
 }
 
 export async function getOrder(id: number): Promise<OrderDetail | null> {
-  const [row] = await dbHttp.select().from(order).where(eq(order.id, id)).limit(1);
+  const [row] = await dbHttp
+    .select({
+      id: order.id,
+      customerName: order.customerName,
+      phone: order.phone,
+      street: order.street,
+      city: order.city,
+      postalCode: order.postalCode,
+      deliveryCountryId: order.deliveryCountryId,
+      countryName: deliveryCountry.countryName,
+      shippingPriceAtOrder: order.shippingPriceAtOrder,
+      comment: order.comment,
+      status: order.status,
+      createdAt: order.createdAt,
+    })
+    .from(order)
+    .leftJoin(deliveryCountry, eq(order.deliveryCountryId, deliveryCountry.id))
+    .where(eq(order.id, id))
+    .limit(1);
   if (!row) return null;
 
   const items = await dbHttp

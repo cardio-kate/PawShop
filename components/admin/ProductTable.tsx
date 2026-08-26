@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Pencil, Trash2 } from 'lucide-react';
@@ -8,7 +8,6 @@ import { Badge } from '@/components/ui/Badge';
 import { Toggle } from '@/components/ui/Toggle';
 import { Button } from '@/components/ui/Button';
 import { Panel } from '@/components/ui/Panel';
-import { MOCK_CATEGORIES, MOCK_PRODUCTS } from '@/components/product/mock-data';
 import {
   ADMIN_LOCALE,
   ADMIN_TABLE_CELL_CLASSNAME,
@@ -16,37 +15,134 @@ import {
 } from '@/components/admin/constants';
 import { formatPrice } from '@/lib/utils';
 import { iconActionButtonClassName } from '@/components/ui/interaction-styles';
-import type { MockProduct } from '@/types';
+import { deleteProduct, getProduct, updateProduct } from '@/actions/products.actions';
+import type { AdminProductListItem } from '@/lib/db/queries/products.queries';
 
-// MOCK_CATEGORIES не меняется в рантайме — построить Map один раз на модуль, а не искать
-// .find() внутри .map() по продуктам на каждый рендер таблицы (был O(n×m) на каждый Toggle-клик).
-const CATEGORY_NAME_BY_ID = new Map(
-  MOCK_CATEGORIES.map((category) => [category.id, category.nameEn]),
-);
+interface ProductTableCategory {
+  id: number;
+  nameEn: string;
+}
 
-function getCategoryName(categoryId: string): string {
-  return CATEGORY_NAME_BY_ID.get(categoryId) ?? '—';
+interface ProductTableProps {
+  products: AdminProductListItem[];
+  categories: ProductTableCategory[];
 }
 
 const CELL_CLASSNAME = ADMIN_TABLE_CELL_CLASSNAME;
 
-export function ProductTable() {
-  const [products, setProducts] = useState<MockProduct[]>(MOCK_PRODUCTS);
-  const [productToDelete, setProductToDelete] = useState<MockProduct | null>(null);
+export function ProductTable({ products: initialProducts, categories }: ProductTableProps) {
+  const [products, setProducts] = useState<AdminProductListItem[]>(initialProducts);
+  const [productToDelete, setProductToDelete] = useState<AdminProductListItem | null>(null);
+  // Одна карта "в процессе" вместо булева на компонент — несколько строк могут переключаться
+  // параллельно (админ кликает Toggle по нескольким товарам подряд, не дожидаясь ответа сервера).
+  const [pendingIds, setPendingIds] = useState<Set<number>>(new Set());
+  const [errors, setErrors] = useState<Record<number, string>>({});
 
-  function handleToggleActive(id: string, isActive: boolean) {
+  // categories не меняется в рантайме (4 фиксированные записи, CLAUDE.md → non-goals: CRUD категорий
+  // нет) — карта строится на каждый рендер из пропа, но это O(4), не повод под useMemo.
+  const categoryNameById = new Map(categories.map((category) => [category.id, category.nameEn]));
+  function getCategoryName(categoryId: number): string {
+    return categoryNameById.get(categoryId) ?? '—';
+  }
+
+  function setPending(id: number, isPending: boolean) {
+    setPendingIds((current) => {
+      const next = new Set(current);
+      if (isPending) {
+        next.add(id);
+      } else {
+        next.delete(id);
+      }
+      return next;
+    });
+  }
+
+  function setRowError(id: number, message: string | null) {
+    setErrors((current) => {
+      if (message === null) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [id]: removed, ...rest } = current;
+        return rest;
+      }
+      return { ...current, [id]: message };
+    });
+  }
+
+  function updateLocalActive(id: number, isActive: boolean) {
     setProducts((current) =>
       current.map((product) => (product.id === id ? { ...product, isActive } : product)),
     );
   }
 
+  // Деактивация (Toggle → off, Delete-подтверждение) — единственное готовое действие для этого,
+  // deleteProduct (ТЗ §5, soft delete: isActive: false, CLAUDE.md → «База данных»). Реактивация
+  // (Toggle → on) не имеет отдельного action в ТЗ §5 — план явно запрещает добавлять действия по
+  // аналогии без вопроса, поэтому переиспользуется тот же updateProduct, что и ProductForm: полный
+  // текущий товар (getProduct) пересохраняется с isActive: true, без нового backend-кода.
+  async function setActive(product: AdminProductListItem, isActive: boolean) {
+    setPending(product.id, true);
+    setRowError(product.id, null);
+    updateLocalActive(product.id, isActive);
+
+    if (!isActive) {
+      const result = await deleteProduct(product.id);
+      setPending(product.id, false);
+      if (!result.success) {
+        updateLocalActive(product.id, true);
+        setRowError(product.id, Object.values(result.errors)[0] ?? 'Failed to save. Please try again.');
+      }
+      return;
+    }
+
+    const detail = await getProduct(product.id);
+    if (!detail) {
+      updateLocalActive(product.id, false);
+      setPending(product.id, false);
+      setRowError(product.id, 'Failed to load product. Please try again.');
+      return;
+    }
+
+    const result = await updateProduct(product.id, {
+      categoryId: detail.categoryId,
+      nameEn: detail.nameEn,
+      nameDe: detail.nameDe,
+      descriptionEn: detail.descriptionEn,
+      descriptionDe: detail.descriptionDe,
+      composition: detail.composition,
+      analyticalConstituents: detail.analyticalConstituents,
+      flavor: detail.flavor,
+      ageGroup: detail.ageGroup,
+      images: detail.images,
+      isNew: detail.isNew,
+      isActive: true,
+      variants: detail.variants.map((variant) => ({
+        id: variant.id,
+        label: variant.label,
+        price: variant.price,
+        isActive: variant.isActive,
+      })),
+    });
+    setPending(product.id, false);
+    if (!result.success) {
+      updateLocalActive(product.id, false);
+      setRowError(product.id, Object.values(result.errors)[0] ?? 'Failed to save. Please try again.');
+    }
+  }
+
+  function handleToggleActive(product: AdminProductListItem, isActive: boolean) {
+    void setActive(product, isActive);
+  }
+
   // CLAUDE.md → «База данных»: soft delete через isActive, не DELETE — тот же переход, что делает
-  // Toggle в колонке Active, но с подтверждением. Строка остаётся в таблице (не исчезает), поэтому
-  // кнопка-триггер Panel не размонтируется вместе с закрытием — Panel корректно возвращает фокус.
+  // Toggle в колонке Active, но с подтверждением.
   function handleConfirmDelete() {
     if (!productToDelete) return;
-    handleToggleActive(productToDelete.id, false);
+    handleToggleActive(productToDelete, false);
     setProductToDelete(null);
+  }
+
+  function priceLabel(product: AdminProductListItem): string {
+    return product.price !== null ? formatPrice(product.price, ADMIN_LOCALE) : '—';
   }
 
   return (
@@ -76,7 +172,7 @@ export function ProductTable() {
                     />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-label-md truncate text-neutral-900">{product.name}</p>
+                    <p className="text-label-md truncate text-neutral-900">{product.nameEn}</p>
                     <p className="text-body-sm truncate text-neutral-500">
                       {getCategoryName(product.categoryId)}
                     </p>
@@ -85,7 +181,7 @@ export function ProductTable() {
                 <div className="gap-xs flex shrink-0 items-center">
                   <Link
                     href={`/nine-lives/dashboard/products/${product.id}/edit`}
-                    aria-label={`Edit ${product.name}`}
+                    aria-label={`Edit ${product.nameEn}`}
                     className={iconActionButtonClassName()}
                   >
                     <Pencil className="h-4 w-4" aria-hidden="true" />
@@ -93,7 +189,7 @@ export function ProductTable() {
                   <button
                     type="button"
                     onClick={() => setProductToDelete(product)}
-                    aria-label={`Delete ${product.name}`}
+                    aria-label={`Delete ${product.nameEn}`}
                     className={iconActionButtonClassName('danger')}
                   >
                     <Trash2 className="h-4 w-4" aria-hidden="true" />
@@ -102,17 +198,21 @@ export function ProductTable() {
               </div>
               <div className="flex items-center justify-between">
                 <div className="gap-sm flex items-center">
-                  <span className="text-label-md text-neutral-900">
-                    {formatPrice(product.price, ADMIN_LOCALE)}
-                  </span>
+                  <span className="text-label-md text-neutral-900">{priceLabel(product)}</span>
                   {product.isNew && <Badge variant="new">New</Badge>}
                 </div>
                 <Toggle
                   checked={product.isActive}
-                  onChange={(checked) => handleToggleActive(product.id, checked)}
-                  aria-label={`${product.isActive ? 'Deactivate' : 'Activate'} ${product.name}`}
+                  onChange={(checked) => handleToggleActive(product, checked)}
+                  disabled={pendingIds.has(product.id)}
+                  aria-label={`${product.isActive ? 'Deactivate' : 'Activate'} ${product.nameEn}`}
                 />
               </div>
+              {errors[product.id] && (
+                <span role="alert" className="text-body-sm text-error">
+                  {errors[product.id]}
+                </span>
+              )}
             </div>
           ))
         )}
@@ -146,11 +246,8 @@ export function ProductTable() {
             </tr>
           </thead>
           <tbody>
-            {/* colSpan-строка, не замена таблицы текстом — заголовок остаётся виден. Недостижимо
-                на моках (MOCK_PRODUCTS непустой, и Delete здесь — soft-delete через Toggle, не
-                удаляет строку), но handleToggleActive деактивирует, не убирает из products — если
-                этот список когда-нибудь станет отфильтрованным (например по категории), пустой
-                результат должен быть читаемым, а не голой таблицей без строк. */}
+            {/* colSpan-строка, не замена таблицы текстом — заголовок остаётся виден. Реально
+                достижимо теперь на пустой БД (getAdminProducts() без товаров). */}
             {products.length === 0 ? (
               <tr>
                 <td colSpan={7} className="px-md py-3xl text-body-md text-center text-neutral-500">
@@ -159,51 +256,63 @@ export function ProductTable() {
               </tr>
             ) : (
               products.map((product, index) => (
-                <tr key={product.id} className={adminTableRowClassName(index)}>
-                  <td className="px-md py-sm">
-                    <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-sm bg-neutral-100">
-                      <Image
-                        src={product.images[0]!}
-                        alt=""
-                        fill
-                        sizes="40px"
-                        className="object-cover"
+                <Fragment key={product.id}>
+                  <tr className={adminTableRowClassName(index)}>
+                    <td className="px-md py-sm">
+                      <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-sm bg-neutral-100">
+                        <Image
+                          src={product.images[0]!}
+                          alt=""
+                          fill
+                          sizes="40px"
+                          className="object-cover"
+                        />
+                      </div>
+                    </td>
+                    <td className={CELL_CLASSNAME}>{product.nameEn}</td>
+                    <td className={CELL_CLASSNAME}>{getCategoryName(product.categoryId)}</td>
+                    <td className={CELL_CLASSNAME}>{priceLabel(product)}</td>
+                    <td className={CELL_CLASSNAME}>
+                      {product.isNew && <Badge variant="new">New</Badge>}
+                    </td>
+                    <td className="px-md py-sm">
+                      <Toggle
+                        checked={product.isActive}
+                        onChange={(checked) => handleToggleActive(product, checked)}
+                        disabled={pendingIds.has(product.id)}
+                        aria-label={`${product.isActive ? 'Deactivate' : 'Activate'} ${product.nameEn}`}
                       />
-                    </div>
-                  </td>
-                  <td className={CELL_CLASSNAME}>{product.name}</td>
-                  <td className={CELL_CLASSNAME}>{getCategoryName(product.categoryId)}</td>
-                  <td className={CELL_CLASSNAME}>{formatPrice(product.price, ADMIN_LOCALE)}</td>
-                  <td className={CELL_CLASSNAME}>
-                    {product.isNew && <Badge variant="new">New</Badge>}
-                  </td>
-                  <td className="px-md py-sm">
-                    <Toggle
-                      checked={product.isActive}
-                      onChange={(checked) => handleToggleActive(product.id, checked)}
-                      aria-label={`${product.isActive ? 'Deactivate' : 'Activate'} ${product.name}`}
-                    />
-                  </td>
-                  <td className="px-md py-sm">
-                    <div className="gap-xs flex items-center">
-                      <Link
-                        href={`/nine-lives/dashboard/products/${product.id}/edit`}
-                        aria-label={`Edit ${product.name}`}
-                        className={iconActionButtonClassName()}
-                      >
-                        <Pencil className="h-4 w-4" aria-hidden="true" />
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => setProductToDelete(product)}
-                        aria-label={`Delete ${product.name}`}
-                        className={iconActionButtonClassName('danger')}
-                      >
-                        <Trash2 className="h-4 w-4" aria-hidden="true" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                    </td>
+                    <td className="px-md py-sm">
+                      <div className="gap-xs flex items-center">
+                        <Link
+                          href={`/nine-lives/dashboard/products/${product.id}/edit`}
+                          aria-label={`Edit ${product.nameEn}`}
+                          className={iconActionButtonClassName()}
+                        >
+                          <Pencil className="h-4 w-4" aria-hidden="true" />
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => setProductToDelete(product)}
+                          aria-label={`Delete ${product.nameEn}`}
+                          className={iconActionButtonClassName('danger')}
+                        >
+                          <Trash2 className="h-4 w-4" aria-hidden="true" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  {errors[product.id] && (
+                    <tr className="border-b border-neutral-300">
+                      <td colSpan={7} className={`${CELL_CLASSNAME} pt-0`}>
+                        <span role="alert" className="text-body-sm text-error">
+                          {errors[product.id]}
+                        </span>
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
               ))
             )}
           </tbody>
@@ -224,7 +333,7 @@ export function ProductTable() {
             <h2 className="text-h3 text-neutral-900">Delete product?</h2>
             <p className="text-body-sm text-neutral-500">
               {productToDelete &&
-                `"${productToDelete.name}" will be marked inactive and hidden from the storefront.`}
+                `"${productToDelete.nameEn}" will be marked inactive and hidden from the storefront.`}
             </p>
           </div>
           <div className="gap-sm flex flex-col">

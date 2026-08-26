@@ -1,36 +1,30 @@
-'use client';
-
-import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { Badge } from '@/components/ui/Badge';
 import {
   ADMIN_LOCALE,
   ADMIN_TABLE_CELL_CLASSNAME,
   ORDER_DATETIME_FORMATTER,
+  ORDER_STATUS_BADGE_VARIANT,
   ORDER_STATUS_LABEL,
   adminTableRowClassName,
-  orderStatusColorClassName,
 } from '@/components/admin/constants';
-import { getMockOrderSubtotal } from '@/components/admin/mock-data';
-import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
+import { add, multiplyByQuantity, sum } from '@/lib/money';
 import { formatPrice } from '@/lib/utils';
-import type { MockOrder, OrderStatus } from '@/types';
-
-const STATUSES: OrderStatus[] = ['new', 'processing', 'done', 'cancelled'];
+import type { OrderDetail as OrderDetailData } from '@/lib/db/queries/orders.queries';
 
 const CELL_CLASSNAME = ADMIN_TABLE_CELL_CLASSNAME;
 
 interface OrderDetailProps {
-  order: MockOrder;
+  order: OrderDetailData;
 }
 
 // design.md → «Order detail»: две колонки — слева позиции заказа (admin table, не cart-item: снапшот
-// без фото и без степпера количества), справа контакты/адрес/доставка/comment/статус.
-// updateOrderStatus не подключён (Фаза 7 — UI на моках) — смена статуса живёт в локальном useState,
-// как toggle в ProductTable.
+// без фото и без степпера количества), справа контакты/адрес/доставка/comment/статус. Смена статуса
+// сознательно не подключена к updateOrderStatus в этой фазе (Фаза 5 плана — read-only витрина/списки,
+// действие оставлено на отдельное решение) — статус только отображается тем же Badge, что OrderTable,
+// не как псевдо-интерактивный <select>, который бы ничего не отправлял.
 export function OrderDetail({ order }: OrderDetailProps) {
-  const [status, setStatus] = useState<OrderStatus>(order.status);
-  const subtotal = getMockOrderSubtotal(order);
-  const total = subtotal + order.shippingPriceAtOrder;
+  const subtotal = sum(order.items.map((item) => multiplyByQuantity(item.priceAtOrder, item.quantity)));
+  const total = add(subtotal, order.shippingPriceAtOrder);
 
   return (
     <div className="gap-lg grid grid-cols-1 lg:grid-cols-[1fr_340px]">
@@ -53,7 +47,7 @@ export function OrderDetail({ order }: OrderDetailProps) {
                   {item.quantity} × {formatPrice(item.priceAtOrder, ADMIN_LOCALE)}
                 </span>
                 <span className="text-neutral-900">
-                  {formatPrice(item.priceAtOrder * item.quantity, ADMIN_LOCALE)}
+                  {formatPrice(multiplyByQuantity(item.priceAtOrder, item.quantity), ADMIN_LOCALE)}
                 </span>
               </div>
             </div>
@@ -90,7 +84,7 @@ export function OrderDetail({ order }: OrderDetailProps) {
                   <td className={CELL_CLASSNAME}>{item.quantity}</td>
                   <td className={CELL_CLASSNAME}>{formatPrice(item.priceAtOrder, ADMIN_LOCALE)}</td>
                   <td className={CELL_CLASSNAME}>
-                    {formatPrice(item.priceAtOrder * item.quantity, ADMIN_LOCALE)}
+                    {formatPrice(multiplyByQuantity(item.priceAtOrder, item.quantity), ADMIN_LOCALE)}
                   </td>
                 </tr>
               ))}
@@ -118,26 +112,9 @@ export function OrderDetail({ order }: OrderDetailProps) {
         <div className="gap-sm flex flex-col">
           <div className="gap-md flex items-center justify-between">
             <h2 className="text-h3 text-neutral-900">Customer</h2>
-            <div
-              className={`relative inline-flex items-center rounded-full ${orderStatusColorClassName(status)}`}
-            >
-              <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value as OrderStatus)}
-                aria-label="Order status"
-                className={`text-label-caps appearance-none bg-transparent py-1.5 pr-8 pl-3 font-semibold text-current outline-none ${FOCUS_RING_CLASSNAME}`}
-              >
-                {STATUSES.map((s) => (
-                  <option key={s} value={s}>
-                    {ORDER_STATUS_LABEL[s]}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown
-                aria-hidden="true"
-                className="pointer-events-none absolute top-1/2 right-2.5 h-3.5 w-3.5 -translate-y-1/2 text-current"
-              />
-            </div>
+            <Badge variant={ORDER_STATUS_BADGE_VARIANT[order.status]}>
+              {ORDER_STATUS_LABEL[order.status]}
+            </Badge>
           </div>
           <p className="text-body-sm text-neutral-500">
             Order #{order.id} · {ORDER_DATETIME_FORMATTER.format(new Date(order.createdAt))}
@@ -153,7 +130,7 @@ export function OrderDetail({ order }: OrderDetailProps) {
             <br />
             {order.city}, {order.postalCode}
             <br />
-            {order.countryName}
+            {order.countryName ?? '—'}
           </p>
         </div>
 
