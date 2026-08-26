@@ -16,13 +16,24 @@ jest.mock('@/lib/db/queries/admin.queries', () => ({
   resetPasswordAndInvalidateSessions: jest.fn(),
 }));
 jest.mock('@/lib/telegram');
+// Фаза 4 (REV2): requestPasswordReset ретроактивно зовёт checkRateLimit() — lib/rate-limit.ts тянет
+// lib/db/index.ts (neon() на уровне модуля), которого без DATABASE_URL нет в CI unit-джобе (CLAUDE.md
+// → «Тесты»: test:unit — без секретов, без БД). Мокается тем же приёмом, что admin.queries.ts выше —
+// явная фабрика не даёт настоящему lib/rate-limit.ts вообще загрузиться. Ни один тест ниже не проверяет
+// сам rate-limit (это integration-сценарий, см. architecture.md §7) — checkRateLimit по умолчанию
+// разрешает запрос, чтобы остальная логика requestPasswordReset тестировалась как раньше.
+jest.mock('@/lib/rate-limit', () => ({
+  checkRateLimit: jest.fn(),
+}));
 
 type AdminQueriesModule = typeof import('@/lib/db/queries/admin.queries');
 type TelegramModule = typeof import('@/lib/telegram');
+type RateLimitModule = typeof import('@/lib/rate-limit');
 type AuthServiceModule = typeof import('@/lib/services/auth.service');
 
 let adminQueries: jest.Mocked<AdminQueriesModule>;
 let telegram: jest.Mocked<TelegramModule>;
+let rateLimit: jest.Mocked<RateLimitModule>;
 let authService: AuthServiceModule;
 
 const BASE_ADMIN_ROW = {
@@ -46,11 +57,17 @@ beforeAll(async () => {
 
   adminQueries = jest.requireMock('@/lib/db/queries/admin.queries');
   telegram = jest.requireMock('@/lib/telegram');
+  rateLimit = jest.requireMock('@/lib/rate-limit');
   authService = await import('@/lib/services/auth.service');
 });
 
 beforeEach(() => {
   jest.clearAllMocks();
+  // clearAllMocks() выше сбрасывает вызовы/результаты, но не implementation — тем не менее
+  // переустанавливается на каждый тест явно (не полагаясь на этот нюанс): ни один тест в файле не
+  // проверяет сам rate-limit (integration-сценарий, architecture.md §7), всем остальным нужен
+  // предсказуемый "разрешено" по умолчанию.
+  rateLimit.checkRateLimit.mockResolvedValue({ allowed: true });
 });
 
 describe('auth.service.login', () => {
