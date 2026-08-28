@@ -21,7 +21,7 @@
     "seed:delivery-countries": "NODE_OPTIONS=--conditions=react-server tsx scripts/seed-delivery-countries.ts",
     "test": "jest",
     "test:unit": "jest --selectProjects unit",
-    "test:integration": "jest --selectProjects integration"
+    "test:integration": "jest --selectProjects integration --runInBand --forceExit"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",

@@ -584,16 +584,29 @@ Postgres в testcontainers эту часть кода вообще не обсл
   аналогии с `.env.local`); переиспользовать `DATABASE_URL` для тестов запрещено.
 - Миграции на тестовую ветку — `drizzle-kit migrate` вручную/отдельным CI-шагом перед прогоном, не в Jest
   `globalSetup` неявно: схема не должна «незаметно чиниться» самим фактом запуска тестов.
+- **`lib/db/index.ts` строит `dbHttp`/`dbPool` один раз при импорте, читая `process.env.DATABASE_URL`/
+  `DATABASE_URL_UNPOOLED` напрямую** — у него нет параметра «какую БД использовать». Чтобы реальные
+  `queries`/`services`/`actions` в integration-тестах ходили в тестовую ветку, а не в прод,
+  `tests/helpers/setup-integration.ts` (Jest `setupFiles`, выполняется раньше любого импорта теста)
+  подменяет эти переменные значениями `DATABASE_URL_TEST`/`DATABASE_URL_TEST_UNPOOLED`, сохранив
+  оригинальные прод-значения под `DATABASE_URL_PROD_FOR_GUARD`/`DATABASE_URL_UNPOOLED_PROD_FOR_GUARD` —
+  именно с ними, не с уже подменённым `DATABASE_URL`, сверяется guard ниже.
 - Сброс состояния между тестами — `TRUNCATE ... CASCADE` по всем таблицам через
   `tests/helpers/reset-db.ts`, вызывается в `beforeEach` каждого integration-файла. Не транзакция на тест
   с `ROLLBACK` — при текущем масштабе (несколько таблиц, нет тяжёлых fixtures) прокидывать общий клиент
   транзакции через все `queries`/`services` ради этого не оправдано.
 - **Обязательный guard в `reset-db.ts`**: перед `TRUNCATE` —
-  1) `DATABASE_URL_TEST` не задан → `throw`, без фолбэка на `DATABASE_URL` («для удобства» — самый вероятный
+  1) `DATABASE_URL_TEST` не задан → `throw`, без фолбэка на прод-строку («для удобства» — самый вероятный
      способ случайно стереть прод, потому что отсутствие переменной выглядит безобидно, в отличие от явного
      совпадения строк);
-  2) `DATABASE_URL_TEST` задан, но совпадает с `DATABASE_URL`/`DATABASE_URL_UNPOOLED` → тоже `throw`.
+  2) `DATABASE_URL_TEST` совпадает с `DATABASE_URL_PROD_FOR_GUARD`/`DATABASE_URL_UNPOOLED_PROD_FOR_GUARD`
+     (сохранённым прод-значением, см. пункт про подмену выше) → тоже `throw`.
   Оба случая — ошибка конфигурации, которая не должна иметь шанс дойти до `TRUNCATE`.
+- Файлы `tests/integration/**` бьют в одну и ту же физическую тестовую ветку — Jest по умолчанию гоняет
+  тест-файлы параллельно в нескольких воркерах, а `TRUNCATE` одного файла стирает данные, которые в этот
+  момент использует другой. `test:integration` запускается с `--runInBand --forceExit`
+  (`package.json`) — per-project `maxWorkers` в multi-project режиме Jest молча игнорируется, это
+  единственный рабочий способ.
 
 ### 7.2 Telegram в тестах
 

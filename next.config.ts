@@ -45,7 +45,11 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   // jose (lib/auth.ts) — чистый ESM без CJS-сборки (node_modules/jose/package.json) — без этого и
   // бандлер next build, и next/jest (читает ту же опцию) спотыкаются об `export` внутри node_modules.
-  transpilePackages: ['jose'],
+  // next-intl — та же причина: products.actions.ts (через i18n/routing.ts) импортирует его, и первый
+  // integration-тест, реально дошедший до этого импорта, падал с "Unexpected token 'export'" — next/jest
+  // строит transformIgnorePatterns из этого списка (node_modules/next/dist/build/jest/jest.js), это
+  // единственный официальный рычаг, не переопределение готового массива в самом jest-конфиге.
+  transpilePackages: ['jose', 'next-intl'],
   // Индикатор статуса роута в dev-режиме (кружок в углу экрана) — мешает при визуальных
   // скриншотах/проверках; ошибки компиляции/рантайма он всё равно продолжает показывать.
   devIndicators: false,
