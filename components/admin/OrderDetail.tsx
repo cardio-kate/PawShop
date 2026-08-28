@@ -1,10 +1,8 @@
-import { Badge } from '@/components/ui/Badge';
+import { OrderStatusControl } from '@/components/admin/OrderStatusControl';
 import {
   ADMIN_LOCALE,
   ADMIN_TABLE_CELL_CLASSNAME,
   ORDER_DATETIME_FORMATTER,
-  ORDER_STATUS_BADGE_VARIANT,
-  ORDER_STATUS_LABEL,
   adminTableRowClassName,
 } from '@/components/admin/constants';
 import { add, multiplyByQuantity, sum } from '@/lib/money';
@@ -18,10 +16,10 @@ interface OrderDetailProps {
 }
 
 // design.md → «Order detail»: две колонки — слева позиции заказа (admin table, не cart-item: снапшот
-// без фото и без степпера количества), справа контакты/адрес/доставка/comment/статус. Смена статуса
-// сознательно не подключена к updateOrderStatus в этой фазе (Фаза 5 плана — read-only витрина/списки,
-// действие оставлено на отдельное решение) — статус только отображается тем же Badge, что OrderTable,
-// не как псевдо-интерактивный <select>, который бы ничего не отправлял.
+// без фото и без степпера количества), справа контакты/адрес/доставка/comment/статус. Смена статуса —
+// OrderStatusControl (client), подключён к updateOrderStatus (готов с Фазы 4, оставался неподключённым
+// как осознанный долг Фазы 5). OrderTable в списке по-прежнему read-only Badge — там смена статуса не
+// нужна, деталь заказа открывается отдельным переходом.
 export function OrderDetail({ order }: OrderDetailProps) {
   const subtotal = sum(order.items.map((item) => multiplyByQuantity(item.priceAtOrder, item.quantity)));
   const total = add(subtotal, order.shippingPriceAtOrder);
@@ -112,9 +110,7 @@ export function OrderDetail({ order }: OrderDetailProps) {
         <div className="gap-sm flex flex-col">
           <div className="gap-md flex items-center justify-between">
             <h2 className="text-h3 text-neutral-900">Customer</h2>
-            <Badge variant={ORDER_STATUS_BADGE_VARIANT[order.status]}>
-              {ORDER_STATUS_LABEL[order.status]}
-            </Badge>
+            <OrderStatusControl orderId={order.id} status={order.status} />
           </div>
           <p className="text-body-sm text-neutral-500">
             Order #{order.id} · {ORDER_DATETIME_FORMATTER.format(new Date(order.createdAt))}
