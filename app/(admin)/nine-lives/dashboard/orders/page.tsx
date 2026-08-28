@@ -1,16 +1,30 @@
 import { OrderTable } from '@/components/admin/OrderTable';
+import { AdminPagination } from '@/components/admin/AdminPagination';
 import { getOrders } from '@/actions/orders.actions';
+import { ADMIN_PAGE_SIZE } from '@/lib/constants';
+import { parseAdminPage, redirectIfPageOutOfRange } from '@/lib/admin-pagination';
 
-// Без панели фильтров/пагинации — план Фазы 5 не заводит для неё UI-контракт (ProductTable в той же
-// фазе тоже без пагинации). limit 100 — с запасом покрывает реальный масштаб нишевого магазина, не
-// дефолтный CATALOG_PAGE_SIZE=8, который молча спрятал бы старые заказы из списка.
-export default async function AdminOrdersPage() {
-  const { orders } = await getOrders({ limit: 100 });
+const BASE_PATH = '/nine-lives/dashboard/orders';
+
+export default async function AdminOrdersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { page: pageParam } = await searchParams;
+  const page = parseAdminPage(pageParam);
+  const { orders, total } = await getOrders({
+    limit: ADMIN_PAGE_SIZE,
+    offset: (page - 1) * ADMIN_PAGE_SIZE,
+  });
+  const pageCount = Math.max(1, Math.ceil(total / ADMIN_PAGE_SIZE));
+  redirectIfPageOutOfRange(page, pageCount, BASE_PATH);
 
   return (
     <div className="gap-lg p-lg flex flex-col">
       <h1 className="text-h2 text-neutral-900">Orders</h1>
       <OrderTable orders={orders} />
+      <AdminPagination page={page} pageCount={pageCount} basePath={BASE_PATH} />
     </div>
   );
 }
