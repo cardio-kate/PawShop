@@ -2,6 +2,7 @@ import { getLocale, getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { ProductCard } from '@/components/product/ProductCard';
 import { getProducts } from '@/actions/products.actions';
+import { getCategories } from '@/lib/db/queries/products.queries';
 import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 import { SECTION_HEADING_GAP_CLASSNAME } from '@/components/home/section-styles';
 import { PRODUCT_CARD_GRID_GAP_CLASSNAME } from '@/components/product/product-grid-styles';
@@ -10,15 +11,39 @@ import type { routing } from '@/i18n/routing';
 // design.md → Layout «View All — только в New Arrivals»: превью показывает только 2 товара из
 // isNew, "View All →" ведёт на /catalog (весь ассортимент с фильтрами уже там, разворачивать
 // на месте незачем). Кнопка не рендерится вовсе, если новинок ≤ 2 — вести на каталог ради того
-// же самого превью не имеет смысла. limit: 2 — превью и есть весь нужный список, total из того же
-// ответа решает, показывать ли "View All" (не отдельный запрос ради total).
+// же самого превью не имеет смысла.
+//
+// По прямому запросу — один слот еды/лакомств + один слот Accessories, не просто "первые 2 из
+// isNew": одним запросом с limit:2 после сортировки каталога по категории (products.queries.ts,
+// categoryId ASC) аксессуары как последняя категория никогда не попадали бы в эти 2 места, пока
+// в Dry food/Wet food/Treats суммарно ≥2 новинок. Два раздельных запроса (food-категории vs
+// Accessories) с limit:1 каждый — тот же список isNew, просто с гарантированным разнообразием.
+// total обоих ответов складывается для "View All", а не берётся из одного — категории не
+// пересекаются, поэтому сумма двух непересекающихся total равна общему количеству isNew без
+// третьего запроса ради него одного.
 export async function NewArrivalsSection() {
   const t = await getTranslations('Home.newArrivals');
   const tProduct = await getTranslations('Product');
   const locale = (await getLocale()) as (typeof routing.locales)[number];
-  const result = await getProducts({ locale, isNew: true, limit: 2 });
-  const preview = result.success ? result.data.products : [];
-  const totalNewCount = result.success ? result.data.total : 0;
+
+  const categories = await getCategories();
+  const accessoriesCategory = categories.find((c) => c.slug === 'accessories');
+  const foodCategoryIds = categories.filter((c) => c.slug !== 'accessories').map((c) => c.id);
+
+  const [foodResult, accessoryResult] = await Promise.all([
+    getProducts({ locale, isNew: true, category: foodCategoryIds, limit: 1 }),
+    accessoriesCategory
+      ? getProducts({ locale, isNew: true, category: [accessoriesCategory.id], limit: 1 })
+      : Promise.resolve({ success: true as const, data: { products: [], total: 0 } }),
+  ]);
+
+  const preview = [
+    ...(foodResult.success ? foodResult.data.products : []),
+    ...(accessoryResult.success ? accessoryResult.data.products : []),
+  ];
+  const totalNewCount =
+    (foodResult.success ? foodResult.data.total : 0) +
+    (accessoryResult.success ? accessoryResult.data.total : 0);
 
   return (
     // pt-[40px] — по прямому запросу: в отличие от About (p-lg/24px) и Value Props (py-xl/40px),

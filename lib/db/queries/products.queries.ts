@@ -208,7 +208,12 @@ export async function getProducts(
     .from(product)
     .innerJoin(priceAgg, eq(priceAgg.productId, product.id))
     .where(and(...conditions))
-    .orderBy(desc(product.createdAt))
+    // categoryId ASC, не только createdAt DESC — категории заведены сид-скриптом в порядке
+    // Dry food(1)/Wet food(2)/Treats(3)/Accessories(4), тот же порядок, что и в ТЗ §3. Без этого
+    // без фильтра каталог сортировался только по свежести, и аксессуары (заведённые последними по
+    // времени) всплывали в самое начало витрины перед едой — по прямому запросу закреплены
+    // последними, свежесть остаётся вторичным критерием внутри каждой категории.
+    .orderBy(asc(product.categoryId), desc(product.createdAt))
     .limit(limit)
     .offset(offset);
 
