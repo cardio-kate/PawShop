@@ -251,7 +251,26 @@
       "email": "E-Mail",
       "phone": "Telefon",
       "comment": "Kommentar",
-      "send": "Senden"
+      "send": "Senden",
+      "sending": "Wird gesendet…"
+    },
+    "confirmation": {
+      "title": "Nachricht gesendet",
+      "message": "Vielen Dank für Ihre Nachricht — unser Mitarbeiter meldet sich in Kürze bei Ihnen.",
+      "sendAnother": "Weitere Nachricht senden"
+    },
+    "errors": {
+      "name": {
+        "required": "Name ist erforderlich."
+      },
+      "email": {
+        "invalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein."
+      },
+      "phone": {
+        "invalid": "Bitte geben Sie eine gültige Telefonnummer ein."
+      },
+      "rateLimited": "Zu viele Versuche. Bitte versuchen Sie es in ein paar Minuten erneut.",
+      "generic": "Beim Senden Ihrer Nachricht ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
     }
   },
   "Footer": {

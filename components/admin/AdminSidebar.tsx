@@ -3,18 +3,21 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, unstable_rethrow } from 'next/navigation';
-import { Package, ClipboardList, Truck, LogOut } from 'lucide-react';
+import { Package, ClipboardList, Truck, MessageSquare, LogOut } from 'lucide-react';
 import { Logo } from '@/components/layout/Logo';
 import { CounterBadge } from '@/components/ui/CounterBadge';
 import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 import { adminLogout } from '@/actions/auth.actions';
 
-// design.md → §7.8 ТЗ: три раздела админ-панели (Products/Orders/Delivery). Порядок — как в ТЗ,
-// не алфавитный.
+// design.md → §7.8 ТЗ: три раздела админ-панели (Products/Orders/Delivery), Messages — четвёртый,
+// добавлен сверх исходного ТЗ по отдельному решению 2026-08-29 (Фаза 7 плана, «Осознанный долг» →
+// STATUS): просмотр заявок с /contact, только чтение. Порядок — как в ТЗ, Messages последним, не
+// алфавитный.
 const NAV_ITEMS = [
   { href: '/nine-lives/dashboard/products', label: 'Products', icon: Package },
   { href: '/nine-lives/dashboard/orders', label: 'Orders', icon: ClipboardList },
   { href: '/nine-lives/dashboard/delivery', label: 'Delivery', icon: Truck },
+  { href: '/nine-lives/dashboard/messages', label: 'Messages', icon: MessageSquare },
 ];
 
 const ORDERS_HREF = '/nine-lives/dashboard/orders';

@@ -251,7 +251,26 @@
       "email": "Email",
       "phone": "Phone",
       "comment": "Comment",
-      "send": "Send"
+      "send": "Send",
+      "sending": "Sending…"
+    },
+    "confirmation": {
+      "title": "Message sent",
+      "message": "Thanks for reaching out — our manager will get back to you shortly.",
+      "sendAnother": "Send another message"
+    },
+    "errors": {
+      "name": {
+        "required": "Name is required."
+      },
+      "email": {
+        "invalid": "Enter a valid email address."
+      },
+      "phone": {
+        "invalid": "Enter a valid phone number."
+      },
+      "rateLimited": "Too many attempts. Please try again in a few minutes.",
+      "generic": "Something went wrong while sending your message. Please try again."
     }
   },
   "Footer": {

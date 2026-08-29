@@ -107,3 +107,34 @@ export async function sendOrderNotification(
 
   await sendTelegramMessage(chatId, lines.join('\n'));
 }
+
+export interface ContactNotificationData {
+  id: number;
+  name: string;
+  email: string;
+  phone: string | null;
+  comment: string | null;
+}
+
+// tz-pawshop.md §7.10 / Фаза 7 плана: то же правило экранирования, что sendOrderNotification — вся
+// строка целиком, включая статический текст, не только пользовательский ввод.
+export async function sendContactNotification(
+  chatId: string,
+  data: ContactNotificationData,
+): Promise<void> {
+  const lines = [
+    escapeMarkdownV2(`New contact message #${data.id}`),
+    '',
+    escapeMarkdownV2(data.name),
+    escapeMarkdownV2(data.email),
+  ];
+
+  if (data.phone) {
+    lines.push(escapeMarkdownV2(data.phone));
+  }
+  if (data.comment) {
+    lines.push('', escapeMarkdownV2(data.comment));
+  }
+
+  await sendTelegramMessage(chatId, lines.join('\n'));
+}

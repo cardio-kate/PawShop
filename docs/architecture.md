@@ -101,7 +101,7 @@ sequenceDiagram
 │   │       ├── /checkout/page.tsx     # отдельная широкая страница оформления заказа (ТЗ §7.5) — двухколоночная раскладка, не помещается в панель корзины (400px), см. DESIGN.md → Layout → Cart item
 │   │       ├── /delivery/page.tsx
 │   │       ├── /privacy-policy/page.tsx   # статический контент, см. ТЗ §7.9
-│   │       └── /contact/page.tsx      # статический контент, см. ТЗ §7.10 — добавлено сверх исходного ТЗ
+│   │       └── /contact/page.tsx      # статический контент + рабочая форма (ContactClient), см. ТЗ §7.10 — добавлено сверх исходного ТЗ
 │   │
 │   └── /(admin)                   # второй, нелокализованный корневой layout — см. §3.10
 │       ├── layout.tsx             # <html lang="en">/<body>
@@ -117,7 +117,8 @@ sequenceDiagram
 │               ├── /orders
 │               │   ├── page.tsx
 │               │   └── /[id]/page.tsx
-│               └── /delivery/page.tsx
+│               ├── /delivery/page.tsx
+│               └── /messages/page.tsx     # заявки с /contact, только чтение — добавлено сверх исходного ТЗ 2026-08-29, см. ТЗ §7.8/§7.10
 │
 ├── /components
 │   ├── /ui           # Button, Input, Select, Modal, Badge — без бизнес-логики
@@ -126,7 +127,8 @@ sequenceDiagram
 │   ├── /cart           # CartDrawer, CartItem, CartButton, CartSummary
 │   ├── /checkout        # CheckoutForm, CountrySelect, OrderConfirmation
 │   ├── /auth            # StaffLoginCard — карточка с внутренним состоянием login/forgot/reset/reset-success (см. DESIGN.md → Components → Staff login card)
-│   └── /admin          # ProductForm, ProductTable, OrderTable, ImageUploader
+│   ├── /contact          # ContactClient — react-hook-form + zodResolver, добавлено 2026-08-29
+│   └── /admin          # ProductForm, ProductTable, OrderTable, ImageUploader, ContactMessageTable (добавлено 2026-08-29)
 │
 ├── /lib
 │   ├── /db
@@ -137,13 +139,17 @@ sequenceDiagram
 │   │       ├── products.queries.ts
 │   │       ├── orders.queries.ts
 │   │       ├── delivery.queries.ts
-│   │       └── admin.queries.ts
+│   │       ├── admin.queries.ts
+│   │       └── contact.queries.ts    # createContactMessage, getAdminContactMessages — добавлено 2026-08-29
 │   │
 │   ├── /services                 # бизнес-логика, вызывает queries + интеграции
 │   │   ├── products.service.ts   # цена = min(активные варианты) и т.д.
 │   │   ├── orders.service.ts     # пересчёт суммы, проверка актуальности корзины
 │   │   ├── auth.service.ts       # логика попыток входа, блокировка, reset-код
-│   │   └── delivery.service.ts
+│   │   └── contact.service.ts    # rate-limit + insert + telegram try/catch, добавлено 2026-08-29
+│   │       # delivery.service.ts в этом дереве больше нет: delivery.actions.ts вызывает queries
+│   │       # напрямую (CRUD страны доставки не несёт бизнес-правил сверх Zod-валидации) — файл был
+│   │       # пустой с самого скелета проекта, удалён как мёртвый код 2026-08-29
 │   │
 │   ├── auth.ts                   # JWT sign/verify, bcrypt hash/compare, cookie
 │   │
@@ -151,15 +157,16 @@ sequenceDiagram
 │   │   ├── storage.interface.ts  # upload(file), delete(url)
 │   │   └── vercel-blob.provider.ts  # реализован сейчас; cloudinary.provider.ts добавляется позже за тем же интерфейсом, если реально понадобится сменить провайдера
 │   │
-│   ├── telegram.ts                # sendOrderNotification, sendResetCode (try/catch)
+│   ├── telegram.ts                # sendOrderNotification, sendResetCode, sendContactNotification (try/catch)
 │   │
-│   ├── rate-limit.ts                # rate limit по IP для createOrder/requestPasswordReset — см. раздел 3.8
+│   ├── rate-limit.ts                # rate limit по IP для createOrder/requestPasswordReset/submitContactMessage — см. раздел 3.8
 │   │
 │   ├── /validation                # zod-схемы — общие для клиента и сервера
 │   │   ├── product.schema.ts
 │   │   ├── order.schema.ts
 │   │   ├── delivery.schema.ts
-│   │   └── auth.schema.ts
+│   │   ├── auth.schema.ts
+│   │   └── contact.schema.ts     # добавлено 2026-08-29
 │   │
 │   ├── /store
 │   │   └── cart.store.ts          # Zustand + persist(localStorage)
@@ -171,7 +178,8 @@ sequenceDiagram
 │   ├── products.actions.ts
 │   ├── orders.actions.ts
 │   ├── delivery.actions.ts
-│   └── auth.actions.ts
+│   ├── auth.actions.ts
+│   └── contact.actions.ts          # submitContactMessage (публичный), getAdminContactMessages — добавлено 2026-08-29
 │
 ├── /types
 │   └── index.ts                    # часть типов — InferSelectModel из schema.ts,

@@ -121,6 +121,18 @@ export const admin = pgTable('admins', {
   sessionVersion: integer('session_version').notNull().default(0),
 });
 
+// Заявки формы обратной связи (/contact) — Фаза 7 плана, вне исходной модели ТЗ §4. Postgres —
+// источник истины, не Telegram (риск потери сообщения, решение зафиксировано с пользователем
+// 2026-08-23): любое Telegram-уведомление поверх — опциональный алерт, не замена хранению.
+export const contactMessage = pgTable('contact_messages', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  email: text('email').notNull(),
+  phone: text('phone'), // nullable — необязательное поле формы, в отличие от Order.phone
+  comment: text('comment'), // nullable — необязательное поле формы (contact/page.tsx, без required)
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
 // Служебная таблица для lib/rate-limit.ts (architecture.md §3.8) — не часть модели данных ТЗ §4.
 // Фиксированное окно: одна строка на (ip, windowStart), атомарный upsert-инкремент count.
 export const rateLimit = pgTable(
