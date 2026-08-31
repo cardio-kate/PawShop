@@ -43,7 +43,7 @@ export function getTestDb() {
   return testDb;
 }
 
-// Одна строка на все 8 таблиц — CASCADE снимает необходимость думать о порядке FK.
+// Одна строка на все 9 таблиц — CASCADE снимает необходимость думать о порядке FK.
 // RESTART IDENTITY — id-последовательности тоже сбрасываются, тесты не зависят от того, что
 // было создано в предыдущих прогонах.
 export async function resetDb(): Promise<void> {
@@ -51,7 +51,7 @@ export async function resetDb(): Promise<void> {
     TRUNCATE TABLE
       categories, products, product_variants,
       delivery_countries, orders, order_items,
-      admins, rate_limit
+      admins, rate_limit, contact_messages
     RESTART IDENTITY CASCADE
   `);
 }
