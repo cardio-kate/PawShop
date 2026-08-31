@@ -18,3 +18,13 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint
       - run: npm run test:unit
+      - name: Migrate test database
+        run: npm run db:migrate
+        env:
+          DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_TEST_UNPOOLED }}
+      - run: npm run test:integration
+        env:
+          DATABASE_URL_TEST: ${{ secrets.DATABASE_URL_TEST }}
+          DATABASE_URL_TEST_UNPOOLED: ${{ secrets.DATABASE_URL_TEST_UNPOOLED }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET_TEST }}
+          JWT_EXPIRES_IN: 7d
