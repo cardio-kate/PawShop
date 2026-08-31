@@ -38,11 +38,19 @@ const cspHeader = `
   .replace(/\s{2,}/g, ' ')
   .trim();
 
-// output: 'standalone' — задел на перенос с Vercel на VPS/Docker (docs/architecture.md, раздел 6)
+// output: 'standalone' — задел на перенос с Vercel на VPS/Docker (docs/architecture.md, раздел 6),
+// но ТОЛЬКО вне самого Vercel: его билдер сам трассирует и упаковывает serverless-функции, а
+// 'standalone' меняет структуру вывода в .next/ (свой server.js, другой набор .nft.json) так, что
+// vercel build падает на "ENOENT .next/next-server.js.nft.json" — эти два режима деплоя взаимно
+// исключающие, не сочетание "чем больше флагов, тем переносимее" (node_modules/next/dist/docs/
+// 01-app/03-api-reference/05-config/01-next-config-js/output.md, раздел Vercel в deploying.md
+// перечисляет их как разные пути). process.env.VERCEL — переменная, которую сама Vercel
+// выставляет на своих билд-машинах (не путать с NEXT_PUBLIC_*, она не должна попадать в .env.local
+// вручную) — включаем standalone только при её отсутствии, т.е. при локальной Docker-сборке.
 // images.remotePatterns — без этого next/image откажется оптимизировать фото товаров,
 // загруженные во внешнее хранилище (Vercel Blob), см. docs/architecture.md, раздел 3.5
 const nextConfig: NextConfig = {
-  output: 'standalone',
+  output: process.env.VERCEL ? undefined : 'standalone',
   // jose (lib/auth.ts) — чистый ESM без CJS-сборки (node_modules/jose/package.json) — без этого и
   // бандлер next build, и next/jest (читает ту же опцию) спотыкаются об `export` внутри node_modules.
   // next-intl — та же причина: products.actions.ts (через i18n/routing.ts) импортирует его, и первый
