@@ -24,7 +24,7 @@ export default async function StorefrontNotFound() {
           (CheckoutClient.tsx) и пустого каталога (CatalogClient.tsx). */}
       <div className="gap-md py-3xl flex flex-col items-center text-center">
         <h1 className="text-h1 text-neutral-900 uppercase">{t('title')}</h1>
-        <p className="text-body-md text-neutral-500">{t('description')}</p>
+        <p className="text-body-md text-neutral-700">{t('description')}</p>
         <Link href="/" className="text-label-md text-paw">
           {t('backHome')}
         </Link>

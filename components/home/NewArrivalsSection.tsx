@@ -55,7 +55,7 @@ export async function NewArrivalsSection() {
       <div className="gap-sm flex flex-col items-center text-center">
         {/* text-[14px] поверх text-label-caps (12px) — по прямому запросу, точечное укрупнение
             только этой подписи; letter-spacing/font-weight/line-height остаются от label-caps. */}
-        <p className="text-label-caps text-[14px] text-neutral-500">{t('eyebrow')}</p>
+        <p className="text-label-caps text-[14px] text-neutral-700">{t('eyebrow')}</p>
         <h2 className="text-section-heading font-display text-neutral-900 uppercase">{t('title')}</h2>
       </div>
 

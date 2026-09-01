@@ -38,7 +38,7 @@ export function OrderDetail({ order }: OrderDetailProps) {
             <div key={item.id} className="gap-xs rounded-md border border-neutral-300 p-sm flex flex-col">
               <div>
                 <p className="text-body-sm text-neutral-900">{item.productNameAtOrder}</p>
-                <p className="text-body-sm text-neutral-500">{item.variantLabelAtOrder}</p>
+                <p className="text-body-sm text-neutral-700">{item.variantLabelAtOrder}</p>
               </div>
               <div className="text-body-sm flex items-center justify-between text-neutral-700">
                 <span>
@@ -75,7 +75,7 @@ export function OrderDetail({ order }: OrderDetailProps) {
                 <tr key={item.id} className={adminTableRowClassName(index)}>
                   <td className={CELL_CLASSNAME}>
                     {item.productNameAtOrder}
-                    <span className="text-body-sm block text-neutral-500">
+                    <span className="text-body-sm block text-neutral-700">
                       {item.variantLabelAtOrder}
                     </span>
                   </td>
@@ -112,7 +112,7 @@ export function OrderDetail({ order }: OrderDetailProps) {
             <h2 className="text-h3 text-neutral-900">Customer</h2>
             <OrderStatusControl orderId={order.id} status={order.status} />
           </div>
-          <p className="text-body-sm text-neutral-500">
+          <p className="text-body-sm text-neutral-700">
             Order #{order.id} · {ORDER_DATETIME_FORMATTER.format(new Date(order.createdAt))}
           </p>
           <p className="text-body-sm text-neutral-900">{order.customerName}</p>
@@ -132,7 +132,7 @@ export function OrderDetail({ order }: OrderDetailProps) {
 
         <div className="gap-sm flex flex-col">
           <h2 className="text-h3 text-neutral-900">Comment</h2>
-          <p className="text-body-sm text-neutral-500">{order.comment ?? 'No comment'}</p>
+          <p className="text-body-sm text-neutral-700">{order.comment ?? 'No comment'}</p>
         </div>
       </div>
     </div>

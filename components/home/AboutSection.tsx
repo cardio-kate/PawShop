@@ -20,7 +20,7 @@ export async function AboutSection() {
     // как у ValuePropsSection/NewArrivalsSection ниже.
     <section id="about" className="px-lg pb-lg scroll-mt-20 rounded-2xl">
       <div className="gap-sm flex flex-col items-center text-center">
-        <p className="text-label-caps text-neutral-500">{t('eyebrow')}</p>
+        <p className="text-label-caps text-neutral-700">{t('eyebrow')}</p>
         <h2 className="text-section-heading font-display text-neutral-900 uppercase">{t('title')}</h2>
       </div>
 

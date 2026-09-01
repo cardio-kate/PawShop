@@ -208,7 +208,7 @@ function ResetStep({ onReset }: { onReset: () => void }) {
 
   return (
     <form className="gap-md flex flex-col" onSubmit={handleSubmit(onSubmit)} noValidate>
-      <p className="text-body-sm text-neutral-500">Code sent to your Telegram</p>
+      <p className="text-body-sm text-neutral-700">Code sent to your Telegram</p>
       {errors.root && (
         <p
           role="alert"
@@ -279,7 +279,7 @@ function ResetSuccessStep({ onBackToSignIn }: { onBackToSignIn: () => void }) {
         <p ref={headingRef} tabIndex={-1} className="text-body-md text-neutral-900 outline-none">
           Password updated
         </p>
-        <p className="text-body-sm text-neutral-500">You can now sign in with your new password</p>
+        <p className="text-body-sm text-neutral-700">You can now sign in with your new password</p>
       </div>
       <Button type="button" variant="secondary" onClick={onBackToSignIn} className="w-full">
         Back to sign in

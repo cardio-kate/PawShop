@@ -377,7 +377,7 @@ export function Header() {
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={t('searchPlaceholder')}
                 autoFocus
-                className="text-body-sm w-full min-w-0 text-neutral-900 outline-none placeholder:text-neutral-500"
+                className="text-body-sm w-full min-w-0 text-neutral-900 outline-none placeholder:text-neutral-700"
               />
               {query.length > 0 && (
                 <button

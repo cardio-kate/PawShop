@@ -37,7 +37,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
         {resolvedItems.length === 0 ? (
           <div className="px-lg gap-sm flex flex-1 flex-col items-center justify-center text-center">
             <EmptyStateCat />
-            <p className="text-body-md text-neutral-500">{t('empty')}</p>
+            <p className="text-body-md text-neutral-700">{t('empty')}</p>
           </div>
         ) : (
           <ul className="gap-lg px-lg py-lg flex flex-1 flex-col overflow-y-auto">

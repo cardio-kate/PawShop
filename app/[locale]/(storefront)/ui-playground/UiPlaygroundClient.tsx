@@ -183,7 +183,7 @@ export function UiPlaygroundClient() {
       >
         <div className="gap-md p-lg pt-2xl flex flex-col">
           <h2 className="text-h3 text-neutral-900">Your cart</h2>
-          <p className="text-body-sm text-neutral-500">
+          <p className="text-body-sm text-neutral-700">
             Panel primitive demo — tab through, Escape closes.
           </p>
           <a href="#" className="text-label-md text-paw">
@@ -202,7 +202,7 @@ export function UiPlaygroundClient() {
       >
         <div className="gap-md p-lg pt-2xl flex flex-col">
           <h2 className="text-h3 text-neutral-900">Delete product?</h2>
-          <p className="text-body-sm text-neutral-500">This action cannot be undone.</p>
+          <p className="text-body-sm text-neutral-700">This action cannot be undone.</p>
           <Button variant="primary" onClick={() => setIsAdminModalOpen(false)}>
             Confirm
           </Button>

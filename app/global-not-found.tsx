@@ -25,7 +25,7 @@ export default function GlobalNotFound() {
       <body className="bg-paw-tint flex min-h-screen items-center justify-center px-4 font-sans text-neutral-900 antialiased">
         <div className="gap-md flex flex-col items-center text-center">
           <h1 className="text-h1 uppercase">Page not found</h1>
-          <p className="text-body-md text-neutral-500">
+          <p className="text-body-md text-neutral-700">
             The page you are looking for does not exist.
           </p>
           <Link href="/" className="text-label-md text-paw">

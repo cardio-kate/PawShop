@@ -199,7 +199,7 @@ export function CatalogClient({ categories }: CatalogClientProps) {
               compact
             />
           </div>
-          <span className="text-body-sm text-neutral-500" aria-hidden="true">
+          <span className="text-body-sm text-neutral-700" aria-hidden="true">
             –
           </span>
           <div className="w-20">
@@ -217,7 +217,7 @@ export function CatalogClient({ categories }: CatalogClientProps) {
         </FilterRow>
       </div>
 
-      <p className="text-body-sm text-neutral-500" aria-live="polite">
+      <p className="text-body-sm text-neutral-700" aria-live="polite">
         {t('resultsCount', { count: total })}
       </p>
 
@@ -243,7 +243,7 @@ export function CatalogClient({ categories }: CatalogClientProps) {
         <div className="gap-sm py-3xl flex flex-col items-center text-center">
           <EmptyStateCat />
           <p className="text-body-md text-neutral-900">{t('emptyTitle')}</p>
-          <p className="text-body-sm text-neutral-500">{t('emptyDescription')}</p>
+          <p className="text-body-sm text-neutral-700">{t('emptyDescription')}</p>
           {hasActiveFilters && (
             <Button variant="secondary" className="mt-sm" onClick={clearFilters}>
               {t('filters.clear')}

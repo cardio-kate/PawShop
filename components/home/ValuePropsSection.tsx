@@ -49,7 +49,7 @@ export async function ValuePropsSection() {
   return (
     <section id="value-props" className="bg-paw-tint px-lg py-xl rounded-t-2xl sm:px-[40px]">
       <div className="gap-sm flex flex-col items-center text-center">
-        <p className="text-label-caps text-neutral-500">{t('eyebrow')}</p>
+        <p className="text-label-caps text-neutral-700">{t('eyebrow')}</p>
         <h2 className="text-section-heading font-display text-neutral-900 uppercase">{t('title')}</h2>
       </div>
 

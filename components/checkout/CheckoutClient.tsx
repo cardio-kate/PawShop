@@ -127,7 +127,7 @@ export function CheckoutClient({ countries }: CheckoutClientProps) {
           {t('confirmation.message', { id: orderResult.id })}
         </p>
         {orderResult.unavailableCount > 0 && (
-          <p role="alert" className="text-body-sm text-neutral-500">
+          <p role="alert" className="text-body-sm text-neutral-700">
             {tCart('unavailableWarning', { count: orderResult.unavailableCount })}
           </p>
         )}
@@ -141,7 +141,7 @@ export function CheckoutClient({ countries }: CheckoutClientProps) {
   if (resolvedItems.length === 0) {
     return (
       <div className="gap-md py-3xl flex flex-col items-center text-center">
-        <p className="text-body-md text-neutral-500">{t('emptyCart')}</p>
+        <p className="text-body-md text-neutral-700">{t('emptyCart')}</p>
         <Link href="/catalog" className="text-label-md text-paw">
           {t('backToCatalog')}
         </Link>

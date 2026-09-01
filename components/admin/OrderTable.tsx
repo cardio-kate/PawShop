@@ -33,7 +33,7 @@ export function OrderTable({ orders }: OrderTableProps) {
           маленькая иконка в углу. ≥ sm — обычная таблица без изменений. */}
       <div className="gap-sm flex flex-col sm:hidden">
         {orders.length === 0 ? (
-          <p className="px-md py-3xl text-body-md text-center text-neutral-500">No orders yet.</p>
+          <p className="px-md py-3xl text-body-md text-center text-neutral-700">No orders yet.</p>
         ) : (
           orders.map((order) => (
             <Link
@@ -68,7 +68,7 @@ export function OrderTable({ orders }: OrderTableProps) {
               </span>
               <div className="flex items-center justify-between">
                 <span
-                  className={`text-body-sm text-neutral-500 ${order.status === 'new' ? 'font-semibold' : ''}`}
+                  className={`text-body-sm text-neutral-700 ${order.status === 'new' ? 'font-semibold' : ''}`}
                 >
                   {ORDER_DATE_FORMATTER.format(new Date(order.createdAt))}
                 </span>
@@ -111,7 +111,7 @@ export function OrderTable({ orders }: OrderTableProps) {
                 таблицу. Реально достижимо теперь на пустой БД (getOrders() без заказов). */}
             {orders.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-md py-3xl text-body-md text-center text-neutral-500">
+                <td colSpan={6} className="px-md py-3xl text-body-md text-center text-neutral-700">
                   No orders yet.
                 </td>
               </tr>

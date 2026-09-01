@@ -23,7 +23,7 @@ export function ContactMessageTable({ messages }: ContactMessageTableProps) {
           DeliveryTable, без ссылки (в отличие от OrderTable) — тут нет отдельной страницы деталей. */}
       <div className="gap-sm flex flex-col sm:hidden">
         {messages.length === 0 ? (
-          <p className="px-md py-3xl text-body-md text-center text-neutral-500">No messages yet.</p>
+          <p className="px-md py-3xl text-body-md text-center text-neutral-700">No messages yet.</p>
         ) : (
           messages.map((message) => (
             <div
@@ -32,7 +32,7 @@ export function ContactMessageTable({ messages }: ContactMessageTableProps) {
             >
               <div className="flex items-center justify-between">
                 <span className="text-label-md text-neutral-900">{message.name}</span>
-                <span className="text-body-sm text-neutral-500">
+                <span className="text-body-sm text-neutral-700">
                   {ORDER_DATETIME_FORMATTER.format(new Date(message.createdAt))}
                 </span>
               </div>
@@ -72,7 +72,7 @@ export function ContactMessageTable({ messages }: ContactMessageTableProps) {
                 заголовок остаётся видимым и на пустой БД. */}
             {messages.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-md py-3xl text-body-md text-center text-neutral-500">
+                <td colSpan={5} className="px-md py-3xl text-body-md text-center text-neutral-700">
                   No messages yet.
                 </td>
               </tr>

@@ -117,7 +117,7 @@ export function DeliveryTable({ countries: initialCountries }: DeliveryTableProp
             </div>
             <div className="gap-sm grid grid-cols-2">
               <label className="gap-xs flex flex-col">
-                <span className="text-body-sm text-neutral-500">Price</span>
+                <span className="text-body-sm text-neutral-700">Price</span>
                 <Input
                   type="number"
                   step="0.01"
@@ -129,7 +129,7 @@ export function DeliveryTable({ countries: initialCountries }: DeliveryTableProp
                 />
               </label>
               <label className="gap-xs flex flex-col">
-                <span className="text-body-sm text-neutral-500">Estimated days</span>
+                <span className="text-body-sm text-neutral-700">Estimated days</span>
                 <Input
                   value={country.estimatedDays}
                   onChange={(e) => updateLocal(country.id, { estimatedDays: e.target.value })}

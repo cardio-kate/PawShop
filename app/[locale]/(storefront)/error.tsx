@@ -30,7 +30,7 @@ export default function StorefrontError({
     <div className={STOREFRONT_PAGE_CONTAINER_CLASSNAME}>
       <div className="gap-md py-3xl flex flex-col items-center text-center">
         <h1 className="text-h1 text-neutral-900 uppercase">{t('title')}</h1>
-        <p className="text-body-md text-neutral-500">{t('description')}</p>
+        <p className="text-body-md text-neutral-700">{t('description')}</p>
         <Button variant="primary" onClick={() => retry()}>
           {t('retry')}
         </Button>

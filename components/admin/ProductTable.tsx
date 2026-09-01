@@ -153,7 +153,7 @@ export function ProductTable({ products: initialProducts, categories }: ProductT
           колонкой. ≥ sm — обычная таблица без изменений. */}
       <div className="gap-sm flex flex-col sm:hidden">
         {products.length === 0 ? (
-          <p className="px-md py-3xl text-body-md text-center text-neutral-500">No products yet.</p>
+          <p className="px-md py-3xl text-body-md text-center text-neutral-700">No products yet.</p>
         ) : (
           products.map((product) => (
             <div
@@ -173,7 +173,7 @@ export function ProductTable({ products: initialProducts, categories }: ProductT
                   </div>
                   <div className="min-w-0">
                     <p className="text-label-md truncate text-neutral-900">{product.nameEn}</p>
-                    <p className="text-body-sm truncate text-neutral-500">
+                    <p className="text-body-sm truncate text-neutral-700">
                       {getCategoryName(product.categoryId)}
                     </p>
                   </div>
@@ -250,7 +250,7 @@ export function ProductTable({ products: initialProducts, categories }: ProductT
                 достижимо теперь на пустой БД (getAdminProducts() без товаров). */}
             {products.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-md py-3xl text-body-md text-center text-neutral-500">
+                <td colSpan={7} className="px-md py-3xl text-body-md text-center text-neutral-700">
                   No products yet.
                 </td>
               </tr>
@@ -331,7 +331,7 @@ export function ProductTable({ products: initialProducts, categories }: ProductT
         <div className="gap-lg p-lg pt-3xl flex flex-col">
           <div className="gap-sm flex flex-col">
             <h2 className="text-h3 text-neutral-900">Delete product?</h2>
-            <p className="text-body-sm text-neutral-500">
+            <p className="text-body-sm text-neutral-700">
               {productToDelete &&
                 `"${productToDelete.nameEn}" will be marked inactive and hidden from the storefront.`}
             </p>

@@ -57,7 +57,7 @@ export function CartItem({ product, variant, productId, variantId, quantity, loc
           </button>
         </div>
 
-        <span className="text-body-sm text-neutral-500">{variant.label}</span>
+        <span className="text-body-sm text-neutral-700">{variant.label}</span>
 
         <div className="gap-sm mt-auto flex items-center justify-between">
           <div className="gap-xs flex items-center rounded-full border border-neutral-300">

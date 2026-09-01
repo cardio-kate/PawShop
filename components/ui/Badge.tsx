@@ -38,7 +38,7 @@ const VARIANT_TYPOGRAPHY_CLASSNAME: Record<BadgeVariant, string> = {
 
 export const BADGE_COLOR_CLASSNAME: Record<BadgeVariant, string> = {
   new: 'bg-secondary text-neutral-900',
-  'out-of-stock': 'bg-neutral-100 text-neutral-500',
+  'out-of-stock': 'bg-neutral-100 text-neutral-700',
   'order-new': 'bg-paw-tint text-paw',
   'order-processing': 'bg-tertiary-tint text-tertiary-on-tint',
   'order-done': 'bg-secondary-tint text-neutral-900',
