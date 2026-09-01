@@ -2,7 +2,7 @@
 
 # PawShop — проектный контекст
 
-Полные доки: [`docs/tz-pawshop.md`](docs/tz-pawshop.md) (ТЗ), [`docs/architecture.md`](docs/architecture.md)
+Полные доки: [`docs/product-spec.md`](docs/product-spec.md) (ТЗ), [`docs/architecture.md`](docs/architecture.md)
 (архитектура; §9 — про `proxy.ts`/рантайм в Next 16), [`docs/design.md`](docs/design.md) (дизайн-система).
 Этот файл — не замена им, а выжимка решений, которые чаще всего ломают по незнанию или «улучшают» не
 спросив. При конфликте с `docs/*` доки главнее: значит этот файл устарел, его нужно поправить, а не

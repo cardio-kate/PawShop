@@ -8,7 +8,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return { title: t('title'), description: t('intro') };
 }
 
-// Фаза 7 плана (docs/tz-pawshop.md §7.10, .claude/plans/backend-realization-pawshop.md): форма
+// Фаза 7 плана (docs/product-spec.md §7.10, .claude/plans/backend-realization-pawshop.md): форма
 // подключена к submitContactMessage через ContactClient — реальный сабмит, не декоративная
 // disabled-кнопка. Заголовок и колонка не центрированы, в отличие от Catalog/Delivery/Privacy
 // Policy — см. design.md → Typography, «Исключение — Contact»: страница про заполнение формы, а не

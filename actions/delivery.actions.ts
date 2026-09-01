@@ -43,7 +43,7 @@ export async function getAdminDeliveryCountries(): Promise<DeliveryCountryRow[]>
   return queryGetAdminDeliveryCountries();
 }
 
-// tz-pawshop.md §11: только правка price/estimatedDays/isActive у уже существующей страны —
+// product-spec.md §11: только правка price/estimatedDays/isActive у уже существующей страны —
 // create/delete через action нет (см. lib/validation/delivery.schema.ts).
 export async function updateDeliveryCountry(
   id: number,

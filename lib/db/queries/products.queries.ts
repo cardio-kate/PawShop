@@ -124,7 +124,7 @@ export interface GetProductsFilters {
   priceFrom?: number;
   priceTo?: number;
   search?: string;
-  // Home «New Arrivals» (tz-pawshop.md §3.1: «отдельная выборка по флагу isNew») — расширение
+  // Home «New Arrivals» (product-spec.md §3.1: «отдельная выборка по флагу isNew») — расширение
   // существующего getProducts(filters), не новый action: тот же фильтр-объект, что category/
   // ageGroup выше, не отдельная функция.
   isNew?: boolean;

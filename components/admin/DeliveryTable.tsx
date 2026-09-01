@@ -13,7 +13,7 @@ interface DeliveryTableProps {
   countries: DeliveryCountryRow[];
 }
 
-// tz-pawshop.md §7.8/§11: единственная правка, доступная админу, — price/estimatedDays/isActive
+// product-spec.md §7.8/§11: единственная правка, доступная админу, — price/estimatedDays/isActive
 // уже существующей страны (updateDeliveryCountry); создания/удаления стран из UI нет (см. §11 —
 // набор стран заводится только scripts/seed-delivery-countries.ts). Поэтому здесь, в отличие от
 // ProductTable, нет ни кнопки добавления строки, ни удаления — только инлайн-редактирование, тот

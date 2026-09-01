@@ -70,7 +70,7 @@ export interface OrderNotificationData {
   total: string;
 }
 
-// tz-pawshop.md §12: товары, сумма товаров, стоимость доставки, итоговая сумма, контакты клиента,
+// product-spec.md §12: товары, сумма товаров, стоимость доставки, итоговая сумма, контакты клиента,
 // полный адрес доставки (страна/город/улица/индекс), комментарий (если заполнен). Каждая строка
 // экранируется целиком через escapeMarkdownV2, включая статический текст и денежные значения
 // (numeric(10,2)-строки содержат ".", зарезервированный символ MarkdownV2) — не только
@@ -116,7 +116,7 @@ export interface ContactNotificationData {
   comment: string | null;
 }
 
-// tz-pawshop.md §7.10 / Фаза 7 плана: то же правило экранирования, что sendOrderNotification — вся
+// product-spec.md §7.10 / Фаза 7 плана: то же правило экранирования, что sendOrderNotification — вся
 // строка целиком, включая статический текст, не только пользовательский ввод.
 export async function sendContactNotification(
   chatId: string,

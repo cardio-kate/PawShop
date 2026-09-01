@@ -9,7 +9,7 @@ import { add, multiplyByQuantity, sum } from '@/lib/money';
 import { EIRCODE_PATTERN } from '@/lib/validation/order.schema';
 import type { OrderInput } from '@/lib/validation/order.schema';
 
-// tz-pawshop.md §7.5/§12, CLAUDE.md → «Заказ и корзина»: сервер пересчитывает сумму и берёт цены
+// product-spec.md §7.5/§12, CLAUDE.md → «Заказ и корзина»: сервер пересчитывает сумму и берёт цены
 // из БД, клиентским total/ценам не доверяет никогда; недоступные позиции исключаются с
 // предупреждением, не блокируют весь заказ — если после фильтрации не осталось ни одной, заказ без
 // единого OrderItem не создаётся вообще (план Фазы 4, решено явно, не отдано на усмотрение).
