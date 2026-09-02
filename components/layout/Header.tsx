@@ -232,7 +232,7 @@ export function Header() {
     <header className="bg-paw-tint sticky top-0 z-50 border-b border-neutral-200">
       <div
         className={`max-w-container gap-md sm:px-lg mx-auto h-20 items-center px-[10px] ${
-          isSearchOpen ? 'flex' : 'grid grid-cols-[1fr_auto_1fr]'
+          isSearchOpen ? 'flex' : 'grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]'
         } sm:flex sm:justify-between`}
       >
         <div className="flex shrink-0 items-center" onKeyDown={handleMobileNavKeyDown}>
