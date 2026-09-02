@@ -17,7 +17,13 @@ export const TEXT_FIELD_BASE_CLASSNAME =
 
 // design.md → Components «Price range filter»: компактный вариант (padding 8px 12px, body-sm)
 // сейчас нужен только Input (два числовых поля в CatalogClient) — Textarea всегда полноразмерный.
+//
+// text-[16px] на мобильном, только от sm: — дизайн-токен (design.md → body-md/body-sm, 15/14px):
+// iOS Safari зумит всю страницу при фокусе на поле с font-size < 16px (виден по sticky-хедеру,
+// съезжающему за правый край экрана — не баг вёрстки хедера, поведение самого Safari). Захватывает
+// только мобильный диапазон, где есть тач-клавиатура и это поведение вообще применимо — на sm+
+// (планшет/десктоп, курсор+клавиатура) возвращается настоящий токен без визуального отличия.
 export const TEXT_FIELD_SIZE_CLASSNAME = {
-  default: 'px-md py-[12px] text-body-md',
-  compact: 'px-[12px] py-sm text-body-sm',
+  default: 'px-md py-[12px] text-[16px] sm:text-body-md',
+  compact: 'px-[12px] py-sm text-[16px] sm:text-body-sm',
 } as const;
