@@ -19,6 +19,10 @@ are submitted as inquiries — no online payment — and a single admin confirms
 </p>
 
 <p align="center">
+  <sub>Next.js 16 · TypeScript · Tailwind · Zustand · PostgreSQL (Neon) · Drizzle ORM · Zod · custom auth (bcrypt + jose) · next-intl · Vercel Blob · Telegram Bot API</sub>
+</p>
+
+<p align="center">
   <img src="public/readme/catalog-hero.png" alt="PawShop catalog page" width="760"><br>
   <sub>Catalog — category/age/price filters, real product photos</sub>
 </p>
@@ -45,6 +49,12 @@ Full documentation lives in [`/docs`](./docs):
 - [`docs/product-spec.md`](./docs/product-spec.md) — product spec (technical requirements)
 - [`docs/architecture.md`](./docs/architecture.md) — project architecture
 - [`docs/design.md`](./docs/design.md) — design system
+
+## Development process
+
+This project was built with Claude Code as an AI pair programmer, working from written specs
+([`docs/architecture.md`](./docs/architecture.md), [`docs/product-spec.md`](./docs/product-spec.md),
+[`docs/design.md`](./docs/design.md)) and project engineering rules ([`CLAUDE.md`](./CLAUDE.md)).
 
 ## Getting started
 
