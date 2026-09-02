@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
+import { FOCUS_RING_CLASSNAME } from '@/components/ui/interaction-styles';
 import {
   getCartSubtotal,
   useResolvedCartItems,
@@ -68,6 +69,7 @@ export function CheckoutClient({ countries }: CheckoutClientProps) {
       comment: '',
       deliveryCountryId: countries[0]?.id,
       items: toItemsPayload(resolvedItems),
+      agreesToPrivacyPolicy: false,
     },
   });
 
@@ -303,11 +305,36 @@ export function CheckoutClient({ countries }: CheckoutClientProps) {
               </div>
             </div>
 
+            <label className="gap-xs mt-lg flex items-start">
+              <input
+                type="checkbox"
+                {...register('agreesToPrivacyPolicy')}
+                className={`accent-paw mt-[3px] h-4 w-4 shrink-0 rounded-sm border-neutral-300 ${FOCUS_RING_CLASSNAME}`}
+                aria-describedby={
+                  errors.agreesToPrivacyPolicy ? 'agreesToPrivacyPolicy-error' : undefined
+                }
+              />
+              <span className="text-body-sm text-neutral-700">
+                {t.rich('fields.agreesToPrivacyPolicy', {
+                  link: (chunks) => (
+                    <Link href="/privacy-policy" className="text-paw underline">
+                      {chunks}
+                    </Link>
+                  ),
+                })}
+              </span>
+            </label>
+            {errors.agreesToPrivacyPolicy && (
+              <span id="agreesToPrivacyPolicy-error" role="alert" className="text-body-sm text-error">
+                {fieldError(errors.agreesToPrivacyPolicy.message)}
+              </span>
+            )}
+
             <Button
               type="submit"
               variant="primary"
               disabled={isSubmitting}
-              className="mt-lg w-full"
+              className="mt-md w-full"
             >
               {isSubmitting ? t('placingOrder') : t('placeOrder')}
             </Button>

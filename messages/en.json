@@ -135,7 +135,8 @@
       "city": "City",
       "postalCode": "Postal code",
       "country": "Delivery country",
-      "comment": "Comment (optional)"
+      "comment": "Comment (optional)",
+      "agreesToPrivacyPolicy": "I agree to the <link>Privacy Policy</link>"
     },
     "summaryTitle": "Order Summary",
     "subtotal": "Sub Total",
@@ -165,6 +166,9 @@
       },
       "items": {
         "empty": "Your cart is empty."
+      },
+      "agreesToPrivacyPolicy": {
+        "required": "You must agree to the Privacy Policy to place an order."
       },
       "rateLimited": "Too many attempts. Please try again in a few minutes.",
       "noAvailableItems": "The items in your cart are no longer available. Please return to the catalog.",

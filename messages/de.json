@@ -135,7 +135,8 @@
       "city": "Stadt",
       "postalCode": "Postleitzahl",
       "country": "Lieferland",
-      "comment": "Kommentar (optional)"
+      "comment": "Kommentar (optional)",
+      "agreesToPrivacyPolicy": "Ich stimme der <link>Datenschutzerklärung</link> zu"
     },
     "summaryTitle": "Bestellübersicht",
     "subtotal": "Zwischensumme",
@@ -165,6 +166,9 @@
       },
       "items": {
         "empty": "Ihr Warenkorb ist leer."
+      },
+      "agreesToPrivacyPolicy": {
+        "required": "Sie müssen der Datenschutzerklärung zustimmen, um eine Bestellung aufzugeben."
       },
       "rateLimited": "Zu viele Versuche. Bitte versuchen Sie es in ein paar Minuten erneut.",
       "noAvailableItems": "Die Artikel in Ihrem Warenkorb sind nicht mehr verfügbar. Bitte kehren Sie zum Katalog zurück.",
