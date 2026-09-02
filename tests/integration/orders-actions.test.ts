@@ -42,6 +42,9 @@ const BASE_ADDRESS = {
   city: 'Berlin',
   postalCode: '10115',
   comment: '',
+  // order.schema.ts: consent checkbox added to the checkout form, required on every createOrder
+  // call now (not persisted — see the comment there for why).
+  agreesToPrivacyPolicy: true as const,
 };
 
 describe('actions/orders.actions.createOrder — happy path', () => {
