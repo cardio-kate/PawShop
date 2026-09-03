@@ -1,4 +1,5 @@
 import 'server-only';
+import { unstable_cache } from 'next/cache';
 import { and, asc, desc, eq, ilike, inArray, ne, sql } from 'drizzle-orm';
 import { dbHttp, dbPool } from '@/lib/db';
 import { category, product, productVariant } from '@/lib/db/schema';
@@ -11,9 +12,16 @@ import type { AgeGroup } from '@/types';
 // забота products.service.ts, не этого файла. Функции ниже возвращают колонки
 // nameEn/nameDe/descriptionEn/descriptionDe как есть, не резолвят fallback (architecture.md §3.10).
 //
-// Кэширование (unstable_cache / revalidateTag('products')) сюда не входит — CLAUDE.md прямо
-// требует свериться с node_modules/next/dist/docs по Cache Components в Next 16 перед тем, как
-// писать кэш-слой, это отдельный шаг, не часть SQL-запросов.
+// Кэширование — unstable_cache, не "use cache"/Cache Components: сверено с node_modules/next/dist/
+// docs/01-app/02-guides/caching-without-cache-components.md — этот проект не включает
+// cacheComponents (CLAUDE.md → «Кэш и SEO», несовместимость с next-intl), а в этом режиме
+// unstable_cache остаётся официальным, не только "устаревшим для обратной совместимости" способом
+// кэшировать non-fetch источники (Drizzle-запросы). Публичные getProducts/getProductBySlug/
+// getRelatedProducts — тег 'products' (architecture.md §3.1), инвалидация только через
+// revalidateTag из products.actions.ts, без TTL (revalidate не задаётся — иначе внесённая правка
+// в админке ждала бы истечения TTL вместо мгновенного обновления, что architecture.md §3.1 прямо
+// исключает). getCategories — исключение: длинный TTL без тега (architecture.md §3.7 — 4 строки,
+// меняются только сид-скриптом в обход приложения, инвалидировать по событию нечему).
 
 type Locale = (typeof routing.locales)[number];
 
@@ -191,7 +199,7 @@ async function countProducts(filters: GetProductsFilters): Promise<number> {
 // (мультивыбор, CatalogClient.tsx), не одиночное значение. limit/offset с дефолтом
 // CATALOG_PAGE_SIZE=8, всегда возвращает total для пагинации (architecture.md §4 «Пагинация
 // каталога — решено»).
-export async function getProducts(
+async function getProductsUncached(
   filters: GetProductsFilters,
 ): Promise<{ products: ProductListItem[]; total: number }> {
   const limit = filters.limit ?? CATALOG_PAGE_SIZE;
@@ -231,9 +239,16 @@ export async function getProducts(
   };
 }
 
+// unstable_cache уже сериализует filters (обычный аргумент) в часть ключа — отдельные keyParts не
+// нужны, ключ и так учитывает locale/category/search/offset и т.д. (см. комментарий вверху файла
+// про caching-without-cache-components.md).
+export const getProducts = unstable_cache(getProductsUncached, ['products-list'], {
+  tags: ['products'],
+});
+
 // Публичная страница товара — только isActive: true, иначе 404 решает products.service.ts (эта
 // функция просто возвращает null на отсутствие/неактивность).
-export async function getProductBySlug(slug: string): Promise<ProductDetail | null> {
+async function getProductBySlugUncached(slug: string): Promise<ProductDetail | null> {
   const [row] = await dbHttp
     .select(PRODUCT_COLUMNS)
     .from(product)
@@ -245,9 +260,14 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
   return { ...row, variants };
 }
 
+export const getProductBySlug = unstable_cache(getProductBySlugUncached, ['product-by-slug'], {
+  tags: ['products'],
+});
+
 // «You may also like» (ТЗ §7.3) — та же ageGroup, не категория; если подходящих меньше 4,
-// возвращается сколько есть, без добора из других ageGroup (architecture.md §3.1).
-export async function getRelatedProducts(productId: number): Promise<ProductListItem[]> {
+// возвращается сколько есть, без добора из других ageGroup (architecture.md §3.1). Кэшируется тем
+// же тегом products, что и страница товара (architecture.md §3.1) — инвалидируется вместе с ней.
+async function getRelatedProductsUncached(productId: number): Promise<ProductListItem[]> {
   const [current] = await dbHttp
     .select({ ageGroup: product.ageGroup })
     .from(product)
@@ -274,11 +294,22 @@ export async function getRelatedProducts(productId: number): Promise<ProductList
   return rows.map((row) => ({ ...row, variants: variantsByProductId.get(row.id) ?? [] }));
 }
 
+export const getRelatedProducts = unstable_cache(
+  getRelatedProductsUncached,
+  ['related-products'],
+  { tags: ['products'] },
+);
+
 // Без отдельного action-файла (architecture.md §3.7) — фиксированный справочник, 4 строки,
-// заводятся scripts/seed-categories.ts, не CRUD.
-export async function getCategories() {
+// заводятся scripts/seed-categories.ts, не CRUD. Длинный TTL, без тега — architecture.md §3.7:
+// меняется только сид-скриптом в обход приложения, событию revalidateTag неоткуда взяться.
+const getCategoriesUncached = async () => {
   return dbHttp.select().from(category).orderBy(asc(category.id));
-}
+};
+
+export const getCategories = unstable_cache(getCategoriesUncached, ['categories'], {
+  revalidate: 60 * 60 * 24,
+});
 
 // Админ — все записи независимо от isActive (карточку/товар нужно видеть, чтобы вернуть в
 // продажу), с полным списком вариантов (включая неактивные) для ProductForm/VariantEditor.

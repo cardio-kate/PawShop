@@ -6,8 +6,17 @@ jest.mock('next/headers', () => ({ cookies: () => mockCookies() }));
 // createProduct/updateProduct/deleteProduct call revalidateTag('products', 'max') — outside a real
 // Next request scope this throws ("Invariant: static generation store missing"), see
 // node_modules/next/dist/server/web/spec-extension/revalidate.js.
+//
+// This factory replaces the whole 'next/cache' module for this file, shadowing the automatic
+// __mocks__/next/cache.ts mock (an explicit jest.mock() factory always wins over it) — so
+// unstable_cache must be repeated here too, or products.queries.ts (imported transitively via
+// products.actions.ts -> products.service.ts) throws "unstable_cache is not a function" at import
+// time, before any test body runs. Same passthrough behavior as __mocks__/next/cache.ts.
 const mockRevalidateTag = jest.fn();
-jest.mock('next/cache', () => ({ revalidateTag: (...args: unknown[]) => mockRevalidateTag(...args) }));
+jest.mock('next/cache', () => ({
+  revalidateTag: (...args: unknown[]) => mockRevalidateTag(...args),
+  unstable_cache: (fn: (...args: never[]) => Promise<unknown>) => fn,
+}));
 
 import { resetDb } from '@/tests/helpers/reset-db';
 import { buildAdmin, buildCategory, buildProduct, buildProductVariant } from '@/tests/helpers/factories';
