@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { ProductGallery } from '@/components/product/ProductGallery';
 import { ProductDetailClient } from '@/components/product/ProductDetailClient';
 import { ProductCard } from '@/components/product/ProductCard';
@@ -9,7 +10,14 @@ import { getProductGridColumnsClassName } from '@/components/product/getProductG
 import { RELATED_PRODUCTS_TOP_GAP_CLASSNAME } from '@/components/product/related-products-styles';
 import { PRODUCT_CARD_GRID_GAP_CLASSNAME } from '@/components/product/product-grid-styles';
 import { STOREFRONT_PAGE_CONTAINER_CLASSNAME } from '@/components/layout/page-styles';
+import { pickMessages } from '@/i18n/pick-messages';
 import type { routing } from '@/i18n/routing';
+
+// ProductDetailClient — единственный клиентский потребитель next-intl на этой странице
+// (useTranslations('ProductPage')/('Product')) — i18n/pick-messages.ts. ProductCard ниже (карточки
+// "You may also like") получает уже переведённые строки пропами с сервера (tProduct(...) вызван
+// здесь же), сам next-intl на клиенте не трогает — ему этот провайдер не нужен.
+const PAGE_NAMESPACES = ['ProductPage', 'Product'];
 
 // generateStaticParams — намеренно не заведён: витрина уже рендерится SSR (`ƒ`), не SSG (CLAUDE.md
 // → «Кэш и SEO», известный gap с next-intl/Cache Components из-за Header'а), список слагов для
@@ -52,6 +60,7 @@ export default async function ProductPage({
   const tProductPage = await getTranslations('ProductPage');
   const ageGroupLabel = tCatalog(`ageGroups.${product.ageGroup}`);
   const related = await getRelatedProducts(product.id, typedLocale);
+  const messages = await getMessages();
 
   return (
     <div className={STOREFRONT_PAGE_CONTAINER_CLASSNAME}>
@@ -78,11 +87,13 @@ export default async function ProductPage({
           внутри (см. комментарий к MOBILE_TEXT_CENTER_CLASSNAME), здесь ей же противоположный конец. */}
       <div className="gap-xl grid grid-cols-1 min-[641px]:grid-cols-[clamp(312px,calc(40vw_-_48px),360px)_1fr] min-[641px]:gap-[clamp(16px,calc(6vw_-_22px),40px)]">
         <ProductGallery images={product.images} alt={product.name} />
-        <ProductDetailClient
-          product={product}
-          categoryLabel={categoryLabel}
-          ageGroupLabel={ageGroupLabel}
-        />
+        <NextIntlClientProvider messages={pickMessages(messages, PAGE_NAMESPACES)}>
+          <ProductDetailClient
+            product={product}
+            categoryLabel={categoryLabel}
+            ageGroupLabel={ageGroupLabel}
+          />
+        </NextIntlClientProvider>
       </div>
 
       {/* design.md → Components «You may also like»: не рендерится вовсе, если подходящих

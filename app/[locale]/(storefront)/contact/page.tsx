@@ -1,6 +1,12 @@
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { ContactClient } from '@/components/contact/ContactClient';
 import { STOREFRONT_PAGE_CONTAINER_CLASSNAME } from '@/components/layout/page-styles';
+import { pickMessages } from '@/i18n/pick-messages';
+
+// ContactClient — единственный клиентский потребитель next-intl на этой странице
+// (useTranslations('Contact')) — i18n/pick-messages.ts.
+const PAGE_NAMESPACES = ['Contact'];
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -18,6 +24,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('Contact');
+  const messages = await getMessages();
 
   return (
     <div className={STOREFRONT_PAGE_CONTAINER_CLASSNAME}>
@@ -32,7 +39,9 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
           <h1 className="text-h1 text-neutral-900 uppercase">{t('title')}</h1>
           <p className="mt-md text-body-md text-neutral-700">{t('intro')}</p>
 
-          <ContactClient />
+          <NextIntlClientProvider messages={pickMessages(messages, PAGE_NAMESPACES)}>
+            <ContactClient />
+          </NextIntlClientProvider>
         </div>
       </div>
     </div>
