@@ -1,5 +1,6 @@
 import 'server-only';
 import crypto from 'node:crypto';
+import { after } from 'next/server';
 import { comparePassword, hashPassword, signSession } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { sendResetCode } from '@/lib/telegram';
@@ -79,15 +80,21 @@ export async function requestPasswordReset(username: string): Promise<RequestPas
   // §3.4 п.5) — requestPasswordReset не должен падать на этом, а логировать и продолжать (ТЗ §12,
   // «Telegram недоступен»). Тот же try/catch покрывает и сбой самого Telegram Bot API при уже
   // настроенном chatId.
-  if (adminRow.telegramChatId) {
-    try {
-      await sendResetCode(adminRow.telegramChatId, rawToken);
-    } catch (error) {
-      console.error('auth.service.requestPasswordReset: sendResetCode failed', error);
+  //
+  // after() — resetToken уже сохранён строкой выше; ответ формы сброса пароля не должен ждать
+  // round-trip до Telegram Bot API, тот же принцип и та же причина, что в orders.service.createOrder
+  // (см. комментарий там).
+  after(async () => {
+    if (adminRow.telegramChatId) {
+      try {
+        await sendResetCode(adminRow.telegramChatId, rawToken);
+      } catch (error) {
+        console.error('auth.service.requestPasswordReset: sendResetCode failed', error);
+      }
+    } else {
+      console.error('auth.service.requestPasswordReset: Admin.telegramChatId is not set yet');
     }
-  } else {
-    console.error('auth.service.requestPasswordReset: Admin.telegramChatId is not set yet');
-  }
+  });
 
   return { success: true };
 }

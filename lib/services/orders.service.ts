@@ -1,4 +1,5 @@
 import 'server-only';
+import { after } from 'next/server';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { getVariantsForOrder } from '@/lib/db/queries/products.queries';
 import { getDeliveryCountryById } from '@/lib/db/queries/delivery.queries';
@@ -103,29 +104,42 @@ export async function createOrder(input: OrderInput): Promise<CreateOrderResult>
   // §3.4 п.5) — тот же принцип, что auth.service.requestPasswordReset: логировать и продолжать, не
   // падать. Сбой самого Telegram Bot API (уже настроенный chatId) — тот же try/catch, заказ уже
   // надёжно лежит в БД к этому моменту и не должен откатываться из-за недоступности Telegram.
-  const chatId = await getAdminTelegramChatId();
-  if (chatId) {
-    try {
-      await sendOrderNotification(chatId, {
-        orderId,
-        customerName: input.customerName,
-        phone: input.phone,
-        street: input.street,
-        city: input.city,
-        postalCode: input.postalCode,
-        countryName: country.countryName,
-        comment,
-        items: availableItems,
-        subtotal,
-        shippingPrice: country.price,
-        total,
-      });
-    } catch (error) {
-      console.error('orders.service.createOrder: sendOrderNotification failed', error);
+  //
+  // after() — заказ уже сохранён строкой выше, дальше идёт чистый побочный эффект (уведомление),
+  // от которого ответ клиенту зависеть не должен: без after() checkout ждал бы round-trip до
+  // Telegram Bot API (обычно 200–800мс) прямо перед тем, как отпустить кнопку "Place Order" — самое
+  // конверсионное действие в магазине. after() выполняется уже после того, как ответ ушёл клиенту,
+  // но гарантированно завершается даже в serverless (Vercel — через waitUntil "из коробки"; Node.js-
+  // сервер/Docker — тоже официально поддерживаемая цель, см. node_modules/next/dist/docs/01-app/
+  // 03-api-reference/04-functions/after.md, таблица Platform Support — важно при заявленном заделе
+  // на VPS/standalone, CLAUDE.md → «Стек»). Под Jest (next/jest не поднимает реальный request-стор)
+  // after() иначе падает с "called outside a request scope" — __mocks__/next/server.ts делает его
+  // прозрачным для тестов (см. комментарий там).
+  after(async () => {
+    const chatId = await getAdminTelegramChatId();
+    if (chatId) {
+      try {
+        await sendOrderNotification(chatId, {
+          orderId,
+          customerName: input.customerName,
+          phone: input.phone,
+          street: input.street,
+          city: input.city,
+          postalCode: input.postalCode,
+          countryName: country.countryName,
+          comment,
+          items: availableItems,
+          subtotal,
+          shippingPrice: country.price,
+          total,
+        });
+      } catch (error) {
+        console.error('orders.service.createOrder: sendOrderNotification failed', error);
+      }
+    } else {
+      console.error('orders.service.createOrder: Admin.telegramChatId is not set yet');
     }
-  } else {
-    console.error('orders.service.createOrder: Admin.telegramChatId is not set yet');
-  }
+  });
 
   return { success: true, data: { id: orderId, unavailableCount } };
 }
