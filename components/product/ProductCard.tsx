@@ -92,6 +92,12 @@ export function ProductCard({
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
           className="rounded-card object-cover"
           priority={priority}
+          // Next 16: priority сам по себе больше не выставляет fetchpriority="high" ни на <img>,
+          // ни на автосгенерированный <link rel="preload"> (node_modules/next/dist/shared/lib/
+          // get-img-props.js — fetchPriority прокидывается как отдельный, независимый проп, не
+          // выводится из priority/preload). Без этой строки Lighthouse находит preload-запрос
+          // LCP-картинки без fetchpriority=high и отдельно жалуется на это.
+          fetchPriority={priority ? 'high' : undefined}
         />
         {product.isNew && (
           <Badge variant="new" className="left-sm top-sm absolute">

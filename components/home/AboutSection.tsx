@@ -56,6 +56,10 @@ export async function AboutSection() {
           // главную страницу, hero-контент выше сгиба, без priority грузился loading="lazy" и не
           // подхватывался сразу.
           priority
+          // Next 16: priority сам по себе не выставляет fetchpriority="high" (проп независимый,
+          // node_modules/next/dist/shared/lib/get-img-props.js) — это и есть LCP-картинка главной
+          // страницы (Lighthouse находит её preload-запрос без fetchpriority=high отдельно).
+          fetchPriority="high"
         />
 
         {/* max-w-[600px] — комфортная длина строки для сплошного абзаца (тот же принцип, что

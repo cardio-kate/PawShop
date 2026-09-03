@@ -24,6 +24,10 @@ export function Logo({ className, stacked, displayFont }: LogoProps) {
         height={38}
         className="h-[38px] w-[38px] shrink-0"
         priority
+        // Next 16: priority сам по себе не выставляет fetchpriority="high" (проп независимый,
+        // node_modules/next/dist/shared/lib/get-img-props.js) — Header рендерится на каждой
+        // странице, лого — часть первого экрана везде.
+        fetchPriority="high"
       />
       <span className={`text-h3 text-neutral-900 ${displayFont ? 'font-display' : ''}`}>
         PawShop

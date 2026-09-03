@@ -28,6 +28,9 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
           alt={alt}
           fill
           priority
+          // Next 16: priority сам по себе не выставляет fetchpriority="high" (проп независимый,
+          // node_modules/next/dist/shared/lib/get-img-props.js) — это LCP-картинка страницы товара.
+          fetchPriority="high"
           // sizes отражает реальную отрисованную ширину колонки (page.tsx →
           // clamp(312px, calc(40vw − 48px), 360px)), не формулу клэмпа буквально: между 640 и
           // 900px картинка зафиксирована на полу клэмпа (312px, не убывает дальше), между 900 и
